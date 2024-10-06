@@ -1,25 +1,25 @@
 <template>
-  <!-- <a-app> -->
-  <!-- <a-extract-style> -->
-  <div class="app-wrapper">
-    <div id="append-to" />
-    <div id="preview-modal" />
+  <a-app>
+    <!-- <a-extract-style> -->
+    <div class="app-wrapper">
+      <div id="append-to" />
+      <div id="preview-modal" />
 
-    <a-config-provider
-      :theme="{
-        token: {
-          // colorPrimary: '#008ddf',
-          fontFamily:
-            'Roboto, Noto Sans, Mulish, Source Sans 3, Plus Jakarta Sans, Nunito Sans, sans-serif'
-          // fontSize: 15,
-          // lineHeight: 1.5,
-          // borderRadius: 2,
-          // borderRadiusLG: 5
-        }
-      }"
-    />
+      <a-config-provider
+        :theme="{
+          token: {
+            // colorPrimary: '#008ddf',
+            fontFamily:
+              'Roboto, Noto Sans, Mulish, Source Sans 3, Plus Jakarta Sans, Nunito Sans, sans-serif'
+            // fontSize: 15,
+            // lineHeight: 1.5,
+            // borderRadius: 2,
+            // borderRadiusLG: 5
+          }
+        }"
+      />
 
-    <!-- <ClientOnly>
+      <!-- <ClientOnly>
       <vue-progress-bar
         style="
           background: linear-gradient(
@@ -32,73 +32,75 @@
       />
     </ClientOnly> -->
 
-    <!-- <NuxtLoadingIndicator
+      <!-- <NuxtLoadingIndicator
       color="linear-gradient(90deg, var(--loading-progress-bar1), var(--loading-progress-bar2))"
       :height="3"
       :throttle="300"
       :duration="2000"
     /> -->
 
-    <div
-      v-show="route.meta.layout?.name != 'auth' && authStore.loadingUser.value"
-      class="loading-initial-app"
-    >
-      <div class="loading-initial-app-container">
-        <img
-          src="/images/film-reel.png"
-          alt=""
-          width="48"
-          height="48"
-        />
-        <div class="logo">
-          <a
-            class="animated"
-            href="#"
-          >
-            Phimhay247
-          </a>
+      <div
+        v-show="
+          route.meta.layout?.name != 'auth' && authStore.loadingUser.value
+        "
+        class="loading-initial-app"
+      >
+        <div class="loading-initial-app-container">
+          <img
+            src="/images/film-reel.png"
+            alt=""
+            width="48"
+            height="48"
+          />
+          <div class="logo">
+            <a
+              class="animated"
+              href="#"
+            >
+              Phimhay247
+            </a>
+          </div>
         </div>
       </div>
-    </div>
 
-    <LoadingApp />
-    <RequireAuthDialog />
-    <NetworkChecker />
+      <LoadingApp />
+      <RequireAuthDialog />
+      <NetworkChecker />
 
-    <!-- :is="route.meta?.layout?.component" -->
-    <KeepAlive :exclude="[]">
-      <component :is="route.meta?.layout?.component">
-        <RouterView v-slot="{ Component }">
-          <KeepAlive
-            :max="10"
-            :exclude="notCacheList"
-          >
-            <component :is="Component" />
-          </KeepAlive>
-
-          <el-backtop
-            class="app-back-top click-active"
-            :visibility-height="600"
-            @click="onBackTop"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="2.5rem"
-              height="2.5rem"
-              viewBox="0 0 24 24"
-              fill="currentColor"
+      <!-- :is="route.meta?.layout?.component" -->
+      <KeepAlive :exclude="[]">
+        <component :is="route.meta?.layout?.component">
+          <RouterView v-slot="{ Component }">
+            <KeepAlive
+              :max="10"
+              :exclude="notCacheList"
             >
-              <path
-                d="m4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8l-8 8z"
-              />
-            </svg>
-          </el-backtop>
-        </RouterView>
-      </component>
-    </KeepAlive>
-  </div>
-  <!-- </a-extract-style> -->
-  <!-- </a-app> -->
+              <component :is="Component" />
+            </KeepAlive>
+
+            <el-backtop
+              class="app-back-top click-active"
+              :visibility-height="600"
+              @click="onBackTop"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="2.5rem"
+                height="2.5rem"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  d="m4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8l-8 8z"
+                />
+              </svg>
+            </el-backtop>
+          </RouterView>
+        </component>
+      </KeepAlive>
+    </div>
+    <!-- </a-extract-style> -->
+  </a-app>
 </template>
 
 <script setup lang="ts">
