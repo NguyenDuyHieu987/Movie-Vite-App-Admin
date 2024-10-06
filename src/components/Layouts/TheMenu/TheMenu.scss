@@ -1,0 +1,221 @@
+.el-menu.menu-sider-bar {
+  background-color: transparent;
+  flex-grow: 1;
+  width: 100%;
+  border: none;
+  min-height: 100%;
+
+  --el-menu-item-height: var(--menu-item-height) !important;
+  --el-menu-sub-item-height: var(--menu-item-height) !important;
+  // --el-menu-hover-bg-color: var(--menu-item-background-color) !important;
+
+  /* &.el-menu--collapse {
+    // .el-sub-menu {
+    //   .el-sub-menu__title {
+    //     span {
+    //       width: 0px;
+    //       opacity: 0;
+    //       overflow: hidden;
+    //     }
+    //   }
+    // }
+
+    // .el-menu-item {
+    //   a {
+    //     width: 0px;
+    //     opacity: 0;
+    //     overflow: hidden;
+    //   }
+    // }
+  } */
+
+  .el-menu-item {
+    margin-top: 3px;
+    margin-left: 3px;
+    // border-top-left-radius: 30px;
+    // border-bottom-left-radius: 30px;
+    transition: all 0s;
+    user-select: none;
+
+    .el-icon {
+      margin-right: 10px;
+
+      svg:not(.material-icons-outlined) {
+        width: 1.6rem;
+        height: 1.6rem;
+      }
+
+      svg.material-icons-outlined {
+        font-size: 2.7rem;
+        height: 2.7rem;
+        width: 2.7rem;
+        min-width: 2.7rem;
+        margin-left: 6px;
+      }
+    }
+
+    a {
+      color: var(--menu-text-color);
+      transition: color 0s;
+    }
+
+    &:hover {
+      // background: var(--el-menu-hover-bg-color);
+      color: var(--menu-hover-text-color);
+
+      a {
+        color: var(--menu-hover-text-color);
+      }
+    }
+
+    &.is-active {
+      color: var(--menu-active-text-color);
+      // background: var(--el-menu-hover-bg-color);
+
+      a {
+        color: var(--menu-active-text-color);
+      }
+    }
+
+    &.upgrade-account {
+      .el-icon {
+        svg {
+          margin-bottom: 4px;
+        }
+      }
+
+      a {
+        display: inline-block;
+        // background-image: linear-gradient(
+        //   45deg,
+        //   var(--app-background-color),
+        //   #0988c8,
+        //   #04d6f2
+        // );
+        padding: 5px 0px;
+        line-height: var(--button-line-height);
+        // color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+    }
+  }
+
+  .el-sub-menu {
+    margin-top: 3px;
+    margin-left: 3px;
+    transition: all 0s;
+
+    .el-sub-menu__icon-arrow {
+      right: 10px;
+    }
+
+    .el-sub-menu__title {
+      // border-top-left-radius: 25px;
+      // border-bottom-left-radius: 25px;
+      margin-bottom: 3px;
+      user-select: none;
+      transition: color 0s;
+
+      &:hover {
+        // background: var(--el-menu-hover-bg-color);
+        color: var(--menu-hover-text-color);
+      }
+
+      .el-icon:not(.el-sub-menu__icon-arrow) {
+        margin-right: 10px;
+
+        svg:not(.material-icons-outlined) {
+          font-size: 1.6rem;
+          width: 1.6rem;
+          height: 1.6rem;
+        }
+      }
+    }
+
+    &.is-opened {
+      .el-sub-menu__title {
+        // background: var(--el-menu-hover-bg-color);
+        color: var(--menu-active-text-color);
+      }
+
+      /* .el-menu.el-menu--inline {
+      } */
+    }
+
+    .el-menu.el-menu--inline {
+      background: #6a6a6a32;
+      padding: 5px 0px;
+      padding-left: 15px;
+      // --el-menu-hover-bg-color: #00000029 !important;
+      transition: all 0.2s;
+
+      .el-menu-item {
+        padding-left: 35px;
+
+        a {
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+
+        &:first-child {
+          margin-top: 0px;
+        }
+
+        &:last-child {
+          margin-bottom: 0px;
+        }
+
+        &.is-active {
+          // background: var(--el-menu-hover-bg-color);
+        }
+      }
+    }
+  }
+
+  .separate {
+    margin-top: 10px;
+    border-top: 1px solid var(--border-light);
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .el-menu.menu-sider-bar {
+    .el-menu-item {
+      .el-icon {
+        svg:not(.material-icons-outlined) {
+          font-size: 1.5rem;
+          width: 1.5rem;
+          height: 1.5rem;
+        }
+
+        svg.material-icons-outlined {
+          font-size: 2.6rem;
+          height: 2.6rem;
+          width: 2.6rem;
+          min-width: 2.6rem;
+          margin-left: 5px;
+        }
+      }
+
+      a {
+        font-size: 1.4rem;
+      }
+    }
+
+    .el-sub-menu {
+      .el-sub-menu__title {
+        font-size: 1.4rem;
+
+        .el-icon:not(.el-sub-menu__icon-arrow) {
+          svg:not(.material-icons-outlined) {
+            font-size: 1.5rem;
+            width: 1.5rem;
+            height: 1.5rem;
+          }
+        }
+      }
+    }
+  }
+}

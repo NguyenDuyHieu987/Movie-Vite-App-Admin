@@ -1,0 +1,77 @@
+body.loading-mask {
+  overflow: hidden;
+  width: calc(100% - 14px);
+  touch-action: none;
+
+  .header-bar,
+  .header-bar-service,
+  .header-bar-auth {
+    width: calc(100% - 14px);
+  }
+}
+
+.app-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--loading-mask);
+  opacity: 0;
+  z-index: -1;
+  overflow: hidden;
+  transition: all 0.5s;
+
+  &.active {
+    opacity: 1;
+    z-index: var(--loading-app-z-index);
+    transition: all 0.3s;
+
+    /* .app-loading-container {
+      .logo {
+        .icon-loading {
+          svg {
+          }
+        }
+      }
+    } */
+  }
+
+  .app-loading-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    user-select: none;
+
+    img {
+      position: absolute;
+      width: 64px;
+      height: 64px;
+      animation-delay: 2s;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+
+      .icon-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+
+        svg {
+          fill: var(--app-background-color);
+          width: 5rem;
+          height: 5rem;
+        }
+      }
+    }
+  }
+}

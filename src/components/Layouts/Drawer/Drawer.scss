@@ -1,0 +1,224 @@
+.ant-drawer:has(.menu-drawer),
+.ant-drawer.menu-drawer {
+  /* margin-top: var(--header-height); */
+  font-family: inherit;
+
+  .ant-drawer-content-wrapper {
+    transition: all 0.15s ease;
+
+    .ant-drawer-content,
+    .ant-drawer-content.menu-drawer {
+      background-color: var(--background-content-color);
+      overflow: visible;
+
+      .ant-drawer-header {
+        background-color: transparent;
+        height: var(--header-height);
+        justify-content: start;
+        border: none;
+        color: inherit;
+        padding-left: 21px;
+
+        .ant-drawer-header-title {
+          height: 100%;
+
+          .ant-drawer-title {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+            line-height: inherit;
+            font-weight: 500;
+
+            svg.close-drawer {
+              font-size: 2.7rem;
+              cursor: pointer;
+              transition: 0.15s;
+              width: 2.7rem;
+              height: 2.7rem;
+
+              &:active {
+                opacity: 0.8;
+              }
+            }
+
+            .logo {
+              a {
+                font-size: 2.3rem;
+              }
+            }
+          }
+        }
+      }
+
+      .ant-drawer-body {
+        display: flex;
+        flex-direction: column;
+        flex: 0 1 auto;
+        height: 100%;
+        padding: 0px 0px 0px 0px;
+        overflow: hidden;
+
+        header.user-header {
+          position: sticky;
+          top: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: var(--header-height);
+          gap: 10px;
+          border-bottom: 1px solid var(--border-light);
+          color: inherit;
+          font-size: 1.5rem;
+          z-index: 1;
+
+          .avatar-box {
+            display: flex;
+            align-items: center;
+            justify-self: center;
+            height: 35px;
+            width: 35px;
+            border-radius: 50%;
+            overflow: hidden;
+
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+
+          /* .user-name-text {
+          } */
+        }
+
+        .drawer-menu {
+          height: 100%;
+          overflow-y: hidden;
+
+          .loading-menu {
+            height: 100%;
+
+            .loading-spinner {
+            }
+          }
+
+          .menu-sider-bar {
+            height: 100%;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            // padding-bottom: calc(var(--header-height) - 15px);
+            // scrollbar-width: thin;
+            // scrollbar-color: transparent transparent;
+
+            // &:hover {
+            //   scrollbar-color: #7e7e7e transparent;
+            // }
+          }
+        }
+
+        &::-webkit-scrollbar {
+          /* display: none; */
+          width: 12px;
+        }
+      }
+    }
+  }
+}
+
+.el-drawer.menu-drawer {
+  width: var(--drawer-width);
+  background-color: var(--background-content-color);
+  transition: all 0.15s ease;
+
+  .el-drawer__header {
+    background-color: transparent;
+    height: var(--header-height);
+    justify-content: start;
+    border: none;
+    color: inherit;
+    padding: 0px;
+    padding-left: 21px;
+    margin-bottom: 0px;
+
+    .drawer-header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
+
+      svg.close {
+        font-size: 2.7rem;
+        cursor: pointer;
+        transition: 0.15s;
+        width: 2.7rem;
+        height: 2.7rem;
+
+        &:active {
+          opacity: 0.8;
+        }
+      }
+
+      .logo {
+        font-size: 1.3rem;
+      }
+    }
+  }
+
+  header.user-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0px;
+    padding: 20px;
+    height: var(--header-height);
+    line-height: 65px;
+    border-bottom: 0.25px solid var(--border-regular);
+
+    .avatar-box {
+      display: flex;
+      align-items: center;
+      justify-self: center;
+      margin-right: 10px;
+      height: 35px;
+      width: 35px;
+      border-radius: 50%;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    /* .user-name-text {
+    } */
+  }
+
+  .el-drawer__close-btn {
+    font-size: 2.8rem;
+  }
+
+  .el-drawer__body {
+    padding: 0px 0px 24px 0px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      /* display: none; */
+      width: 12px;
+    }
+  }
+}
+
+/* @media only screen and (min-width: 900px) {
+  .el-overlay:has(.el-drawer) {
+    display: none;
+  }
+
+  .el-drawer {
+    display: none;
+  }
+} */

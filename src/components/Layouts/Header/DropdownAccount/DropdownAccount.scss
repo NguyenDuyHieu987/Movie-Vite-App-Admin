@@ -1,0 +1,43 @@
+.el-popper.el-dropdown__popper.header {
+  position: fixed !important;
+  top: calc(var(--header-height) + 4px) !important;
+
+  &.account {
+    .el-dropdown-menu {
+      &:only-child {
+        padding: 0px;
+
+        .el-dropdown-menu__item {
+          /* .account-username {
+          } */
+
+          .account-email {
+            font-size: 1.2rem;
+          }
+        }
+      }
+    }
+
+    .el-dropdown-menu__item {
+      position: relative;
+      padding: 13px 20px;
+
+      &:has(.your-account) {
+        &:first-child {
+          border-bottom: 1px solid var(--dropdown-border-color);
+        }
+      }
+
+      a {
+        &::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          right: 0;
+          bottom: 0;
+        }
+      }
+    }
+  }
+}

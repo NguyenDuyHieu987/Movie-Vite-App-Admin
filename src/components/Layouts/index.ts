@@ -1,0 +1,9 @@
+export { default as BreadCrumb } from './BreadCrumb/BreadCrumb.vue';
+export { default as Drawer } from './Drawer/Drawer.vue';
+export { default as Footer } from './Footer/Footer.vue';
+export { default as Header } from './Header/Header.vue';
+export { default as HeaderAuth } from './HeaderAuth/HeaderAuth.vue';
+export { default as HeaderCenterPage } from './HeaderCenterPage/HeaderCenterPage.vue';
+export { default as HeaderService } from './HeaderService/HeaderService.vue';
+export { default as Sider } from './Sider/Sider.vue';
+export { default as TheMenu } from './TheMenu/TheMenu.vue';

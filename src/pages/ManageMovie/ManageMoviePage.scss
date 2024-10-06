@@ -1,0 +1,37 @@
+.manage-movie-container {
+  .header-table {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h2 {
+      margin-right: 20px;
+    }
+
+    .add-btn {
+      margin-left: auto;
+    }
+  }
+
+  .movie-table {
+  }
+}
+
+.add-movie-dialog {
+  .poster-image {
+    width: 150px;
+    margin-top: 10px;
+  }
+
+  .backdrop-image {
+    height: 150px;
+    margin-top: 10px;
+  }
+}
+
+.upload-video-dialog {
+  .progress-upload {
+    margin-top: 10px;
+  }
+}

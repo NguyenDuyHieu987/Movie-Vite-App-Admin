@@ -1,0 +1,197 @@
+.control-page {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+
+  .el-pagination {
+    display: flex;
+    flex-direction: row;
+    font-size: 1.6rem;
+
+    .btn-prev,
+    .btn-next {
+      display: inline-flex;
+      background-color: #1b1b1b;
+      border: none;
+      height: 40px;
+      width: 48px;
+      line-height: 40px;
+      margin: 0px;
+
+      &:disabled {
+        background-color: transparent;
+      }
+
+      i {
+        height: 1.2em;
+        width: 1.2em;
+
+        svg {
+          height: 100%;
+          width: 100%;
+        }
+      }
+    }
+
+    .el-pager {
+      background-color: #1b1b1b;
+
+      li {
+        display: inline-flex;
+        background-color: transparent;
+        border: none;
+        height: 40px;
+        width: 48px;
+        line-height: 40px;
+        border-radius: 0px;
+        margin: 0px;
+        color: inherit;
+        transition: all 0s;
+
+        &:hover {
+          color: inherit;
+        }
+
+        &.number {
+          &.is-active {
+            width: 44px;
+            background-color: var(--app-background-color);
+            /* color: var(--text-link-color); */
+            color: #fff;
+            font-weight: normal;
+            border-radius: 2px;
+          }
+        }
+      }
+    }
+  }
+
+  .pagination {
+    display: flex;
+    flex-direction: row;
+    font-size: 1.6rem;
+    color: inherit;
+
+    &.ant-pagination.ant-pagination-mini {
+      .ant-pagination-prev,
+      .ant-pagination-next,
+      .ant-pagination-item {
+        height: auto;
+        line-height: inherit;
+      }
+    }
+
+    .ant-pagination-prev,
+    .ant-pagination-next {
+      margin: 0px;
+      font-size: 1.3rem;
+      color: inherit;
+
+      button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+        width: 50px;
+        line-height: 40px;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        color: inherit;
+
+        &:hover {
+          color: var(--text-link-color);
+        }
+      }
+
+      .ant-pagination-item-link {
+        background-color: transparent;
+        border: none;
+        color: inherit;
+
+        &:hover {
+          color: inherit;
+        }
+      }
+
+      &.ant-pagination-disabled {
+        /* display: none; */
+        background-color: transparent !important;
+
+        button {
+          color: var(--text-color-gray);
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    li {
+      display: inline-flex;
+      background-color: #1b1b1b !important;
+      border: none;
+      height: auto;
+      width: auto;
+      margin: 0;
+      padding: 0px 4px;
+      border-radius: 0px;
+      transition: all 0s;
+
+      a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+        width: 40px;
+        line-height: 40px;
+        color: inherit;
+        text-align: center;
+        transition: all 0s;
+
+        &:hover {
+          /* color: inherit; */
+          color: var(--text-link-color);
+        }
+      }
+
+      &.ant-pagination-item-active {
+        background-color: var(--app-background-color) !important;
+        /* color: var(--text-link-color); */
+        color: #fff;
+        padding: 0px 2px;
+        border-radius: 2px;
+        font-weight: normal;
+
+        /* a {
+        } */
+
+        &:hover {
+          a {
+            color: inherit;
+          }
+        }
+      }
+    }
+
+    .ant-pagination-jump-prev,
+    .ant-pagination-jump-next {
+      height: 40px;
+      width: 40px;
+      line-height: 40px;
+      color: inherit;
+
+      /* .anticon {
+      } */
+
+      svg {
+        fill: inherit;
+      }
+
+      .ant-pagination-item-ellipsis {
+        left: -50%;
+        color: inherit;
+        transition: all 0s;
+      }
+    }
+  }
+}

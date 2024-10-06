@@ -1,0 +1,204 @@
+:root {
+  --btn-background-color-primary: var(--app-background-color);
+  --btn-background-color-gray: #1e1e1e;
+  --btn-disabled-background-color: #9494947d;
+  --btn-border-color: #757575;
+  --btn-hover-border-color: #c1c1c1;
+  --btn-focused-outline-color: #0091ff4d;
+  --btn-primary-color: #0094ea;
+  --btn-danger-color: #ff4d4f;
+
+  --btn-focused-outline: 4px solid var(--btn-focused-outline-color);
+}
+
+/* html.dark {
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+  }
+} */
+
+.ant-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-normal);
+
+  &:not(.ant-btn-link) {
+    height: 35px;
+    padding: 0px 15px;
+    // line-height: var(--button-line-height);
+    line-height: normal;
+    color: inherit;
+    border: 1px solid var(--btn-border-color);
+    border-radius: var(--border-radius-normal);
+    outline: none;
+    box-shadow: none;
+    vertical-align: middle;
+    transition: all 0.15s;
+
+    &::before {
+      // background: transparent;
+      box-shadow: none;
+    }
+
+    &.ant-btn-primary {
+      color: var(--text-color-white);
+    }
+
+    &.ant-btn-lg {
+      font-size: 1.5rem;
+      height: 40px;
+    }
+
+    &.submit-btn {
+      color: var(--text-color);
+      padding: 7px 15px;
+    }
+
+    &:hover,
+    &:not(:disabled, .ant-btn-text):hover {
+      border-color: var(--btn-hover-border-color);
+      // color: inherit;
+    }
+
+    &:focus:not(.not-focusable) {
+      // color: inherit;
+      border-color: var(--btn-primary-color) !important;
+      outline: var(--btn-focused-outline) !important;
+    }
+
+    &:active {
+      // color: inherit;
+    }
+
+    &.ant-btn-primary:not([disabled]) {
+      border-color: var(--app-background-color);
+
+      &:hover {
+        border-color: var(--app-background-color);
+      }
+    }
+
+    &.ant-btn-dangerous.ant-btn-primary:not([disabled]) {
+      background-color: var(--btn-danger-color);
+      // color: var(--btn-danger-color);
+      border-color: var(--btn-danger-color);
+
+      &:hover {
+        background-color: var(--btn-danger-color);
+        // color: var(--btn-danger-color);
+        border-color: var(--btn-danger-color);
+      }
+    }
+
+    &.ant-btn-text {
+      background-color: transparent;
+      border-color: transparent;
+      box-shadow: none;
+
+      &:hover {
+        // color: inherit;
+        border-color: transparent;
+      }
+    }
+
+    &.ant-btn-round {
+      border-radius: 35px;
+    }
+
+    &.ant-btn-round.ant-btn-lg {
+      border-radius: 40px;
+    }
+
+    &:not(.ant-btn-circle, .ant-btn-icon-only) {
+      svg {
+        margin-right: 7px;
+        width: 1.8rem;
+        height: 1.8rem;
+      }
+    }
+
+    &.ant-btn-circle,
+    &.ant-btn-icon-only {
+      height: 35px;
+      width: 35px;
+      padding: 0;
+
+      svg {
+        margin-right: 0px;
+      }
+    }
+
+    &.ant-btn-circle.ant-btn-lg,
+    &.ant-btn-icon-only.ant-btn-lg {
+      height: 40px;
+      width: 40px;
+    }
+
+    &[disabled] {
+      color: var(--text-button-disabled-color) !important;
+
+      &:hover {
+        color: var(--text-button-disabled-color);
+      }
+
+      &:focus {
+        color: var(--text-button-disabled-color);
+      }
+
+      &:active {
+        opacity: 1 !important;
+      }
+    }
+
+    &.default {
+      padding: 7px 30px;
+      height: auto;
+      // background-color: transparent;
+      border: 1px solid var(--btn-border-color);
+
+      &:hover {
+        border-color: var(--btn-hover-border-color);
+      }
+
+      &:active {
+        opacity: 0.8;
+      }
+
+      &::after {
+        box-shadow: none !important;
+      }
+    }
+
+    &.modern {
+      // background-color: transparent;
+      height: 100%;
+      // padding: 0.35vw 1.5vw;
+      padding: 7px 25px;
+
+      &:active {
+        opacity: 0.8;
+      }
+    }
+
+    &.gradient {
+      background: linear-gradient(
+        to right,
+        var(--app-background-color3),
+        var(--app-background-color2),
+        var(--app-background-color3)
+      );
+      background-size: 200% 100%;
+      padding: 7px 35px;
+      // border-color: transparent;
+      transition: background 0.3s;
+
+      &:hover {
+        background-size: 200% 100%;
+        background-position: 100% center;
+      }
+    }
+  }
+}

@@ -1,0 +1,133 @@
+.login {
+  display: flex;
+  position: fixed;
+  right: 0;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  padding: 20px 0px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  .login-container {
+    display: flex;
+    max-width: 100%;
+    margin: auto auto;
+
+    .login-form-container {
+      position: relative;
+      box-shadow: var(--box-shadow-medium);
+      z-index: 1;
+      /* background-color: var(--background-content-color); */
+      background-color: #f8f8f8;
+      width: 550px;
+      min-height: 450px;
+      overflow: hidden;
+      border-radius: 2px;
+
+      .login-form {
+        /* position: absolute;
+        inset: 3px;
+        z-index: 3;
+        background-color: var(--background-content-color); */
+        padding: 30px 70px;
+
+        .title-login {
+          text-align: center;
+          margin-bottom: 20px;
+          font-size: 2.7rem;
+          margin-top: 0px;
+        }
+
+        .ant-form-item {
+          &.remember-me {
+            .ant-checkbox-wrapper {
+              user-select: none;
+              font-size: 1.45rem;
+            }
+          }
+
+          .ant-checkbox-wrapper {
+            color: inherit;
+          }
+        }
+
+        .forgot-password-btn {
+          float: right;
+          color: var(--text-link-color);
+          transition: all 0.15s;
+          user-select: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        .login-form-button {
+          width: 100%;
+          padding: 10px 15px;
+          font-size: 1.5rem;
+          background-color: var(--app-background-color);
+          border: 1px solid var(--border-regular);
+          color: var(--text-color-white);
+        }
+
+        .bottom-form {
+          margin: 20px 0px;
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+          text-align: center;
+        }
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .login {
+    .login-container {
+      .login-form-container {
+        width: 500px;
+
+        .login-form {
+          padding: 30px 60px;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .login {
+    .login-container {
+      .login-form-container {
+        width: 470px;
+
+        .login-form {
+          padding: 30px 50px;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 470px) {
+  .login {
+    .login-container {
+      .login-form-container {
+        .login-form {
+          padding: 30px 40px;
+        }
+      }
+    }
+  }
+}

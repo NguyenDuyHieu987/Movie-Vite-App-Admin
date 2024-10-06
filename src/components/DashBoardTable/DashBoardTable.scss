@@ -1,0 +1,12 @@
+.movie-table {
+  .el-table {
+    // font-size: 1.6rem;
+  }
+
+  .el-table__cell.el-table__expanded-cell {
+    p {
+      line-height: 2;
+      font-size: 1.6rem;
+    }
+  }
+}

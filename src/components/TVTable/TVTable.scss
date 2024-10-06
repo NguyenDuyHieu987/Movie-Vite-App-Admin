@@ -1,0 +1,13 @@
+.tv-table {
+  .el-table {
+    // font-size: 1.6rem;
+  }
+
+  .el-table__cell.el-table__expanded-cell {
+    p {
+      padding-left: 15px;
+      line-height: 2;
+      font-size: 1.6rem;
+    }
+  }
+}
