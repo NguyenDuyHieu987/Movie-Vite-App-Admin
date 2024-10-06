@@ -709,19 +709,23 @@ const loadingUploadVideo = ref<boolean>(false);
 const loadingChunkingVideo = ref<boolean>(false);
 const socket = ref<Socket>();
 
-loading.value = true;
+const getData = () => {
+  loading.value = true;
 
-getAllMovie(page.value, pageSize.value)
-  .then((response) => {
-    dataMovie.value = response?.results;
-    page.value = response.page;
-    pageSize.value = response.page_size;
-    total.value = response.total;
-  })
-  .catch((e) => {})
-  .finally(() => {
-    loading.value = false;
-  });
+  getAllMovie(page.value, pageSize.value)
+    .then((response) => {
+      dataMovie.value = response?.results;
+      page.value = response.page;
+      pageSize.value = response.page_size;
+      total.value = response.total;
+    })
+    .catch((e) => {})
+    .finally(() => {
+      loading.value = false;
+    });
+};
+
+getData();
 
 // const onChangeTable = (
 //   pagination,
@@ -854,6 +858,7 @@ const onSubmitFormAdd = () => {
           loadingAdd.value = false;
           modalAddVisible.value = false;
           resetFeild();
+          getData();
         });
 
       // formRef.value.resetFields();
@@ -1165,6 +1170,7 @@ const onSubmitFormEdit = () => {
           loadingAdd.value = false;
           modalAddVisible.value = false;
           resetFeild();
+          getData();
         });
 
       // formRef.value.resetFields();
@@ -1207,6 +1213,7 @@ const onClickDeleteVideo = (movie: any) => {
           loadingAdd.value = false;
           modalAddVisible.value = false;
           resetFeild();
+          getData();
         });
     })
     .catch(() => {
