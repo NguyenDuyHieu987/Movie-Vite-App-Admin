@@ -520,6 +520,7 @@
                 <div class="upload-video">
                   <input
                     type="file"
+                    accept="video/*"
                     @change="handleChangeUploadVideo"
                   />
                   <!-- <video
