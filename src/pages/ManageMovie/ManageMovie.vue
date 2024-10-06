@@ -427,6 +427,7 @@
                 <div class="upload-image">
                   <input
                     type="file"
+                    accept="image/*"
                     @change="(e) => handleChangeUploadImage(e, 'poster')"
                   />
                   <img
@@ -452,6 +453,7 @@
                 <div class="upload-image">
                   <input
                     type="file"
+                    accept="image/*"
                     @change="(e) => handleChangeUploadImage(e, 'backdrop')"
                   />
                   <img
