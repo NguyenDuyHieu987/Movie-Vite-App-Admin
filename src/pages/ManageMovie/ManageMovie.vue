@@ -869,7 +869,11 @@ const handleChangeUploadVideo = (e: any) => {
 };
 
 onBeforeMount(() => {
-  socket.value = io('http://localhost:5002');
+  socket.value = io(
+    import.meta.env.PROD
+      ? import.meta.env.VITE_SERVER_VIDEO_URL
+      : import.meta.env.VITE_SERVER_VIDEO_URL_DEV
+  );
 
   socket.value.on('upload-video-progress', (data) => {
     loadingChunkingVideo.value = true;
