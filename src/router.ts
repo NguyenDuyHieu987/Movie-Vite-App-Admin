@@ -58,7 +58,8 @@ const routes = [
 
 export function createRouter() {
   return _createRouter({
-    history: import.meta.env.SSR ? createMemoryHistory() : createWebHistory(),
+    // history: import.meta.env.SSR ? createMemoryHistory() : createWebHistory(),
+    history:  createWebHistory(),
     routes
   });
 }
