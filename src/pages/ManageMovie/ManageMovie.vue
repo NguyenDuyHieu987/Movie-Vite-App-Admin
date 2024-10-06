@@ -1244,7 +1244,7 @@ const onSearch = (searchQuery: string) => {
 
   loading.value = true;
 
-  searchMovie(searchQuery, page.value, pageSize.value)
+  searchMovie(searchQuery.trim(), page.value, pageSize.value)
     .then((response) => {
       dataMovie.value = response?.results;
       page.value = response.page;
