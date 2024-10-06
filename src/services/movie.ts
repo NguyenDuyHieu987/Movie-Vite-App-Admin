@@ -11,6 +11,19 @@ export function getAllMovie(page: number = 1, limit: number = 20) {
   });
 }
 
+export function searchMovie(
+  query: string,
+  page: number = 1,
+  limit: number = 20
+) {
+  return makeRequest(`/${PREFIX_ROUTE}/search`, {
+    query,
+    page,
+    limit,
+    no_cache: 1
+  });
+}
+
 export function getMovieByType_Id(
   type: string,
   movieId: number | string,
@@ -61,6 +74,6 @@ export function UpdateVideoPath(movieId: number | string, video_path: string) {
 
 export function DeleteVideo(movieId: number | string) {
   return makeRequest(`/${PREFIX_ROUTE}/delete/${movieId}`, null, {
-    method: 'DELETE',
+    method: 'DELETE'
   });
 }

@@ -14,6 +14,16 @@
     }
   }
 
+  .table-tools {
+    margin-bottom: 20px;
+
+    .search-movie {
+      width: 40%;
+      min-width: 300px;
+      max-width: 500px;
+    }
+  }
+
   .movie-table {
   }
 }

@@ -4,6 +4,7 @@
       <h2>Danh sách Phim lẻ</h2>
 
       <!-- <RouterLink :to="{ path: '/addmovie' }"> -->
+
       <a-button
         class="add-btn"
         type="primary"
@@ -20,6 +21,18 @@
       </a-button>
       <!-- </RouterLink> -->
     </div>
+
+    <div class="table-tools">
+      <a-input-search
+        class="search-movie"
+        v-model:value="searchValue"
+        placeholder="Nhập têm phim để tìm kiếm..."
+        enter-button="Tìm kiếm"
+        size="large"
+        @search="onSearch"
+      />
+    </div>
+
     <div class="movie-table">
       <a-table
         class="ant-table-striped"
@@ -37,7 +50,7 @@
         }"
         bordered
         sticky
-        filterSearch
+        :row-selection="[]"
       >
         <!-- :pagination="{ pageSize: pageSizeTable, onChange: onChangePage }" -->
         <!-- @change="onChangeTable" -->
@@ -590,7 +603,8 @@ import {
   getAllMovie,
   UpdateVideo,
   UpdateVideoPath,
-  DeleteVideo
+  DeleteVideo,
+  searchMovie
 } from '@/services/movie';
 import type { MovieForm, genre } from '@/types';
 import { ElNotification, ElMessageBox } from 'element-plus';
@@ -710,6 +724,7 @@ const loadingAdd = ref<boolean>(false);
 const disabledAdd = ref<boolean>(true);
 const loadingUploadVideo = ref<boolean>(false);
 const loadingChunkingVideo = ref<boolean>(false);
+const searchValue = ref<string>('');
 const socket = ref<Socket>();
 
 const getData = () => {
@@ -1221,6 +1236,24 @@ const onClickDeleteVideo = (movie: any) => {
     })
     .catch(() => {
       // catch error
+    });
+};
+
+const onSearch = (searchQuery: string) => {
+  if (!searchQuery) return;
+
+  loading.value = true;
+
+  searchMovie(searchQuery, page.value, pageSize.value)
+    .then((response) => {
+      dataMovie.value = response?.results;
+      page.value = response.page;
+      pageSize.value = response.page_size;
+      total.value = response.total;
+    })
+    .catch((e) => {})
+    .finally(() => {
+      loading.value = false;
     });
 };
 </script>
