@@ -534,6 +534,7 @@
               >
                 <div class="upload-video">
                   <input
+                    ref="inputVideoFile"
                     type="file"
                     accept="video/*"
                     @change="handleChangeUploadVideo"
@@ -617,6 +618,7 @@ import dayjs from 'dayjs';
 
 const formRef = ref<FormInstance>();
 const formVidRef = ref<FormInstance>();
+const inputVideoFile = ref<HTMLInputElement | null>();
 const store = useStore();
 const dataMovie = ref<any[]>([]);
 const page = ref<number>(1);
@@ -908,6 +910,9 @@ onBeforeMount(() => {
 });
 
 const onClickUploadVideo = (movie: any) => {
+  if(inputVideoFile.value){
+    inputVideoFile.value.value = null;
+  }
   formUploadVideo.movieId = movie.id;
   formUploadVideo.type = movie.media_type == 'movie' ? 'feature' : 'television';
   formUploadVideo.file_upload = null;
