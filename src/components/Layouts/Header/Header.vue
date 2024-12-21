@@ -64,7 +64,7 @@
           </template>
         </a-input-search>
 
-        <SearchDropdown
+        <!-- <SearchDropdown
           v-model:dataSearch="dataSearch"
           v-model:dataTopSearch="dataTopSearch"
           v-model:dataSearchHistory="dataSearchHistory"
@@ -73,7 +73,7 @@
           v-model:valueInput="valueInput"
           :loadingSearch="loadingSearch"
           :loadingTopSearch="loadingTopSearch"
-        />
+        /> -->
       </div>
 
       <div class="right-header">

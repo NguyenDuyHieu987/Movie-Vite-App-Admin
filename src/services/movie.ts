@@ -63,12 +63,15 @@ export function UpdateVideo(movieForm: MovieForm) {
   });
 }
 
-export function UpdateVideoPath(movieId: number | string, video_path: string) {
-  return makeRequest(`/${PREFIX_ROUTE}/update-videopath/${movieId}`, null, {
+export function UpdateVideoUpload(
+  movieId: number | string,
+  videoData: {
+    video_path: string;
+  }
+) {
+  return makeRequest(`/${PREFIX_ROUTE}/update-videoupload/${movieId}`, null, {
     method: 'POST',
-    data: {
-      video_path
-    }
+    data: videoData
   });
 }
 

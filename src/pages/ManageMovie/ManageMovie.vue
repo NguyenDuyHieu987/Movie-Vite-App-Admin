@@ -603,7 +603,7 @@ import {
   CreateMovie,
   getAllMovie,
   UpdateVideo,
-  UpdateVideoPath,
+  UpdateVideoUpload,
   DeleteVideo,
   searchMovie
 } from '@/services/movie';
@@ -910,7 +910,7 @@ onBeforeMount(() => {
 });
 
 const onClickUploadVideo = (movie: any) => {
-  if(inputVideoFile.value){
+  if (inputVideoFile.value) {
     inputVideoFile.value.value = null;
   }
   formUploadVideo.movieId = movie.id;
@@ -951,7 +951,10 @@ const onUploadVideo = () => {
       // console.log(response);
 
       if (response?.success) {
-        UpdateVideoPath(formUploadVideo.movieId, response.video_path)
+        UpdateVideoUpload(formUploadVideo.movieId, {
+          duration: response.file.duration,
+          video_path: response.video_path
+        })
           .then((response) => {
             if (response?.success) {
               ElNotification.success({
