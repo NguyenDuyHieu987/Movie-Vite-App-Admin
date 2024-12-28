@@ -36,8 +36,9 @@ export const useStore = defineStore('store', () => {
 
   const route = useRoute();
 
-  const collapsed = breakpoints.smaller('desktop');
+  const collapsedDevice = breakpoints.smaller('desktop');
 
+  const collapsed = ref<boolean>(collapsedDevice.value);
   const openSiderBarFixed = ref<boolean>(false);
   const headerScrolled = ref<boolean>(false);
   const openDrawer = ref<boolean>(false);

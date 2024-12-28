@@ -19,6 +19,7 @@
         </template>
         Thêm phim
       </a-button>
+
       <!-- </RouterLink> -->
     </div>
 
@@ -31,6 +32,23 @@
         size="large"
         @search="onSearch"
       />
+
+      <a-button
+        class="add-btn"
+        type="primary"
+        danger
+        @click="onClickDeleteBtn"
+        :disabled="!hasSelected"
+      >
+        <template #icon>
+          <DeleteSweepIcon
+            width="1.8rem"
+            height="1.8rem"
+            fill="currentColor"
+          />
+        </template>
+        Xóa phim
+      </a-button>
     </div>
 
     <div class="movie-table">
@@ -50,7 +68,10 @@
         }"
         bordered
         sticky
-        :row-selection="[]"
+        :row-selection="{
+          selectedRowKeys: selectedRowKeys,
+          onChange: onSelectChange
+        }"
       >
         <!-- :pagination="{ pageSize: pageSizeTable, onChange: onChangePage }" -->
         <!-- @change="onChangeTable" -->
@@ -124,10 +145,10 @@
                     Upload video
                   </el-dropdown-item>
                   <el-dropdown-item
-                    @click="onClickDeleteVideo(record)"
+                    @click="onClickDeleteMovie(record)"
                     class="menu-delete-video"
                   >
-                    Xóa video
+                    Xóa phim
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -588,7 +609,8 @@
 
 <script setup lang="ts">
 import PlusIcon from '@/assets/svgs/icons/plus.svg?component';
-import { onBeforeMount, reactive, ref } from 'vue';
+import DeleteSweepIcon from '@/assets/svgs/icons/delete-sweep.svg?component';
+import { onBeforeMount, reactive, ref, computed } from 'vue';
 import { viewFormatter } from '@/utils';
 import { useStore } from '@/stores';
 import type {
@@ -601,11 +623,12 @@ import { getImage, uploadImage, uploadArrayImage } from '@/services/image';
 import { getCountryByOriginalLanguage } from '@/services/country';
 import {
   CreateMovie,
-  getAllMovie,
+  GetAllMovie,
   UpdateVideo,
   UpdateVideoUpload,
-  DeleteVideo,
-  searchMovie
+  DeleteMovie,
+  DeleteMultipleMovie,
+  SearchMovie
 } from '@/services/movie';
 import type { MovieForm, genre } from '@/types';
 import { ElNotification, ElMessageBox } from 'element-plus';
@@ -658,7 +681,7 @@ const columns: TableColumnType[] = [
     width: 120
   },
   {
-    title: 'Ngaày phát haành',
+    title: 'Ngaày phát hành',
     dataIndex: 'release_date',
     sorter: true,
     width: 150
@@ -728,11 +751,13 @@ const loadingUploadVideo = ref<boolean>(false);
 const loadingChunkingVideo = ref<boolean>(false);
 const searchValue = ref<string>('');
 const socket = ref<Socket>();
+const selectedRowKeys = ref<string[] | number[]>([]);
+const hasSelected = computed(() => selectedRowKeys.value.length > 0);
 
 const getData = () => {
   loading.value = true;
 
-  getAllMovie(page.value, pageSize.value)
+  GetAllMovie('movie', page.value, pageSize.value)
     .then((response) => {
       dataMovie.value = response?.results;
       page.value = response.page;
@@ -1205,14 +1230,14 @@ const onSubmitFormEdit = () => {
     .finally(() => {});
 };
 
-const onClickDeleteVideo = (movie: any) => {
-  ElMessageBox.confirm('Bạn có chắc muốn xóa video này không?', {
+const onClickDeleteMovie = (movie: any) => {
+  ElMessageBox.confirm('Bạn có chắc muốn xóa phim này không?', {
     title: 'Thông báo!',
     confirmButtonText: 'Có',
     cancelButtonText: 'Không'
   })
     .then(() => {
-      DeleteVideo(movie.id)
+      DeleteMovie(movie.id)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
@@ -1236,8 +1261,6 @@ const onClickDeleteVideo = (movie: any) => {
           });
         })
         .finally(() => {
-          loadingAdd.value = false;
-          modalAddVisible.value = false;
           resetFeild();
           getData();
         });
@@ -1252,7 +1275,7 @@ const onSearch = (searchQuery: string) => {
 
   loading.value = true;
 
-  searchMovie(searchQuery.trim(), page.value, pageSize.value)
+  SearchMovie(searchQuery.trim(), page.value, pageSize.value)
     .then((response) => {
       dataMovie.value = response?.results;
       page.value = response.page;
@@ -1262,6 +1285,51 @@ const onSearch = (searchQuery: string) => {
     .catch((e) => {})
     .finally(() => {
       loading.value = false;
+    });
+};
+
+const onSelectChange = (selectedRowKeys1: string[] | number[]) => {
+  selectedRowKeys.value = selectedRowKeys1;
+};
+
+const onClickDeleteBtn = () => {
+  ElMessageBox.confirm('Bạn có chắc muốn xóa các phim này không?', {
+    title: 'Thông báo!',
+    confirmButtonText: 'Có',
+    cancelButtonText: 'Không'
+  })
+    .then(() => {
+      DeleteMultipleMovie(selectedRowKeys.value)
+        .then((response) => {
+          if (response?.success) {
+            ElNotification.success({
+              title: MESSAGE.STATUS.SUCCESS,
+              message: 'Xóa phim thành công!',
+              duration: MESSAGE.DURATION.DEFAULT
+            });
+          } else {
+            ElNotification.error({
+              title: MESSAGE.STATUS.FAILED,
+              message: 'Xóa phim thất bại!',
+              duration: MESSAGE.DURATION.DEFAULT
+            });
+          }
+        })
+        .catch((e) => {
+          ElNotification.error({
+            title: MESSAGE.STATUS.FAILED,
+            message: 'Xóa phim thất bại!',
+            duration: MESSAGE.DURATION.DEFAULT
+          });
+        })
+        .finally(() => {
+          selectedRowKeys.value = [];
+          resetFeild();
+          getData();
+        });
+    })
+    .catch(() => {
+      // catch error
     });
 };
 </script>

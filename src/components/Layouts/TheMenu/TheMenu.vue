@@ -23,9 +23,53 @@
       </template>
     </el-menu-item>
 
-    <el-menu-item index="/manage-movie">
+    <el-sub-menu
+      index="/discover/movie"
+      popperClass="sub-menu-popper"
+    >
+      <template #title>
+        <el-icon>
+          <VideoCamera
+            width="1.5rem"
+            height="1.5rem"
+            fill="currentColor"
+          />
+        </el-icon>
+        <span>Quản lý phim</span>
+      </template>
+
+      <el-menu-item index="/manage-movie">
+        <!-- <el-icon>
+          <VideoCamera
+            width="1.5rem"
+            height="1.5rem"
+            fill="currentColor"
+          />
+        </el-icon> -->
+
+        <template #title>
+          <RouterLink to="/manage-movie">Phim lẻ</RouterLink>
+        </template>
+      </el-menu-item>
+
+      <el-menu-item index="/manage-tv">
+        <!-- <el-icon>
+          <MovieReel
+            width="1.5rem"
+            height="1.5rem"
+            fill="currentColor"
+          />
+        </el-icon> -->
+
+        <template #title>
+          <RouterLink to="/manage-tv">Phim bộ</RouterLink>
+        </template>
+      </el-menu-item>
+    </el-sub-menu>
+
+    <el-menu-item index="/manage-genre">
       <el-icon>
-        <VideoCamera
+        <ListIcon
           width="1.5rem"
           height="1.5rem"
           fill="currentColor"
@@ -33,13 +77,13 @@
       </el-icon>
 
       <template #title>
-        <RouterLink to="/manage-movie">Quản lý Phim lẻ</RouterLink>
+        <RouterLink to="/manage-genre">Quản lý thể loại</RouterLink>
       </template>
     </el-menu-item>
 
-    <!-- <el-menu-item index="/manage-tv">
+    <el-menu-item index="/manage-year">
       <el-icon>
-        <MovieReel
+        <CalendarDays
           width="1.5rem"
           height="1.5rem"
           fill="currentColor"
@@ -47,9 +91,23 @@
       </el-icon>
 
       <template #title>
-        <RouterLink to="/manage-tv">Quản lý Phim bộ</RouterLink>
+        <RouterLink to="/manage-year">Quản lý năm</RouterLink>
       </template>
-    </el-menu-item> -->
+    </el-menu-item>
+
+    <el-menu-item index="/manage-year">
+      <el-icon>
+        <Globe
+          width="1.5rem"
+          height="1.5rem"
+          fill="currentColor"
+        />
+      </el-icon>
+
+      <template #title>
+        <RouterLink to="/manage-year">Quản lý quốc gia</RouterLink>
+      </template>
+    </el-menu-item>
   </el-menu>
 </template>
 

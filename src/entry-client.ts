@@ -9,7 +9,7 @@ import 'swiper/css';
 import '@/assets/style/fonts/GoogleFonts.css';
 import '@/assets/style/globalStyle/overwrite/antdv/antdv.scss';
 import '@/assets/style/globalStyle/overwrite/element/element.scss';
-import './globalStyle.scss';
+import './main.scss';
 import { createApp } from './mainSSR';
 import { loadUser } from './middleware/loadUser';
 

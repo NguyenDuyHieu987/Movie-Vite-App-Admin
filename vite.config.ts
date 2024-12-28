@@ -93,9 +93,11 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
+        api: 'modern-compiler',
+        silenceDeprecations: ['import']
         // additionalData: `@import "~/assets/style/globalStyle/_variables.scss";`
-        additionalData:
-          '@use "@/assets/style/globalStyle/_variables.scss" as *;'
+        // additionalData:
+        //   '@use "@/assets/style/globalStyle/_variables.scss" as *;'
       }
     },
     transformer: 'postcss',

@@ -36,7 +36,6 @@ declare module 'vue' {
     Button: typeof import('./src/components/Button/Button.vue')['default']
     CloseBtn: typeof import('./src/components/Button/CloseBtn/CloseBtn.vue')['default']
     ControlPage: typeof import('./src/components/ControlPage/ControlPage.vue')['default']
-    copy: typeof import('./src/components/SliderGroup/SliderGroupBackground/SliderGroupBackground copy.vue')['default']
     DashBoardTable: typeof import('./src/components/DashBoardTable/DashBoardTable.vue')['default']
     Drawer: typeof import('./src/components/Layouts/Drawer/Drawer.vue')['default']
     DropdownAccount: typeof import('./src/components/Layouts/Header/DropdownAccount/DropdownAccount.vue')['default']

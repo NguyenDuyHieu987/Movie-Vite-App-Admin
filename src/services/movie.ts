@@ -3,15 +3,20 @@ import { makeRequest } from './makeRequest';
 
 const PREFIX_ROUTE = 'movie';
 
-export function getAllMovie(page: number = 1, limit: number = 20) {
+export function GetAllMovie(
+  media_type: string,
+  page: number = 1,
+  limit: number = 20
+) {
   return makeRequest(`/${PREFIX_ROUTE}/get-all`, {
+    media_type,
     page,
     limit,
     no_cache: 1
   });
 }
 
-export function searchMovie(
+export function SearchMovie(
   query: string,
   page: number = 1,
   limit: number = 20
@@ -67,6 +72,7 @@ export function UpdateVideoUpload(
   movieId: number | string,
   videoData: {
     video_path: string;
+    duration: number;
   }
 ) {
   return makeRequest(`/${PREFIX_ROUTE}/update-videoupload/${movieId}`, null, {
@@ -75,8 +81,15 @@ export function UpdateVideoUpload(
   });
 }
 
-export function DeleteVideo(movieId: number | string) {
+export function DeleteMovie(movieId: number | string) {
   return makeRequest(`/${PREFIX_ROUTE}/delete/${movieId}`, null, {
     method: 'DELETE'
+  });
+}
+
+export function DeleteMultipleMovie(listMovieId: string[] | number[]) {
+  return makeRequest(`/${PREFIX_ROUTE}/delete-multiple`, null, {
+    method: 'DELETE',
+    data: { listMovieId }
   });
 }
