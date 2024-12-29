@@ -116,6 +116,21 @@ function fromNow(
   return fromNowStr;
 }
 
+function convertSeconds(seconds: number) {
+  if (seconds < 60) {
+    return `${seconds} giây`;
+  } else if (seconds < 3600) {
+    const minutes = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${minutes} phút ${secs > 0 ? secs + ' giây' : ''}`;
+  } else {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${hours} giờ ${minutes > 0 ? minutes + ' phút ' : ''}${secs > 0 ? secs + ' giây' : ''}`;
+  }
+}
+
 export const dateTimeFormater = () => {
-  return { format, fromNow };
+  return { format, fromNow, convertSeconds };
 };

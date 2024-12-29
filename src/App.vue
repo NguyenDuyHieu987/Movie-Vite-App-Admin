@@ -66,36 +66,36 @@
       <NetworkChecker />
 
       <!-- :is="route.meta?.layout?.component" -->
-      <KeepAlive :exclude="[]">
-        <component :is="route.meta?.layout?.component">
-          <RouterView v-slot="{ Component }">
-            <KeepAlive
-              :max="10"
-              :exclude="notCacheList"
-            >
-              <component :is="Component" />
-            </KeepAlive>
+      <!-- <KeepAlive :exclude="[]"> -->
+      <component :is="route.meta?.layout?.component">
+        <RouterView v-slot="{ Component }">
+          <KeepAlive
+            :max="10"
+            :exclude="notCacheList"
+          >
+            <component :is="Component" />
+          </KeepAlive>
 
-            <el-backtop
-              class="app-back-top click-active"
-              :visibility-height="600"
-              @click="onBackTop"
+          <el-backtop
+            class="app-back-top click-active"
+            :visibility-height="600"
+            @click="onBackTop"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="2.5rem"
+              height="2.5rem"
+              viewBox="0 0 24 24"
+              fill="currentColor"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="2.5rem"
-                height="2.5rem"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path
-                  d="m4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8l-8 8z"
-                />
-              </svg>
-            </el-backtop>
-          </RouterView>
-        </component>
-      </KeepAlive>
+              <path
+                d="m4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8l-8 8z"
+              />
+            </svg>
+          </el-backtop>
+        </RouterView>
+      </component>
+      <!-- </KeepAlive> -->
     </div>
     <!-- </a-extract-style> -->
   </a-app>
@@ -119,14 +119,7 @@ import { useAuthStore } from '@/stores';
 //   }
 // });
 
-let notCacheList = ref<string[]>([
-  'follow',
-  'history',
-  'info-movie',
-  'play-movie',
-  'info-tv',
-  'play-tv'
-]);
+let notCacheList = ref<string[]>(['manage-tv-episodes']);
 
 const authStore = useAuthStore();
 const route = useRoute();

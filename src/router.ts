@@ -9,6 +9,7 @@ import DashBoard from './pages/DashBoard/DashBoard.vue';
 
 const routes = [
   {
+    name: 'home',
     path: '/',
     component: () => import('./pages/DashBoard/DashBoard.vue'),
     meta: {
@@ -17,6 +18,7 @@ const routes = [
     }
   },
   {
+    name: 'manage-movie',
     path: '/manage-movie',
     component: () => import('./pages/ManageMovie/ManageMovie.vue'),
     meta: {
@@ -26,17 +28,29 @@ const routes = [
   },
   {
     path: '/manage-tv',
-    component: () => import('./pages/ManageTV/ManageTV.vue'),
-    meta: {
-      name: 'manage-tv',
-      layout: { name: 'default', component: DefaultLayout }
-    }
+    children: [
+      {
+        name: 'manage-tv',
+        path: '',
+        component: () => import('./pages/ManageTV/ManageTV.vue'),
+        meta: {
+          name: 'manage-tv',
+          layout: { name: 'default', component: DefaultLayout }
+        }
+      },
+      {
+        name: 'manage-tv-episodes',
+        path: 'episodes/:id',
+        component: () => import('./pages/ManageTV/ListEpisode/ListEpisode.vue'),
+        meta: {
+          name: 'manage-tv-episodes',
+          layout: { name: 'default', component: DefaultLayout }
+        }
+      }
+    ]
   },
-  // {
-  //   path: '/search',
-  //   component: () => import('./pages/Search/Search.vue')
-  // },
   {
+    name: 'login',
     path: '/login',
     component: () => import('./pages/Login/Login.vue'),
     meta: {

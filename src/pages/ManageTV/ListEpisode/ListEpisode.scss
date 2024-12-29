@@ -1,0 +1,44 @@
+.list-episode-container {
+  .header-table {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h2 {
+      margin-right: 20px;
+    }
+
+    .add-btn {
+      margin-left: auto;
+    }
+  }
+
+  .table-tools {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
+    .search-episode {
+      width: 40%;
+      min-width: 300px;
+      max-width: 500px;
+    }
+  }
+
+  .episode-table {
+  }
+}
+
+.add-episode-dialog {
+  .still-image {
+    width: 150px;
+    margin-top: 10px;
+  }
+}
+
+.upload-video-dialog {
+  .progress-upload {
+    margin-top: 10px;
+  }
+}

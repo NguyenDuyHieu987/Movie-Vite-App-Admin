@@ -218,6 +218,7 @@ export declare type MovieForm = {
   release_date: string;
   revenue: number;
   runtime: number;
+  duration: number;
   spoken_languages: string[];
   status: string;
   tagline: string;
@@ -227,6 +228,31 @@ export declare type MovieForm = {
   vote_count: number;
   dominant_backdrop_color: string[];
   dominant_poster_color: string[];
+  views: number;
+  vip: number | string;
+  created_at: Date;
+  updated_at: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+};
+
+export declare type EpisodeForm = {
+  id: string;
+  movie_id: string;
+  season_id: string;
+  series_id: string;
+  name: string;
+  overview: string;
+  episode_type: string;
+  episode_number: number;
+  still_path: string;
+  video_path: string;
+  air_date: string;
+  runtime: number;
+  duration: number;
+  vote_average: number;
+  vote_count: number;
+  dominant_still_color: string[];
   views: number;
   vip: number | string;
   created_at: Date;

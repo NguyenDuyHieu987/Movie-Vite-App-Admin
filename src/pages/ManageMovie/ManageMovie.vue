@@ -53,7 +53,7 @@
 
     <div class="movie-table">
       <a-table
-        class="ant-table-striped"
+        class="ant-table-striped table-app-bg-header"
         :row-class-name="
           (_record: any, index: number) =>
             index % 2 === 1 ? 'table-striped' : null
@@ -85,8 +85,14 @@
           <template v-if="column.dataIndex === 'genres'">
             {{ Array?.from(value, (x: genre) => x.name).join(', ') }}
           </template>
+          <template v-if="column.dataIndex === 'runtime'">
+            {{ utils.dateTimeFormater.convertSeconds(value) }}
+          </template>
           <template v-if="column.dataIndex === 'views'">
             {{ value.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, '.') }}
+          </template>
+          <template v-if="column.dataIndex === 'release_date'">
+            {{ dayjs(value).format('DD/MM/YYYY') }}
           </template>
           <template v-if="column.dataIndex === 'vip'">
             <a-tag
@@ -137,7 +143,6 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <!-- <el-dropdown-item>Chi tiết</el-dropdown-item> -->
                   <el-dropdown-item @click="onClickEditMovie(record)">
                     Chỉnh sửa
                   </el-dropdown-item>
@@ -460,6 +465,7 @@
               >
                 <div class="upload-image">
                   <input
+                    ref="inputPosterFile"
                     type="file"
                     accept="image/*"
                     @change="(e) => handleChangeUploadImage(e, 'poster')"
@@ -486,6 +492,7 @@
               >
                 <div class="upload-image">
                   <input
+                    ref="inputBackdropFile"
                     type="file"
                     accept="image/*"
                     @change="(e) => handleChangeUploadImage(e, 'backdrop')"
@@ -611,7 +618,7 @@
 import PlusIcon from '@/assets/svgs/icons/plus.svg?component';
 import DeleteSweepIcon from '@/assets/svgs/icons/delete-sweep.svg?component';
 import { onBeforeMount, reactive, ref, computed } from 'vue';
-import { viewFormatter } from '@/utils';
+import { useUtils, viewFormatter } from '@/utils';
 import { useStore } from '@/stores';
 import type {
   TableColumnType,
@@ -641,7 +648,10 @@ import dayjs from 'dayjs';
 
 const formRef = ref<FormInstance>();
 const formVidRef = ref<FormInstance>();
+const inputPosterFile = ref<HTMLInputElement | null>();
+const inputBackdropFile = ref<HTMLInputElement | null>();
 const inputVideoFile = ref<HTMLInputElement | null>();
+const utils = useUtils();
 const store = useStore();
 const dataMovie = ref<any[]>([]);
 const page = ref<number>(1);
@@ -655,18 +665,20 @@ const columns: TableColumnType[] = [
     title: 'STT',
     dataIndex: 'no',
     sorter: true,
-    width: '70px'
+    width: '70px',
+    fixed: 'left'
   },
-  {
-    title: 'ID',
-    dataIndex: 'id',
-    width: 200
-  },
+  // {
+  //   title: 'ID',
+  //   dataIndex: 'id',
+  //   width: 200,
+  // },
   {
     title: 'Tên phim',
     dataIndex: 'name',
     width: 200,
-    sorter: true
+    sorter: true,
+    fixed: 'left'
   },
   {
     title: 'Tên phim gốc',
@@ -681,16 +693,22 @@ const columns: TableColumnType[] = [
     width: 120
   },
   {
-    title: 'Ngaày phát hành',
+    title: 'Ngày phát hành',
     dataIndex: 'release_date',
     sorter: true,
     width: 150
   },
   {
-    title: 'Thể laại',
+    title: 'Thể loại',
     dataIndex: 'genres',
     sorter: true,
     width: 200
+  },
+  {
+    title: 'Thời lượng',
+    dataIndex: 'runtime',
+    sorter: true,
+    width: 150
   },
   {
     title: 'Lượt xem',
@@ -713,13 +731,15 @@ const columns: TableColumnType[] = [
   {
     title: 'Hành động',
     dataIndex: 'action',
-    width: 200
+    width: 150,
+    fixed: 'right'
   }
 ];
 const modalAddVisible = ref<boolean>(false);
 const modalUploadVideoVisible = ref<boolean>(false);
 const formAddMovie = reactive({
   id: '',
+  media_type: 'movie',
   name: '',
   original_name: '',
   genres: [],
@@ -761,7 +781,7 @@ const getData = () => {
     .then((response) => {
       dataMovie.value = response?.results;
       page.value = response.page;
-      pageSize.value = response.page_size;
+      // pageSize.value = response.page_size;
       total.value = response.total;
     })
     .catch((e) => {})
@@ -816,9 +836,11 @@ const handleChangeUploadImage = async (e: any, type: string) => {
     return false;
   }
 
-  formAddMovie[`${type}_path`] = URL.createObjectURL(rawFile!);
-  // formAddMovie[`${type}_path`] = await getBase64(rawFile);
-  formAddMovie[`${type}_file`] = rawFile;
+  if (type == 'poster' || type == 'backdrop') {
+    formAddMovie[`${type}_path`] = URL.createObjectURL(rawFile!);
+    // formAddMovie[`${type}_path`] = await getBase64(rawFile);
+    formAddMovie[`${type}_file`] = rawFile;
+  }
 
   return true;
 };
@@ -870,13 +892,14 @@ const onSubmitFormAdd = () => {
         });
         return;
       }
+      values.media_type = formAddMovie.media_type;
       values.poster_path = filePoster.file.filename;
       values.dominant_poster_color = filePoster.file.dominant_poster_color;
       values.backdrop_path = fileBackdrop.file.filename;
       values.dominant_backdrop_color =
         fileBackdrop.file.dominant_backdrop_color;
-      values.genres = values.genres.map((genre) => JSON.parse(genre));
-      CreateMovie(values)
+      values.genres = values.genres.map((genre: string) => JSON.parse(genre));
+      CreateMovie(values as MovieForm)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
@@ -936,7 +959,7 @@ onBeforeMount(() => {
 
 const onClickUploadVideo = (movie: any) => {
   if (inputVideoFile.value) {
-    inputVideoFile.value.value = null;
+    inputVideoFile.value.value = '';
   }
   formUploadVideo.movieId = movie.id;
   formUploadVideo.type = movie.media_type == 'movie' ? 'feature' : 'television';
@@ -963,7 +986,7 @@ const onUploadVideo = () => {
         formUploadVideo.type,
         values.file_upload,
         socket.value!,
-        (e) => {
+        (e: any) => {
           if (e.lengthComputable) {
             const percentComplete = Math.round((e.loaded / e.total) * 100);
             formUploadVideo.percent_upload = +percentComplete.toFixed(2);
@@ -1101,6 +1124,12 @@ const resetFeild = () => {
   formAddMovie.poster_file = null;
   formAddMovie.backdrop_path = '';
   formAddMovie.backdrop_file = null;
+  if (inputPosterFile.value) {
+    inputPosterFile.value!.value = '';
+  }
+  if (inputBackdropFile.value) {
+    inputBackdropFile.value!.value = '';
+  }
 };
 
 const onClickEditMovie = (movie: any) => {
@@ -1111,7 +1140,7 @@ const onClickEditMovie = (movie: any) => {
   formAddMovie.id = movie.id;
   formAddMovie.name = movie.name;
   formAddMovie.original_name = movie.original_name;
-  formAddMovie.genres = movie.genres.map((item) => {
+  formAddMovie.genres = movie.genres.map((item: genre) => {
     const genre = store.allGenres.find((g) => g.id == item.id)!;
     return JSON.stringify({
       id: genre.id,
@@ -1122,6 +1151,7 @@ const onClickEditMovie = (movie: any) => {
   });
 
   formAddMovie.original_language = movie.original_language;
+  // formAddMovie.release_date = dayjs(movie.release_date).format('YYYY-MM-DD');
   formAddMovie.release_date = dayjs(movie.release_date, 'YYYY-MM-DD');
   formAddMovie.overview = movie.overview;
   formAddMovie.status = movie.status;
@@ -1192,9 +1222,11 @@ const onSubmitFormEdit = () => {
           currentEditMovie.value?.dominant_backdrop_color;
       }
 
-      values.genres = values.genres.map((genre) => JSON.parse(genre));
+      values.genres = values.genres.map((genre: string) => JSON.parse(genre));
       values.id = formAddMovie.id;
-      UpdateVideo(values)
+      values.release_date = formAddMovie.release_date.format('YYYY-MM-DD');
+
+      UpdateVideo(values as MovieForm)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
@@ -1275,11 +1307,11 @@ const onSearch = (searchQuery: string) => {
 
   loading.value = true;
 
-  SearchMovie(searchQuery.trim(), page.value, pageSize.value)
+  SearchMovie('movie', searchQuery.trim(), page.value, pageSize.value)
     .then((response) => {
       dataMovie.value = response?.results;
       page.value = response.page;
-      pageSize.value = response.page_size;
+      // pageSize.value = response.page_size;
       total.value = response.total;
     })
     .catch((e) => {})

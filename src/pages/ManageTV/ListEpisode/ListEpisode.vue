@@ -1,7 +1,7 @@
 <template>
-  <div class="manage-movie-container">
+  <div class="list-episode-container">
     <div class="header-table">
-      <h2>Danh sách Phim bộ</h2>
+      <h2>Danh sách tập</h2>
 
       <!-- <RouterLink :to="{ path: '/addmovie' }"> -->
 
@@ -17,7 +17,7 @@
             fill="currentColor"
           />
         </template>
-        Thêm phim
+        Thêm tập
       </a-button>
 
       <!-- </RouterLink> -->
@@ -25,7 +25,7 @@
 
     <div class="table-tools">
       <a-input-search
-        class="search-movie"
+        class="search-episode"
         v-model:value="searchValue"
         placeholder="Nhập têm phim để tìm kiếm..."
         enter-button="Tìm kiếm"
@@ -47,18 +47,18 @@
             fill="currentColor"
           />
         </template>
-        Xóa phim
+        Xóa tập
       </a-button>
     </div>
 
-    <div class="movie-table">
+    <div class="episode-table">
       <a-table
         class="ant-table-striped"
         :row-class-name="
           (_record: any, index: number) =>
             index % 2 === 1 ? 'table-striped' : null
         "
-        :data-source="dataMovie"
+        :data-source="dataEpisodes"
         :columns="columns"
         :row-key="(record: any) => record.id"
         :loading="loading"
@@ -79,23 +79,17 @@
           <template v-if="column.dataIndex === 'no'">
             {{ index + 1 }}
           </template>
-          <template v-if="column.dataIndex === 'original_language'">
-            {{ getCountryByOriginalLanguage(value, store.allCountries)?.name }}
+          <template v-if="column.dataIndex === 'episode_type'">
+            {{ value }}
           </template>
-          <template v-if="column.dataIndex === 'genres'">
-            {{ Array?.from(value, (x: genre) => x.name).join(', ') }}
+          <template v-if="column.dataIndex === 'air_date'">
+            {{ dayjs(value).format('DD/MM/YYYY') }}
           </template>
           <template v-if="column.dataIndex === 'views'">
             {{ value.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, '.') }}
           </template>
-          <template v-if="column.dataIndex === 'number_of_episodes'">
-            {{ value + ' tập' }}
-          </template>
-          <template v-if="column.dataIndex === 'first_air_date'">
-            {{ dayjs(value).format('DD/MM/YYYY') }}
-          </template>
-          <template v-if="column.dataIndex === 'last_air_date'">
-            {{ dayjs(value).format('DD/MM/YYYY') }}
+          <template v-if="column.dataIndex === 'runtime'">
+            {{ utils.dateTimeFormater.convertSeconds(value) }}
           </template>
           <template v-if="column.dataIndex === 'vip'">
             <a-tag
@@ -146,28 +140,17 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item
-                    @click="
-                      () =>
-                        router.push({
-                          name: 'manage-tv-episodes',
-                          params: { id: record.id }
-                        })
-                    "
-                  >
-                    Danh sách tập
-                  </el-dropdown-item>
-                  <el-dropdown-item @click="onClickEditMovie(record)">
+                  <el-dropdown-item @click="onClickEditEpisode(record)">
                     Chỉnh sửa
                   </el-dropdown-item>
-                  <!-- <el-dropdown-item @click="onClickUploadVideo(record)">
+                  <el-dropdown-item @click="onClickUploadVideo(record)">
                     Upload video
-                  </el-dropdown-item> -->
+                  </el-dropdown-item>
                   <el-dropdown-item
-                    @click="onClickDeleteMovie(record)"
+                    @click="onClickDeleteEpisode(record)"
                     class="menu-delete-video"
                   >
-                    Xóa phim
+                    Xóa tập
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -177,7 +160,7 @@
       </a-table>
 
       <el-dialog
-        class="add-movie-dialog"
+        class="add-episode-dialog"
         v-model="modalAddVisible"
         :title="modalAddTitle"
         align-center
@@ -186,9 +169,9 @@
         <!-- width="500" -->
         <a-form
           ref="formRef"
-          name="movie-form"
-          class="movie-form"
-          :model="formAddMovie"
+          name="episode-form"
+          class="episode-form"
+          :model="formAddEpisode"
           hideRequiredMark
         >
           <!-- @finish="handleFinish" -->
@@ -196,19 +179,19 @@
           <a-row :gutter="16">
             <a-col :span="12">
               <a-form-item
-                label="Tên phim"
+                label="Tên tập"
                 name="name"
                 :rules="[
                   {
                     required: true,
-                    message: 'Vui lòng nhập tên phim!',
+                    message: 'Vui lòng nhập tên tập!',
                     trigger: ['change', 'blur']
                   }
                 ]"
               >
                 <a-input
-                  v-model:value="formAddMovie.name"
-                  placeholder="Tên phim..."
+                  v-model:value="formAddEpisode.name"
+                  placeholder="Tên tập..."
                   allow-clear
                 >
                 </a-input>
@@ -216,179 +199,76 @@
             </a-col>
             <a-col :span="12">
               <a-form-item
-                label="Tên phim gốc"
-                name="original_name"
+                label="Loại tập"
+                name="episode_type"
                 :rules="[
                   {
                     required: true,
-                    message: 'Vui lòng nhập tên phim gốc!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-input
-                  v-model:value="formAddMovie.original_name"
-                  placeholder="Tên phim gốc..."
-                  allow-clear
-                >
-                </a-input>
-              </a-form-item>
-            </a-col>
-          </a-row>
-
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Thể loại"
-                name="genres"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập thể loaại!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <!-- <el-select
-                  v-model="formAddMovie.genres"
-                  multiple
-                  filterable
-                  clearable
-                  :allow-create="false"
-                  default-first-option
-                  :reserve-keyword="false"
-                  placeholder="Thể loại..."
-                  size="large"
-                >
-                  <el-option
-                    v-for="(item, index) in store.allGenres"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.name"
-                  />
-                </el-select> -->
-                <a-select
-                  v-model:value="formAddMovie.genres"
-                  mode="multiple"
-                  placeholder="Thể loại..."
-                  :options="
-                    store.allGenres.map((item: any) => ({
-                      value: JSON.stringify({
-                        id: item.id,
-                        name: item.name,
-                        name_vietsub: item.name_vietsub,
-                        short_name: item.short_name
-                      }),
-                      label: item.name
-                    }))
-                  "
-                  allowClear
-                  size="large"
-                ></a-select>
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
-              <a-form-item
-                label="Ngày bắt đầu phát hành"
-                name="first_air_date"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập ngày bắt đầu phát hành!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-date-picker
-                  v-model:value="formAddMovie.first_air_date"
-                  placeholder="Ngày bắt đầu phát hành..."
-                  style="width: 100%"
-                  allowClear
-                  size="large"
-                />
-              </a-form-item>
-            </a-col>
-          </a-row>
-
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Ngày phát hành cuối"
-                name="last_air_date"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập ngày phát hành cuối!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-date-picker
-                  v-model:value="formAddMovie.last_air_date"
-                  placeholder="Ngày phát hành cuối..."
-                  style="width: 100%"
-                  allowClear
-                  size="large"
-                />
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
-              <a-form-item
-                label="Quốc gia"
-                name="original_language"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập quốc gia!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-select
-                  v-model:value="formAddMovie.original_language"
-                  placeholder="Quốc gia.."
-                  :options="
-                    store.allCountries.map((item: any) => ({
-                      value: item.iso_639_1,
-                      label: item.name
-                    }))
-                  "
-                  allowClear
-                  size="large"
-                ></a-select>
-              </a-form-item>
-            </a-col>
-          </a-row>
-
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Trạng thái"
-                name="status"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập trạng thái!',
+                    message: 'Vui lòng nhập loại tập!',
                     trigger: ['change', 'blur']
                   }
                 ]"
               >
                 <!-- <a-input
-                  v-model:value="formAddMovie.status"
-                  placeholder="Trạng thái..."
+                  v-model:value="formAddEpisode.episode_type"
+                  placeholder="Loại tập..."
                   allow-clear
                 >
                 </a-input> -->
-
-                <a-select v-model:value="formAddMovie.status">
-                  <a-select-option value="Released">Released</a-select-option>
-                  <a-select-option value="Post Production">
-                    Post Production
-                  </a-select-option>
-                  <a-select-option value="In Production">
-                    In Production
-                  </a-select-option>
+                <a-select v-model:value="formAddEpisode.episode_type">
+                  <a-select-option value="standard">Tiêu chuẩn</a-select-option>
                 </a-select>
+              </a-form-item>
+            </a-col>
+          </a-row>
+
+          <a-row :gutter="16">
+            <a-col :span="12">
+              <a-form-item
+                label="Tập"
+                name="episode_number"
+                :rules="[
+                  {
+                    required: true,
+                    message: 'Vui lòng nhập tập',
+                    trigger: ['change', 'blur']
+                  }
+                ]"
+              >
+                <!-- <a-input-number
+                  v-model:value="formAddEpisode.episode_number"
+                  :min="1"
+                  :step="1"
+                  style="width: 100%"
+                /> -->
+                <el-input-number
+                  v-model="formAddEpisode.episode_number"
+                  :min="1"
+                  :step="1"
+                  size="large"
+                  style="width: 100%"
+                />
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item
+                label="Ngày phát hành"
+                name="air_date"
+                :rules="[
+                  {
+                    required: true,
+                    message: 'Vui lòng nhập ngày phát hành!',
+                    trigger: ['change', 'blur']
+                  }
+                ]"
+              >
+                <a-date-picker
+                  v-model:value="formAddEpisode.air_date"
+                  placeholder="Ngày phát hành..."
+                  style="width: 100%"
+                  allowClear
+                  size="large"
+                />
               </a-form-item>
             </a-col>
           </a-row>
@@ -407,7 +287,7 @@
                 ]"
               >
                 <a-textarea
-                  v-model:value="formAddMovie.overview"
+                  v-model:value="formAddEpisode.overview"
                   placeholder="Tóm tắt..."
                   allow-clear
                   :auto-size="{ minRows: 3, maxRows: 6 }"
@@ -418,55 +298,7 @@
           </a-row>
 
           <a-row :gutter="16">
-            <a-col :span="8">
-              <a-form-item
-                label="Kinh phí sản xuất"
-                name="budget"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập Kinh phí sản xuất',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <!-- <a-input-number
-                  v-model:value="formAddMovie.budget"
-                  :min="0"
-                  :step="1000"
-                  style="width: 100%"
-                /> -->
-                <el-input-number
-                  v-model="formAddMovie.budget"
-                  :min="0"
-                  :step="1000"
-                  size="large"
-                  style="width: 100%"
-                />
-              </a-form-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-item
-                label="Doanh thu"
-                name="revenue"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập doanh thu!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <el-input-number
-                  v-model="formAddMovie.revenue"
-                  :min="0"
-                  :step="1000"
-                  size="large"
-                  style="width: 100%"
-                />
-              </a-form-item>
-            </a-col>
-            <a-col :span="8">
+            <a-col :span="12">
               <a-form-item
                 label="Vip"
                 name="vip"
@@ -478,7 +310,7 @@
                   }
                 ]"
               >
-                <a-select v-model:value="formAddMovie.vip">
+                <a-select v-model:value="formAddEpisode.vip">
                   <a-select-option value="0">Free</a-select-option>
                   <a-select-option value="1">1</a-select-option>
                   <a-select-option value="2">2</a-select-option>
@@ -486,63 +318,34 @@
                 </a-select>
               </a-form-item>
             </a-col>
-          </a-row>
-
-          <a-row :gutter="16">
             <a-col :span="12">
               <a-form-item
-                label="Poster"
-                name="poster_path"
+                label="Ảnh tĩnh"
+                name="still_path"
                 :rules="[
                   {
                     required: true,
-                    message: 'Vui lòng chọn ảnh Poster!',
+                    message: 'Vui lòng chọn ảnh tĩnh!',
                     trigger: ['change', 'blur']
                   }
                 ]"
               >
                 <div class="upload-image">
                   <input
-                    ref="inputPosterFile"
+                    ref="inputStillFile"
                     type="file"
                     accept="image/*"
-                    @change="(e) => handleChangeUploadImage(e, 'poster')"
+                    @change="(e) => handleChangeUploadImage(e, 'still')"
                   />
                   <img
-                    v-if="formAddMovie.poster_path"
-                    :src="formAddMovie.poster_path"
-                    class="poster-image"
+                    v-if="formAddEpisode.still_path"
+                    :src="formAddEpisode.still_path"
+                    class="still-image"
                   />
                 </div>
               </a-form-item>
             </a-col>
-            <a-col :span="12">
-              <a-form-item
-                label="Backdrop"
-                name="backdrop_path"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng chọn ảnh backdrop!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <div class="upload-image">
-                  <input
-                    ref="inputBackdropFile"
-                    type="file"
-                    accept="image/*"
-                    @change="(e) => handleChangeUploadImage(e, 'backdrop')"
-                  />
-                  <img
-                    v-if="formAddMovie.backdrop_path"
-                    :src="formAddMovie.backdrop_path"
-                    class="backdrop-image"
-                  />
-                </div>
-              </a-form-item>
-            </a-col>
+            <a-col :span="12"> </a-col>
           </a-row>
         </a-form>
         <template #footer>
@@ -656,7 +459,7 @@
 import PlusIcon from '@/assets/svgs/icons/plus.svg?component';
 import DeleteSweepIcon from '@/assets/svgs/icons/delete-sweep.svg?component';
 import { onBeforeMount, reactive, ref, computed } from 'vue';
-import { viewFormatter } from '@/utils';
+import { useUtils, viewFormatter } from '@/utils';
 import { useStore } from '@/stores';
 import type {
   TableColumnType,
@@ -666,16 +469,17 @@ import type {
 } from 'ant-design-vue';
 import { getImage, uploadImage, uploadArrayImage } from '@/services/image';
 import { getCountryByOriginalLanguage } from '@/services/country';
+import { getMovieByType_Id } from '@/services/movie';
 import {
-  CreateMovie,
-  GetAllMovie,
+  getListEpisode,
+  CreateEpisode,
   UpdateVideo,
   UpdateVideoUpload,
-  DeleteMovie,
-  DeleteMultipleMovie,
-  SearchMovie
-} from '@/services/movie';
-import type { MovieForm, genre } from '@/types';
+  DeleteEpisode,
+  DeleteMultipleEpisode,
+  SearchEpisode
+} from '@/services/episode';
+import type { EpisodeForm, genre } from '@/types';
 import { ElNotification, ElMessageBox } from 'element-plus';
 import { ArrowDown } from '@element-plus/icons-vue';
 import type { UploadProps as ElUploadProps } from 'element-plus';
@@ -683,17 +487,18 @@ import { MESSAGE } from '@/common';
 import { uploadVideo } from '@/services/video';
 import { Socket, io } from 'socket.io-client';
 import dayjs from 'dayjs';
-import { round } from 'lodash';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const formRef = ref<FormInstance>();
 const formVidRef = ref<FormInstance>();
-const inputPosterFile = ref<HTMLInputElement | null>();
-const inputBackdropFile = ref<HTMLInputElement | null>();
+const inputStillFile = ref<HTMLInputElement | null>();
 const inputVideoFile = ref<HTMLInputElement | null>();
+const utils = useUtils();
 const router = useRouter();
+const route = useRoute();
 const store = useStore();
-const dataMovie = ref<any[]>([]);
+const dataEpisodes = ref<any[]>([]);
+const dataMovie = ref<any>();
 const page = ref<number>(1);
 const pageSizeTable = ref<number>(20);
 const pageSize = ref<number>(-1);
@@ -714,47 +519,29 @@ const columns: TableColumnType[] = [
   //   width: 200
   // },
   {
-    title: 'Tên phim',
+    title: 'Tên tập',
     dataIndex: 'name',
     width: 200,
     sorter: true,
     fixed: 'left'
   },
   {
-    title: 'Tên phim gốc',
-    dataIndex: 'original_name',
+    title: 'Tập',
+    dataIndex: 'episode_number',
+    width: 100,
+    sorter: true
+  },
+  {
+    title: 'Loại tập',
+    dataIndex: 'episode_type',
     width: 200,
     sorter: true
   },
   {
-    title: 'Quốc gia',
-    dataIndex: 'original_language',
-    sorter: true,
-    width: 120
-  },
-  {
-    title: 'Ngaày phát bắt đầu hành',
-    dataIndex: 'first_air_date',
+    title: 'Ngaày phát hành',
+    dataIndex: 'air_date',
     sorter: true,
     width: 150
-  },
-  {
-    title: 'Ngaày phát hành cuối',
-    dataIndex: 'last_air_date',
-    sorter: true,
-    width: 150
-  },
-  {
-    title: 'Thể loại',
-    dataIndex: 'genres',
-    sorter: true,
-    width: 200
-  },
-  {
-    title: 'Số tập',
-    dataIndex: 'number_of_episodes',
-    sorter: true,
-    width: 100
   },
   {
     title: 'Lượt xem',
@@ -763,10 +550,10 @@ const columns: TableColumnType[] = [
     width: 150
   },
   {
-    title: 'Trạng thái',
-    dataIndex: 'status',
+    title: 'Thời lượng',
+    dataIndex: 'runtime',
     sorter: true,
-    width: 200
+    width: 150
   },
   {
     title: 'Vip',
@@ -783,36 +570,29 @@ const columns: TableColumnType[] = [
 ];
 const modalAddVisible = ref<boolean>(false);
 const modalUploadVideoVisible = ref<boolean>(false);
-const formAddMovie = reactive({
+const formAddEpisode = reactive({
   id: '',
-  media_type: 'tv',
+  season_id: '',
+  series_id: '',
   name: '',
-  original_name: '',
-  number_of_episodes: 0,
-  genres: [],
-  original_language: null,
-  first_air_date: '',
-  last_air_date: '',
+  episode_type: 'standard',
+  episode_number: 1,
+  air_date: '',
   overview: '',
-  status: 'Released',
-  budget: 0,
-  revenue: 0,
   vip: '0',
-  poster_path: '',
-  poster_file: null,
-  backdrop_path: '',
-  backdrop_file: null
+  still_path: '',
+  still_file: null
 });
 const formUploadVideo = reactive({
-  movieId: '',
+  episodeId: '',
   type: '',
   file_upload: null,
   percent_upload: 0,
   percent_chunking: 0
 });
-const modalAddTitle = ref<string>('Thêm mới phim');
+const modalAddTitle = ref<string>('Thêm mới tập');
 const isEdit = ref<boolean>(false);
-const currentEditMovie = ref<MovieForm>();
+const currentEditMovie = ref<EpisodeForm>();
 const loadingAdd = ref<boolean>(false);
 const disabledAdd = ref<boolean>(true);
 const loadingUploadVideo = ref<boolean>(false);
@@ -821,16 +601,22 @@ const searchValue = ref<string>('');
 const socket = ref<Socket>();
 const selectedRowKeys = ref<string[] | number[]>([]);
 const hasSelected = computed(() => selectedRowKeys.value.length > 0);
+const movieId = computed<string>((): string => route.params?.id as string);
 
-const getData = () => {
+const getData = async () => {
   loading.value = true;
 
-  GetAllMovie('tv', page.value, pageSize.value)
+  getListEpisode(
+    dataMovie.value.id,
+    dataMovie.value.season_id,
+    page.value,
+    pageSize.value
+  )
     .then((response) => {
-      dataMovie.value = response?.results;
+      dataEpisodes.value = response?.results;
       page.value = response.page;
       // pageSize.value = response.page_size;
-      total.value = response.total;
+      total.value = response.total_episode;
     })
     .catch((e) => {})
     .finally(() => {
@@ -838,7 +624,14 @@ const getData = () => {
     });
 };
 
-getData();
+getMovieByType_Id('tv', movieId.value)
+  .then((response) => {
+    dataMovie.value = response;
+
+    getData();
+  })
+  .catch((e) => {})
+  .finally(() => {});
 
 // const onChangeTable = (
 //   pagination,
@@ -884,10 +677,10 @@ const handleChangeUploadImage = async (e: any, type: string) => {
     return false;
   }
 
-  if (type == 'poster' || type == 'backdrop') {
-    formAddMovie[`${type}_path`] = URL.createObjectURL(rawFile!);
-    // formAddMovie[`${type}_path`] = await getBase64(rawFile);
-    formAddMovie[`${type}_file`] = rawFile;
+  if (type == 'still') {
+    formAddEpisode[`${type}_path`] = URL.createObjectURL(rawFile!);
+    // formAddEpisode[`${type}_path`] = await getBase64(rawFile);
+    formAddEpisode[`${type}_file`] = rawFile;
   }
 
   return true;
@@ -895,7 +688,7 @@ const handleChangeUploadImage = async (e: any, type: string) => {
 
 const onClickAddBtn = () => {
   isEdit.value = false;
-  modalAddTitle.value = 'Thêm mới phim';
+  modalAddTitle.value = 'Thêm mới tập';
   resetFeild();
   modalAddVisible.value = true;
 };
@@ -909,58 +702,40 @@ const onSubmitFormAdd = () => {
       loadingAdd.value = true;
 
       // uploadArrayImage([
-      //   { folder: 'poster', file: formAddMovie.poster_file! },
-      //   { folder: 'backdrop', file: formAddMovie.backdrop_file! }
+      //   { folder: 'poster', file: formAddEpisode.poster_file! },
+      //   { folder: 'backdrop', file: formAddEpisode.backdrop_file! }
       // ]);
-      const filePoster = await uploadImage(
-        'poster',
-        formAddMovie.poster_file!
+      const fileStill = await uploadImage(
+        'still',
+        formAddEpisode.still_file!
       ).catch((e) => {
         loadingAdd.value = false;
       });
-      if (!filePoster?.success) {
+      if (!fileStill?.success) {
         ElNotification.error({
           title: MESSAGE.STATUS.FAILED,
-          message: 'Upload ảnh poster thất bại!',
+          message: 'Upload ảnh tĩnh thất bại!',
           duration: MESSAGE.DURATION.DEFAULT
         });
         return;
       }
-      const fileBackdrop = await uploadImage(
-        'backdrop',
-        formAddMovie.backdrop_file!
-      ).catch((e) => {
-        loadingAdd.value = false;
-      });
-      if (!fileBackdrop?.success) {
-        ElNotification.error({
-          title: MESSAGE.STATUS.FAILED,
-          message: 'Upload ảnh backdrop thất bại!',
-          duration: MESSAGE.DURATION.DEFAULT
-        });
-        return;
-      }
-      // values.season_id = '';
-      // values.series_id = '';
-      values.media_type = formAddMovie.media_type;
-      values.poster_path = filePoster.file.filename;
-      values.dominant_poster_color = filePoster.file.dominant_poster_color;
-      values.backdrop_path = fileBackdrop.file.filename;
-      values.dominant_backdrop_color =
-        fileBackdrop.file.dominant_backdrop_color;
-      values.genres = values.genres.map((genre: string) => JSON.parse(genre));
-      CreateMovie(values as MovieForm)
+      values.movie_id = dataMovie.value.id;
+      values.season_id = dataMovie.value.season_id;
+      values.series_id = dataMovie.value.series_id;
+      values.still_path = fileStill.file.filename;
+      values.dominant_still_color = fileStill.file.dominant_still_color;
+      CreateEpisode(values as EpisodeForm)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
               title: MESSAGE.STATUS.SUCCESS,
-              message: 'Thêm mới phim thành công!',
+              message: 'Thêm mới tập thành công!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: 'Thêm mới phim thất bại!',
+              message: 'Thêm mới tập thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -968,7 +743,7 @@ const onSubmitFormAdd = () => {
         .catch((e) => {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Thêm mới phim thất bại!',
+            message: 'Thêm mới tập thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
         })
@@ -1007,12 +782,12 @@ onBeforeMount(() => {
   });
 });
 
-const onClickUploadVideo = (movie: any) => {
+const onClickUploadVideo = (episode: any) => {
   if (inputVideoFile.value) {
     inputVideoFile.value.value = '';
   }
-  formUploadVideo.movieId = movie.id;
-  formUploadVideo.type = movie.media_type == 'movie' ? 'feature' : 'television';
+  formUploadVideo.episodeId = episode.id;
+  formUploadVideo.type = 'television';
   formUploadVideo.file_upload = null;
   formUploadVideo.percent_upload = 0;
   formUploadVideo.percent_chunking = 0;
@@ -1049,7 +824,7 @@ const onUploadVideo = () => {
       // console.log(response);
 
       if (response?.success) {
-        UpdateVideoUpload(formUploadVideo.movieId, {
+        UpdateVideoUpload(formUploadVideo.episodeId, {
           duration: response.file.duration,
           video_path: response.video_path
         })
@@ -1159,63 +934,35 @@ const onBeforeCloseModalUploadVideo = (done: () => void) => {
 };
 
 const resetFeild = () => {
-  formAddMovie.id = '';
-  formAddMovie.name = '';
-  formAddMovie.original_name = '';
-  formAddMovie.genres = [];
-  formAddMovie.original_language = null;
-  formAddMovie.first_air_date = '';
-  formAddMovie.last_air_date = '';
-  formAddMovie.overview = '';
-  formAddMovie.status = 'Released';
-  formAddMovie.budget = 0;
-  formAddMovie.revenue = 0;
-  formAddMovie.vip = '0';
-  formAddMovie.poster_path = '';
-  formAddMovie.poster_file = null;
-  formAddMovie.backdrop_path = '';
-  formAddMovie.backdrop_file = null;
-  if (inputPosterFile.value) {
-    inputPosterFile.value!.value = '';
-  }
-  if (inputBackdropFile.value) {
-    inputBackdropFile.value!.value = '';
+  formAddEpisode.id = '';
+  formAddEpisode.name = '';
+  formAddEpisode.episode_type = '';
+  formAddEpisode.air_date = '';
+  formAddEpisode.overview = '';
+  formAddEpisode.episode_number = 0;
+  formAddEpisode.vip = '0';
+  formAddEpisode.still_path = '';
+  formAddEpisode.still_file = null;
+  if (inputStillFile.value) {
+    inputStillFile.value!.value = '';
   }
 };
 
-const onClickEditMovie = (movie: any) => {
+const onClickEditEpisode = (episode: any) => {
   isEdit.value = true;
-  currentEditMovie.value = movie;
-  modalAddTitle.value = 'Chỉnh sửa phim';
+  currentEditMovie.value = episode;
+  modalAddTitle.value = 'Chỉnh sửa tập';
 
-  formAddMovie.id = movie.id;
-  formAddMovie.name = movie.name;
-  formAddMovie.original_name = movie.original_name;
-  formAddMovie.genres = movie.genres.map((item: any) => {
-    const genre = store.allGenres.find((g) => g.id == item.id)!;
-    return JSON.stringify({
-      id: genre.id,
-      name: genre.name,
-      name_vietsub: genre.name_vietsub,
-      short_name: genre.short_name
-    });
-  });
-
-  formAddMovie.original_language = movie.original_language;
-  // formAddMovie.first_air_date = dayjs(movie.first_air_date).format(
-  //   'YYYY-MM-DD'
-  // );
-  // formAddMovie.last_air_date = dayjs(movie.last_air_date).format('YYYY-MM-DD');
-  formAddMovie.first_air_date = dayjs(movie.first_air_date, 'YYYY-MM-DD');
-  formAddMovie.last_air_date = dayjs(movie.last_air_date, 'YYYY-MM-DD');
-  formAddMovie.overview = movie.overview;
-  formAddMovie.status = movie.status;
-  formAddMovie.budget = movie.budget;
-  formAddMovie.revenue = movie.revenue;
-  formAddMovie.vip = movie.vip?.toString() || '0';
-  formAddMovie.poster_path = getImage(movie.poster_path, 'poster', { w: 250 });
-  formAddMovie.backdrop_path = getImage(movie.backdrop_path, 'backdrop', {
-    h: 250
+  formAddEpisode.id = episode.id;
+  formAddEpisode.name = episode.name;
+  formAddEpisode.episode_type = episode.episode_type;
+  // formAddEpisode.air_date = dayjs(episode.air_date).format('YYYY-MM-DD');
+  formAddEpisode.air_date = dayjs(episode.air_date, 'YYYY-MM-DD');
+  formAddEpisode.overview = episode.overview;
+  formAddEpisode.episode_number = episode.episode_number;
+  formAddEpisode.vip = episode.vip?.toString() || '0';
+  formAddEpisode.still_path = getImage(episode.still_path, 'still', {
+    w: 250
   });
 
   modalAddVisible.value = true;
@@ -1229,71 +976,43 @@ const onSubmitFormEdit = () => {
     .then(async (values) => {
       loadingAdd.value = true;
 
-      if (formAddMovie.poster_file) {
+      if (formAddEpisode.still_file) {
         const filePoster = await uploadImage(
-          'poster',
-          formAddMovie.poster_file!
+          'still',
+          formAddEpisode.still_file!
         ).catch((e) => {
           loadingAdd.value = false;
         });
         if (!filePoster?.success) {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Upload ảnh poster thất bại!',
+            message: 'Upload ảnh tĩnh thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
           return;
         }
-        values.poster_path = filePoster.file.filename;
-        values.dominant_poster_color = filePoster.file.dominant_poster_color;
+        values.still_path = filePoster.file.filename;
+        values.dominant_still_color = filePoster.file.dominant_still_color;
       } else {
-        values.poster_path = currentEditMovie.value?.poster_path;
-        values.dominant_poster_color =
-          currentEditMovie.value?.dominant_poster_color;
+        values.still_path = currentEditMovie.value?.still_path;
+        values.dominant_still_color =
+          currentEditMovie.value?.dominant_still_color;
       }
 
-      if (formAddMovie.backdrop_file) {
-        const fileBackdrop = await uploadImage(
-          'backdrop',
-          formAddMovie.backdrop_file!
-        ).catch((e) => {
-          loadingAdd.value = false;
-        });
-        if (!fileBackdrop?.success) {
-          ElNotification.error({
-            title: MESSAGE.STATUS.FAILED,
-            message: 'Upload ảnh backdrop thất bại!',
-            duration: MESSAGE.DURATION.DEFAULT
-          });
-          return;
-        }
-
-        values.backdrop_path = fileBackdrop.file.filename;
-        values.dominant_backdrop_color =
-          fileBackdrop.file.dominant_backdrop_color;
-      } else {
-        values.backdrop_path = currentEditMovie.value?.backdrop_path;
-        values.dominant_backdrop_color =
-          currentEditMovie.value?.dominant_backdrop_color;
-      }
-
-      values.genres = values.genres.map((genre: string) => JSON.parse(genre));
-      values.id = formAddMovie.id;
-      values.first_air_date = formAddMovie.first_air_date.format('YYYY-MM-DD');
-      values.last_air_date = formAddMovie.last_air_date.format('YYYY-MM-DD');
-
-      UpdateVideo(values as MovieForm)
+      values.id = formAddEpisode.id;
+      values.air_date = formAddEpisode.air_date.format('YYYY-MM-DD');
+      UpdateVideo(values as EpisodeForm)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
               title: MESSAGE.STATUS.SUCCESS,
-              message: 'Chỉnh sửa phim thành công!',
+              message: 'Chỉnh sửa tập thành công!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: 'Chỉnh sửa phim thất bại!',
+              message: 'Chỉnh sửa tập thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -1301,7 +1020,7 @@ const onSubmitFormEdit = () => {
         .catch((e) => {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Chỉnh sửa phim thất bại!',
+            message: 'Chỉnh sửa tập thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
         })
@@ -1318,25 +1037,25 @@ const onSubmitFormEdit = () => {
     .finally(() => {});
 };
 
-const onClickDeleteMovie = (movie: any) => {
-  ElMessageBox.confirm('Bạn có chắc muốn xóa phim này không?', {
+const onClickDeleteEpisode = (episode: any) => {
+  ElMessageBox.confirm('Bạn có chắc muốn xóa tập này không?', {
     title: 'Thông báo!',
     confirmButtonText: 'Có',
     cancelButtonText: 'Không'
   })
     .then(() => {
-      DeleteMovie(movie.id)
+      DeleteEpisode(episode.id)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
               title: MESSAGE.STATUS.SUCCESS,
-              message: 'Xóa phim thành công!',
+              message: 'Xóa tập thành công!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: 'Xóa phim thất bại!',
+              message: 'Xóa tập thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -1344,7 +1063,7 @@ const onClickDeleteMovie = (movie: any) => {
         .catch((e) => {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Xóa phim thất bại!',
+            message: 'Xóa tập thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
         })
@@ -1359,13 +1078,19 @@ const onClickDeleteMovie = (movie: any) => {
 };
 
 const onSearch = (searchQuery: string) => {
-  if (!searchQuery) return;
+  if (!searchQuery || !dataMovie.value) return;
 
   loading.value = true;
 
-  SearchMovie('tv', searchQuery.trim(), page.value, pageSize.value)
+  SearchEpisode(
+    dataMovie.value.id,
+    dataMovie.value.season_id,
+    searchQuery.trim(),
+    page.value,
+    pageSize.value
+  )
     .then((response) => {
-      dataMovie.value = response?.results;
+      dataEpisodes.value = response?.results;
       page.value = response.page;
       // pageSize.value = response.page_size;
       total.value = response.total;
@@ -1381,24 +1106,24 @@ const onSelectChange = (selectedRowKeys1: string[] | number[]) => {
 };
 
 const onClickDeleteBtn = () => {
-  ElMessageBox.confirm('Bạn có chắc muốn xóa các phim này không?', {
+  ElMessageBox.confirm('Bạn có chắc muốn xóa các tập này không?', {
     title: 'Thông báo!',
     confirmButtonText: 'Có',
     cancelButtonText: 'Không'
   })
     .then(() => {
-      DeleteMultipleMovie(selectedRowKeys.value)
+      DeleteMultipleEpisode(selectedRowKeys.value)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
               title: MESSAGE.STATUS.SUCCESS,
-              message: 'Xóa phim thành công!',
+              message: 'Xóa tập thành công!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: 'Xóa phim thất bại!',
+              message: 'Xóa tập thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -1406,7 +1131,7 @@ const onClickDeleteBtn = () => {
         .catch((e) => {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Xóa phim thất bại!',
+            message: 'Xóa tập thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
         })
@@ -1422,4 +1147,4 @@ const onClickDeleteBtn = () => {
 };
 </script>
 
-<style lang="scss" src="./ManageTVPage.scss"></style>
+<style lang="scss" src="./ListEpisode.scss"></style>

@@ -17,11 +17,13 @@ export function GetAllMovie(
 }
 
 export function SearchMovie(
+  media_type: string,
   query: string,
   page: number = 1,
   limit: number = 20
 ) {
   return makeRequest(`/${PREFIX_ROUTE}/search`, {
+    media_type,
     query,
     page,
     limit,
