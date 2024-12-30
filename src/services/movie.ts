@@ -63,7 +63,7 @@ export function CreateMovie(movieForm: MovieForm) {
   });
 }
 
-export function UpdateVideo(movieForm: MovieForm) {
+export function UpdateMovie(movieForm: MovieForm) {
   return makeRequest(`/${PREFIX_ROUTE}/update/${movieForm.id}`, null, {
     method: 'POST',
     data: movieForm

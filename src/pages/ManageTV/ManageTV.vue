@@ -361,7 +361,7 @@
           </a-row>
 
           <a-row :gutter="16">
-            <a-col :span="12">
+            <a-col :span="8">
               <a-form-item
                 label="Trạng thái"
                 name="status"
@@ -389,6 +389,52 @@
                     In Production
                   </a-select-option>
                 </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item
+                label="Số tập"
+                name="number_of_episodes"
+                :rules="[
+                  {
+                    required: true,
+                    message: 'Vui lòng nhập số tập',
+                    trigger: ['change', 'blur']
+                  }
+                ]"
+              >
+                <el-input-number
+                  v-model="formAddMovie.number_of_episodes"
+                  :min="0"
+                  :step="1"
+                  size="large"
+                  style="width: 100%"
+                />
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item
+                label="Thời lượng trên tập"
+                name="episode_run_time"
+                :rules="[
+                  {
+                    required: true,
+                    message: 'Vui lòng nhập thời lượng trên tập!',
+                    trigger: ['change', 'blur']
+                  }
+                ]"
+              >
+                <el-input-number
+                  v-model="formAddMovie.episode_run_time"
+                  :min="0"
+                  :step="1"
+                  size="large"
+                  style="width: 100%"
+                >
+                  <template #suffix>
+                    <span>Phút</span>
+                  </template>
+                </el-input-number>
               </a-form-item>
             </a-col>
           </a-row>
@@ -442,7 +488,11 @@
                   :step="1000"
                   size="large"
                   style="width: 100%"
-                />
+                >
+                  <template #suffix>
+                    <span>$</span>
+                  </template>
+                </el-input-number>
               </a-form-item>
             </a-col>
             <a-col :span="8">
@@ -463,7 +513,11 @@
                   :step="1000"
                   size="large"
                   style="width: 100%"
-                />
+                >
+                  <template #suffix>
+                    <span>$</span>
+                  </template>
+                </el-input-number>
               </a-form-item>
             </a-col>
             <a-col :span="8">
@@ -669,7 +723,7 @@ import { getCountryByOriginalLanguage } from '@/services/country';
 import {
   CreateMovie,
   GetAllMovie,
-  UpdateVideo,
+  UpdateMovie,
   UpdateVideoUpload,
   DeleteMovie,
   DeleteMultipleMovie,
@@ -789,6 +843,7 @@ const formAddMovie = reactive({
   name: '',
   original_name: '',
   number_of_episodes: 0,
+  episode_run_time: 0,
   genres: [],
   original_language: null,
   first_air_date: '',
@@ -1168,6 +1223,8 @@ const resetFeild = () => {
   formAddMovie.last_air_date = '';
   formAddMovie.overview = '';
   formAddMovie.status = 'Released';
+  formAddMovie.number_of_episodes = 0;
+  formAddMovie.episode_run_time = 0;
   formAddMovie.budget = 0;
   formAddMovie.revenue = 0;
   formAddMovie.vip = '0';
@@ -1282,7 +1339,7 @@ const onSubmitFormEdit = () => {
       values.first_air_date = formAddMovie.first_air_date.format('YYYY-MM-DD');
       values.last_air_date = formAddMovie.last_air_date.format('YYYY-MM-DD');
 
-      UpdateVideo(values as MovieForm)
+      UpdateMovie(values as MovieForm)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({

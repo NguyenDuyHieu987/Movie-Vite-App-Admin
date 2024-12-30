@@ -76,7 +76,7 @@ export function getServerImage(
   return `${URL_IMAGE}/images/${type}/${path}?${utils.serialize(crop)}`;
 }
 
-export function getPosterCast(path: string): string {
+export function getTMDBImage(path: string): string {
   const TMDB_IMAGE_BASE_URL = import.meta.env.VITE_TMDB_IMAGE_BASE_URL;
 
   return `${TMDB_IMAGE_BASE_URL}/original${path}`;

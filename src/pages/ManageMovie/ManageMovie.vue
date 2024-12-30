@@ -404,7 +404,11 @@
                   :step="1000"
                   size="large"
                   style="width: 100%"
-                />
+                >
+                  <template #suffix>
+                    <span>$</span>
+                  </template>
+                </el-input-number>
               </a-form-item>
             </a-col>
             <a-col :span="8">
@@ -425,7 +429,11 @@
                   :step="1000"
                   size="large"
                   style="width: 100%"
-                />
+                >
+                  <template #suffix>
+                    <span>$</span>
+                  </template>
+                </el-input-number>
               </a-form-item>
             </a-col>
             <a-col :span="8">
@@ -631,7 +639,7 @@ import { getCountryByOriginalLanguage } from '@/services/country';
 import {
   CreateMovie,
   GetAllMovie,
-  UpdateVideo,
+  UpdateMovie,
   UpdateVideoUpload,
   DeleteMovie,
   DeleteMultipleMovie,
@@ -1226,7 +1234,7 @@ const onSubmitFormEdit = () => {
       values.id = formAddMovie.id;
       values.release_date = formAddMovie.release_date.format('YYYY-MM-DD');
 
-      UpdateVideo(values as MovieForm)
+      UpdateMovie(values as MovieForm)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({

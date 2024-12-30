@@ -1,7 +1,9 @@
 <template>
   <div class="list-episode-container">
     <div class="header-table">
-      <h2>Danh sách tập</h2>
+      <div>
+        <h2>Danh sách tập - Phim: {{ dataMovie?.name }}</h2>
+      </div>
 
       <!-- <RouterLink :to="{ path: '/addmovie' }"> -->
 

@@ -216,9 +216,13 @@ export declare type MovieForm = {
   production_companies: string[];
   production_countries: string[];
   release_date: string;
+  first_air_date: string;
+  last_air_date: string;
   revenue: number;
   runtime: number;
   duration: number;
+  number_of_episodes: number;
+  episode_run_time: number;
   spoken_languages: string[];
   status: string;
   tagline: string;
