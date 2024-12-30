@@ -489,6 +489,10 @@ import { Socket, io } from 'socket.io-client';
 import dayjs from 'dayjs';
 import { useRoute, useRouter } from 'vue-router';
 
+defineOptions({
+  name: 'manage-tv-episodes'
+});
+
 const formRef = ref<FormInstance>();
 const formVidRef = ref<FormInstance>();
 const inputStillFile = ref<HTMLInputElement | null>();
@@ -538,7 +542,7 @@ const columns: TableColumnType[] = [
     sorter: true
   },
   {
-    title: 'Ngaày phát hành',
+    title: 'Ngày phát hành',
     dataIndex: 'air_date',
     sorter: true,
     width: 150

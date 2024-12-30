@@ -733,13 +733,13 @@ const columns: TableColumnType[] = [
     width: 120
   },
   {
-    title: 'Ngaày phát bắt đầu hành',
+    title: 'Ngày phát bắt đầu hành',
     dataIndex: 'first_air_date',
     sorter: true,
     width: 150
   },
   {
-    title: 'Ngaày phát hành cuối',
+    title: 'Ngày phát hành cuối',
     dataIndex: 'last_air_date',
     sorter: true,
     width: 150

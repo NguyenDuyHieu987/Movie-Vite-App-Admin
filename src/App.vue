@@ -65,7 +65,6 @@
       <RequireAuthDialog />
       <NetworkChecker />
 
-      <!-- :is="route.meta?.layout?.component" -->
       <!-- <KeepAlive :exclude="[]"> -->
       <component :is="route.meta?.layout?.component">
         <RouterView v-slot="{ Component }">
