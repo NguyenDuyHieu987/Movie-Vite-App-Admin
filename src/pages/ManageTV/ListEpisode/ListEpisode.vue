@@ -347,7 +347,6 @@
                 </div>
               </a-form-item>
             </a-col>
-            <a-col :span="12"> </a-col>
           </a-row>
         </a-form>
         <template #footer>
@@ -832,7 +831,8 @@ const onUploadVideo = () => {
       if (response?.success) {
         UpdateVideoUpload(formUploadVideo.episodeId, {
           duration: response.file.duration,
-          video_path: response.video_path
+          video_path: response.video_path,
+          still_path: response.still_path
         })
           .then((response) => {
             if (response?.success) {

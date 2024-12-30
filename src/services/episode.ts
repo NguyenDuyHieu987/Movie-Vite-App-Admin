@@ -66,6 +66,7 @@ export function UpdateVideo(episodeForm: EpisodeForm) {
 export function UpdateVideoUpload(
   episodeId: number | string,
   videoData: {
+    still_path: string;
     video_path: string;
     duration: number;
   }
