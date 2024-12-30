@@ -20,13 +20,7 @@
         >
           <img
             class="avatar"
-            :src="
-              !isNaN(+(userAccount?.avatar as string))
-                ? getImage(`account${userAccount?.avatar}.jpg`, 'user_avatar', {
-                    w: 50
-                  })
-                : (userAccount?.avatar as string)
-            "
+            :src="getUserAvatar(userAccount?.avatar)"
             loading="lazy"
             alt=""
             preload
@@ -102,7 +96,7 @@ import ChevronRightDouble from '@/assets/svgs/icons/chevron-right-double.svg?com
 // import { DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons-vue';
 import { TheMenu } from '@/components/Layouts';
 // import TheMenu from '@/components/Layouts/TheMenu/TheMenu.vue';
-import { getImage } from '@/services/image';
+import { getImage, getUserAvatar } from '@/services/image';
 import { storeToRefs } from 'pinia';
 import { useLocalStorage } from '@vueuse/core';
 import { useAuthStore, useStore } from '@/stores';

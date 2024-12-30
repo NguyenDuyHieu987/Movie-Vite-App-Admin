@@ -30,13 +30,7 @@
       >
         <NuxtImg
           class="avatar"
-          :src="
-            !isNaN(+(userAccount?.avatar as string))
-              ? getImage(`account${userAccount?.avatar}.jpg`, 'user_avatar', {
-                  w: 50
-                })
-              : userAccount?.avatar
-          "
+          :src="getUserAvatar(userAccount?.avatar)"
           alt=""
           preload
         />
@@ -95,11 +89,7 @@
         >
           <NuxtImg
             class="avatar"
-            :src="
-              !isNaN(+userAccount?.avatar)
-                ? getImage(`account${userAccount?.avatar}.jpg`, 'user_avatar')
-                : userAccount?.avatar
-            "
+            :src="getUserAvatar(userAccount?.avatar)"
             alt=""
           />
         </div>
@@ -120,7 +110,7 @@ import Menu from '@/assets/svgs/icons/menu.svg?component';
 // import { TheMenu } from '@/components/Layouts';
 // import TheMenu from '@/components/Layouts/TheMenu/TheMenu.vue';
 import { storeToRefs } from 'pinia';
-import { getImage } from '@/services/image';
+import { getImage, getUserAvatar } from '@/services/image';
 import { useAuthStore, useStore } from '@/stores';
 import { useRoute, useRouter } from 'vue-router';
 import { onMounted } from 'vue';
