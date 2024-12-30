@@ -91,6 +91,9 @@
           <template v-if="column.dataIndex === 'number_of_episodes'">
             {{ value + ' tập' }}
           </template>
+          <template v-if="column.dataIndex === 'episode_run_time'">
+            {{ (value || 0) + ' phút' }}
+          </template>
           <template v-if="column.dataIndex === 'first_air_date'">
             {{ dayjs(value).format('DD/MM/YYYY') }}
           </template>
@@ -811,6 +814,12 @@ const columns: TableColumnType[] = [
     width: 100
   },
   {
+    title: 'Thời lượng trên tập',
+    dataIndex: 'episode_run_time',
+    sorter: true,
+    width: 150
+  },
+  {
     title: 'Lượt xem',
     dataIndex: 'views',
     sorter: true,
@@ -1266,6 +1275,8 @@ const onClickEditMovie = (movie: any) => {
   formAddMovie.first_air_date = dayjs(movie.first_air_date, 'YYYY-MM-DD');
   formAddMovie.last_air_date = dayjs(movie.last_air_date, 'YYYY-MM-DD');
   formAddMovie.overview = movie.overview;
+  formAddMovie.number_of_episodes = movie.number_of_episodes;
+  formAddMovie.episode_run_time = movie.episode_run_time || 0;
   formAddMovie.status = movie.status;
   formAddMovie.budget = movie.budget;
   formAddMovie.revenue = movie.revenue;
