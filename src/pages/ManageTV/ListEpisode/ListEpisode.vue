@@ -861,6 +861,8 @@ const onUploadVideo = () => {
             modalUploadVideoVisible.value = false;
           });
       } else {
+        loadingUploadVideo.value = false;
+
         ElNotification.error({
           title: MESSAGE.STATUS.FAILED,
           message: 'Upload video thất bại!',
