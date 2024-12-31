@@ -642,7 +642,7 @@
 <script setup lang="ts">
 import PlusIcon from '@/assets/svgs/icons/plus.svg?component';
 import DeleteSweepIcon from '@/assets/svgs/icons/delete-sweep.svg?component';
-import { onBeforeMount, reactive, ref, computed } from 'vue';
+import { onBeforeMount, reactive, ref, computed, nextTick } from 'vue';
 import { useUtils, viewFormatter } from '@/utils';
 import { useStore } from '@/stores';
 import type {
@@ -804,6 +804,8 @@ const selectedRowKeys = ref<string[] | number[]>([]);
 const hasSelected = computed(() => selectedRowKeys.value.length > 0);
 
 const loadM3u8Video = async (videoUrl: string) => {
+  await nextTick();
+
   var videoElment = document.getElementById('video-player') as HTMLVideoElement;
 
   if (!video.value && videoElment) {

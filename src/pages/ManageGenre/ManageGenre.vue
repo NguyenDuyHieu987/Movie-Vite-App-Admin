@@ -105,9 +105,6 @@
                   <el-dropdown-item @click="onClickEditGenre(record)">
                     Chỉnh sửa
                   </el-dropdown-item>
-                  <el-dropdown-item @click="onClickUploadVideo(record)">
-                    Upload video
-                  </el-dropdown-item>
                   <el-dropdown-item
                     @click="onClickDeleteGenre(record)"
                     class="menu-delete-video"
