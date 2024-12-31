@@ -117,6 +117,10 @@ function fromNow(
 }
 
 function convertSeconds(seconds: number) {
+  if (!seconds) {
+    return '0 giây';
+  }
+
   if (seconds < 60) {
     return `${seconds} giây`;
   } else if (seconds < 3600) {

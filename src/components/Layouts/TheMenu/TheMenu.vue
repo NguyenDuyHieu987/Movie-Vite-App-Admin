@@ -95,7 +95,7 @@
       </template>
     </el-menu-item>
 
-    <el-menu-item index="/manage-year">
+    <el-menu-item index="/manage-country">
       <el-icon>
         <Globe
           width="1.5rem"
@@ -105,7 +105,7 @@
       </el-icon>
 
       <template #title>
-        <RouterLink to="/manage-year">Quản lý quốc gia</RouterLink>
+        <RouterLink to="/manage-country">Quản lý quốc gia</RouterLink>
       </template>
     </el-menu-item>
   </el-menu>

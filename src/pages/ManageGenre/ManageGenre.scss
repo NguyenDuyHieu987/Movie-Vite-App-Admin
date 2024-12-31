@@ -1,4 +1,4 @@
-.manage-movie-container {
+.manage-genre-container {
   .header-table {
     display: flex;
     flex-direction: row;
@@ -19,18 +19,18 @@
     justify-content: space-between;
     margin-bottom: 20px;
 
-    .search-movie {
+    .search-genre {
       width: 40%;
       min-width: 300px;
       max-width: 500px;
     }
   }
 
-  .movie-table {
+  .genre-table {
   }
 }
 
-.add-movie-dialog {
+.add-genre-dialog {
   .poster-image {
     width: 150px;
     margin-top: 10px;
@@ -39,17 +39,5 @@
   .backdrop-image {
     height: 150px;
     margin-top: 10px;
-  }
-}
-
-.upload-video-dialog {
-  #video-player {
-    width: 100%;
-  }
-
-  .upload-video {
-    .progress-upload {
-      margin-top: 10px;
-    }
   }
 }

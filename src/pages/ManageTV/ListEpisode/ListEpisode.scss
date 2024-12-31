@@ -38,7 +38,13 @@
 }
 
 .upload-video-dialog {
-  .progress-upload {
-    margin-top: 10px;
+  #video-player {
+    width: 100%;
+  }
+
+  .upload-video {
+    .progress-upload {
+      margin-top: 10px;
+    }
   }
 }

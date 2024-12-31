@@ -628,7 +628,7 @@
       <el-dialog
         class="upload-video-dialog"
         v-model="modalUploadVideoVisible"
-        title="Upload video"
+        :title="`Upload video - ${modalUploadVideoTitle}`"
         align-center
         style="min-width: 600px"
         :before-close="onBeforeCloseModalUploadVideo"
@@ -875,6 +875,7 @@ const formUploadVideo = reactive({
   percent_chunking: 0
 });
 const modalAddTitle = ref<string>('Thêm mới phim');
+const modalUploadVideoTitle = ref<string>('');
 const isEdit = ref<boolean>(false);
 const currentEditMovie = ref<MovieForm>();
 const loadingAdd = ref<boolean>(false);
@@ -1072,6 +1073,7 @@ onBeforeMount(() => {
 });
 
 const onClickUploadVideo = (movie: any) => {
+  modalUploadVideoTitle.value = movie.name;
   if (inputVideoFile.value) {
     inputVideoFile.value.value = '';
   }

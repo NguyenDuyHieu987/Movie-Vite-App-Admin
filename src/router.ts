@@ -50,6 +50,33 @@ const routes = [
     ]
   },
   {
+    name: 'manage-genre',
+    path: '/manage-genre',
+    component: () => import('./pages/ManageGenre/ManageGenre.vue'),
+    meta: {
+      name: 'manage-genre',
+      layout: { name: 'default', component: DefaultLayout }
+    }
+  },
+  {
+    name: 'manage-year',
+    path: '/manage-year',
+    component: () => import('./pages/ManageGenre/ManageGenre.vue'),
+    meta: {
+      name: 'manage-year',
+      layout: { name: 'default', component: DefaultLayout }
+    }
+  },
+  {
+    name: 'manage-country',
+    path: '/manage-country',
+    component: () => import('./pages/ManageGenre/ManageGenre.vue'),
+    meta: {
+      name: 'manage-country',
+      layout: { name: 'default', component: DefaultLayout }
+    }
+  },
+  {
     name: 'login',
     path: '/login',
     component: () => import('./pages/Login/Login.vue'),

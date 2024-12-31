@@ -375,12 +375,21 @@
       <el-dialog
         class="upload-video-dialog"
         v-model="modalUploadVideoVisible"
-        title="Upload video"
+        :title="`Upload video - ${modalUploadVideoTitle}`"
         align-center
         style="min-width: 600px"
         :before-close="onBeforeCloseModalUploadVideo"
       >
         <!-- width="500" -->
+        <video
+          id="video-player"
+          ref="video"
+          :poster="''"
+          :playsinline="true"
+          controls
+        >
+          <!-- <source src="blobVideoSrc" ref="srcVideo" type="video/mp4" /> -->
+        </video>
         <a-form
           ref="formVidRef"
           name="movie-form"
@@ -438,7 +447,15 @@
         <template #footer>
           <div class="dialog-footer">
             <el-button
-              @click="modalUploadVideoVisible = false"
+              @click="
+                () => {
+                  if (hls) {
+                    hls.destroy();
+                    hls = null;
+                  }
+                  modalUploadVideoVisible = false;
+                }
+              "
               :disabled="loadingUploadVideo || loadingChunkingVideo"
               >Đóng
             </el-button>
@@ -485,10 +502,11 @@ import { ElNotification, ElMessageBox } from 'element-plus';
 import { ArrowDown } from '@element-plus/icons-vue';
 import type { UploadProps as ElUploadProps } from 'element-plus';
 import { MESSAGE } from '@/common';
-import { uploadVideo } from '@/services/video';
+import { getVideo, uploadVideo } from '@/services/video';
 import { Socket, io } from 'socket.io-client';
 import dayjs from 'dayjs';
 import { useRoute, useRouter } from 'vue-router';
+import Hls from 'hls.js';
 
 defineOptions({
   name: 'manage-tv-episodes'
@@ -496,6 +514,8 @@ defineOptions({
 
 const formRef = ref<FormInstance>();
 const formVidRef = ref<FormInstance>();
+const video = ref<HTMLVideoElement>();
+const hls = ref<Hls | null>();
 const inputStillFile = ref<HTMLInputElement | null>();
 const inputVideoFile = ref<HTMLInputElement | null>();
 const utils = useUtils();
@@ -596,6 +616,7 @@ const formUploadVideo = reactive({
   percent_chunking: 0
 });
 const modalAddTitle = ref<string>('Thêm mới tập');
+const modalUploadVideoTitle = ref<string>('');
 const isEdit = ref<boolean>(false);
 const currentEditMovie = ref<EpisodeForm>();
 const loadingAdd = ref<boolean>(false);
@@ -607,6 +628,56 @@ const socket = ref<Socket>();
 const selectedRowKeys = ref<string[] | number[]>([]);
 const hasSelected = computed(() => selectedRowKeys.value.length > 0);
 const movieId = computed<string>((): string => route.params?.id as string);
+
+const loadM3u8Video = async (videoUrl: string) => {
+  var videoElment = document.getElementById('video-player') as HTMLVideoElement;
+
+  if (!video.value && videoElment) {
+    video.value = videoElment;
+  }
+
+  if (!video.value || !videoUrl) return;
+
+  var videoSrc = getVideo(
+    videoUrl.endsWith('.m3u8') ? videoUrl : videoUrl + '.m3u8'
+  );
+
+  // video.value!.muted = true;
+
+  if (Hls.isSupported()) {
+    if (!hls.value) hls.value = new Hls();
+
+    hls.value.on(Hls.Events.ERROR, function (event, data) {
+      if (data.fatal) {
+        console.error('HLS error:', data);
+      }
+    });
+
+    hls.value.loadSource(videoSrc);
+    hls.value.attachMedia(video.value!);
+    return new Promise((resolve, reject) => {
+      hls.value!.on(Hls.Events.MANIFEST_PARSED, async function () {
+        resolve(true);
+      });
+    });
+  } else if (video.value?.canPlayType('application/vnd.apple.mpegurl')) {
+    video.value!.src = videoSrc;
+    return new Promise((resolve, reject) => {
+      video.value!.addEventListener('loadedmetadata', function () {
+        video
+          .value!.play()
+          .then(() => {
+            resolve(true);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    });
+  } else {
+    console.error('HLS is not supported.');
+  }
+};
 
 const getData = async () => {
   loading.value = true;
@@ -788,9 +859,26 @@ onBeforeMount(() => {
 });
 
 const onClickUploadVideo = (episode: any) => {
+  modalUploadVideoTitle.value = episode.name;
   if (inputVideoFile.value) {
     inputVideoFile.value.value = '';
   }
+  if (video.value) {
+    video.value.poster = getImage(
+      episode.still_path,
+      'still',
+      // 'w-' + windowWidth.toString()
+      { w: window.innerWidth }
+    );
+  }
+  if (!episode?.video_path && video.value) {
+    if (hls.value) {
+      hls.value.destroy();
+      hls.value = null;
+    }
+    video.value.src = '';
+  }
+  loadM3u8Video(episode?.video_path);
   formUploadVideo.episodeId = episode.id;
   formUploadVideo.type = 'television';
   formUploadVideo.file_upload = null;
@@ -836,6 +924,7 @@ const onUploadVideo = () => {
         })
           .then((response) => {
             if (response?.success) {
+              getData();
               ElNotification.success({
                 title: MESSAGE.STATUS.SUCCESS,
                 message: 'Upload video thành công!',
@@ -931,12 +1020,20 @@ const onBeforeCloseModalUploadVideo = (done: () => void) => {
       }
     )
       .then(() => {
+        if (hls.value) {
+          hls.value.destroy();
+          hls.value = null;
+        }
         done();
       })
       .catch(() => {
         // catch error
       });
   } else {
+    if (hls.value) {
+      hls.value.destroy();
+      hls.value = null;
+    }
     done();
   }
 };
