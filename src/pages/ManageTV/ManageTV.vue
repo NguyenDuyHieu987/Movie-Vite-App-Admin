@@ -33,22 +33,39 @@
         @search="onSearch"
       />
 
-      <a-button
-        class="add-btn"
-        type="primary"
-        danger
-        @click="onClickDeleteBtn"
-        :disabled="!hasSelected"
-      >
-        <template #icon>
-          <DeleteSweepIcon
-            width="1.8rem"
-            height="1.8rem"
-            fill="currentColor"
-          />
-        </template>
-        Xóa phim
-      </a-button>
+      <div class="right-actions">
+        <a-button
+          class="reset-btn"
+          type="primary"
+          @click="getData"
+        >
+          <template #icon>
+            <SvgoDirectorySync
+              width="1.8rem"
+              height="1.8rem"
+              fill="currentColor"
+            />
+          </template>
+          Làm mới
+        </a-button>
+
+        <a-button
+          class="delete-multiple-btn"
+          type="primary"
+          danger
+          @click="onClickDeleteBtn"
+          :disabled="!hasSelected"
+        >
+          <template #icon>
+            <DeleteSweepIcon
+              width="1.8rem"
+              height="1.8rem"
+              fill="currentColor"
+            />
+          </template>
+          Xóa phim
+        </a-button>
+      </div>
     </div>
 
     <div class="movie-table">
@@ -168,7 +185,7 @@
                   </el-dropdown-item> -->
                   <el-dropdown-item
                     @click="onClickDeleteMovie(record)"
-                    class="menu-delete-video"
+                    class="menu-delete-movie"
                   >
                     Xóa phim
                   </el-dropdown-item>
@@ -711,16 +728,11 @@
 
 <script setup lang="ts">
 import PlusIcon from '@/assets/svgs/icons/plus.svg?component';
+import SvgoDirectorySync from '@/assets/svgs/icons/directory-sync.svg?component';
 import DeleteSweepIcon from '@/assets/svgs/icons/delete-sweep.svg?component';
 import { onBeforeMount, reactive, ref, computed } from 'vue';
-import { viewFormatter } from '@/utils';
 import { useStore } from '@/stores';
-import type {
-  TableColumnType,
-  FormInstance,
-  UploadChangeParam,
-  UploadProps as AUploadProps
-} from 'ant-design-vue';
+import type { TableColumnType, FormInstance } from 'ant-design-vue';
 import { getImage, uploadImage, uploadArrayImage } from '@/services/image';
 import { getCountryByOriginalLanguage } from '@/services/country';
 import {
@@ -735,12 +747,10 @@ import {
 import type { MovieForm, genre } from '@/types';
 import { ElNotification, ElMessageBox } from 'element-plus';
 import { ArrowDown } from '@element-plus/icons-vue';
-import type { UploadProps as ElUploadProps } from 'element-plus';
 import { MESSAGE } from '@/common';
 import { uploadVideo } from '@/services/video';
 import { Socket, io } from 'socket.io-client';
 import dayjs from 'dayjs';
-import { round } from 'lodash';
 import { useRouter } from 'vue-router';
 
 const formRef = ref<FormInstance>();

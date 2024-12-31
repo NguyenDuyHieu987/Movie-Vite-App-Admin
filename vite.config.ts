@@ -62,8 +62,9 @@ export default defineConfig({
   plugins: [
     vue(),
     svgLoader({
-      // defaultImport: 'component'
-      // svgo: false
+      defaultImport: 'component'
+      // svgo: false,
+      // autoImportPath: './assets/svgs/icons/'
     }),
     AutoImport({
       resolvers: [AntDesignVueResolver()]

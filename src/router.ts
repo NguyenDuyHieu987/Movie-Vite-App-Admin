@@ -70,7 +70,7 @@ const routes = [
   {
     name: 'manage-country',
     path: '/manage-country',
-    component: () => import('./pages/ManageGenre/ManageGenre.vue'),
+    component: () => import('./pages/ManageCountry/ManageCountry.vue'),
     meta: {
       name: 'manage-country',
       layout: { name: 'default', component: DefaultLayout }

@@ -6,7 +6,16 @@ import type { country } from '@/types';
 const PREFIX_ROUTE = 'country';
 
 export function getAllCountry() {
-  return makeRequest(`/${PREFIX_ROUTE}/get-all`);
+  return makeRequest(`/${PREFIX_ROUTE}/get-all`, {
+    no_cache: 1
+  });
+}
+
+export function SearchCountry(query: string) {
+  return makeRequest(`/${PREFIX_ROUTE}/search`, {
+    query,
+    no_cache: 1
+  });
 }
 
 export function getCountryVietSub(
@@ -48,4 +57,31 @@ export function getCountryByOriginalLanguage(
       (language) => language.iso_639_1 === original_language
     )!;
   }
+}
+
+export function CreateCountry(countryForm: country) {
+  return makeRequest(`/${PREFIX_ROUTE}/create`, null, {
+    method: 'POST',
+    data: countryForm
+  });
+}
+
+export function UpdateCountry(countryForm: country) {
+  return makeRequest(`/${PREFIX_ROUTE}/update/${countryForm.iso_639_1}`, null, {
+    method: 'POST',
+    data: countryForm
+  });
+}
+
+export function DeleteCountry(countryId: number | string) {
+  return makeRequest(`/${PREFIX_ROUTE}/delete/${countryId}`, null, {
+    method: 'DELETE'
+  });
+}
+
+export function DeleteMultipleCountry(listCountryId: string[] | number[]) {
+  return makeRequest(`/${PREFIX_ROUTE}/delete-multiple`, null, {
+    method: 'DELETE',
+    data: { listCountryId }
+  });
 }

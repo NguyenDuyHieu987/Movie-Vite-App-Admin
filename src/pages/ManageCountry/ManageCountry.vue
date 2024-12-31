@@ -1,9 +1,9 @@
 <template>
-  <div class="manage-genre-container">
+  <div class="manage-country-container">
     <div class="header-table">
       <h2>Danh sách Thể loại</h2>
 
-      <!-- <RouterLink :to="{ path: '/addgenre' }"> -->
+      <!-- <RouterLink :to="{ path: '/addcountry' }"> -->
 
       <a-button
         class="add-btn"
@@ -17,7 +17,7 @@
             fill="currentColor"
           />
         </template>
-        Thêm thể loại
+        Thêm quốc gia
       </a-button>
 
       <!-- </RouterLink> -->
@@ -25,9 +25,9 @@
 
     <div class="table-tools">
       <a-input-search
-        class="search-genre"
+        class="search-country"
         v-model:value="searchValue"
-        placeholder="Nhập têm thể loại để tìm kiếm..."
+        placeholder="Nhập têm quốc gia để tìm kiếm..."
         enter-button="Tìm kiếm"
         size="large"
         @search="onSearch"
@@ -63,21 +63,21 @@
               fill="currentColor"
             />
           </template>
-          Xóa thể loại
+          Xóa quốc gia
         </a-button>
       </div>
     </div>
 
-    <div class="genre-table">
+    <div class="country-table">
       <a-table
         class="ant-table-striped table-app-bg-header"
         :row-class-name="
           (_record: any, index: number) =>
             index % 2 === 1 ? 'table-striped' : null
         "
-        :data-source="dataGenre"
+        :data-source="dataCountry"
         :columns="columns"
-        :row-key="(record: any) => record.id"
+        :row-key="(record: any) => record.iso_639_1"
         :loading="loading"
         :scroll="{
           y: '75vh',
@@ -99,7 +99,7 @@
           <template v-if="column.dataIndex === 'action'">
             <!-- <RouterLink
               class="underline"
-              :to="`/YourAccount/invoices/${record?.id}`"
+              :to="`/YourAccount/invoices/${record?.iso_639_1}`"
             >
               Chi tiết
             </RouterLink>
@@ -119,14 +119,14 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item @click="onClickEditGenre(record)">
+                  <el-dropdown-item @click="onClickEditCountry(record)">
                     Chỉnh sửa
                   </el-dropdown-item>
                   <el-dropdown-item
-                    @click="onClickDeleteGenre(record)"
-                    class="menu-delete-genre"
+                    @click="onClickDeleteCountry(record)"
+                    class="menu-delete-country"
                   >
-                    Xóa thể loại
+                    Xóa quốc gia
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -136,7 +136,7 @@
       </a-table>
 
       <el-dialog
-        class="add-genre-dialog"
+        class="add-country-dialog"
         v-model="modalAddVisible"
         :title="modalAddTitle"
         align-center
@@ -145,9 +145,9 @@
         <!-- width="500" -->
         <a-form
           ref="formRef"
-          name="genre-form"
-          class="genre-form"
-          :model="formAddGenre"
+          name="country-form"
+          class="country-form"
+          :model="formAddCountry"
           hideRequiredMark
         >
           <!-- @finish="handleFinish" -->
@@ -155,19 +155,19 @@
           <a-row :gutter="16">
             <a-col :span="12">
               <a-form-item
-                label="Tên thể loại"
-                name="name"
+                label="Tên quốc gia"
+                name="english_name"
                 :rules="[
                   {
                     required: true,
-                    message: 'Vui lòng nhập tên thể loại!',
+                    message: 'Vui lòng nhập tên quốc gia!',
                     trigger: ['change', 'blur']
                   }
                 ]"
               >
                 <a-input
-                  v-model:value="formAddGenre.name"
-                  placeholder="Tên thể loại..."
+                  v-model:value="formAddCountry.english_name"
+                  placeholder="Tên quốc gia..."
                   allow-clear
                 >
                 </a-input>
@@ -176,7 +176,7 @@
             <a-col :span="12">
               <a-form-item
                 label="Tên Tiếng Việt"
-                name="name_vietsub"
+                name="name"
                 :rules="[
                   {
                     required: true,
@@ -186,7 +186,7 @@
                 ]"
               >
                 <a-input
-                  v-model:value="formAddGenre.name_vietsub"
+                  v-model:value="formAddCountry.name"
                   placeholder="Tên Tiếng Việt..."
                   allow-clear
                 >
@@ -209,7 +209,7 @@
                 ]"
               >
                 <a-input
-                  v-model:value="formAddGenre.short_name"
+                  v-model:value="formAddCountry.short_name"
                   placeholder="Tên rút gọn..."
                   allow-clear
                 >
@@ -253,14 +253,14 @@ import { useUtils } from '@/utils';
 import { useStore } from '@/stores';
 import type { TableColumnType, FormInstance } from 'ant-design-vue';
 import {
-  getAllGenre,
-  CreateGenre,
-  UpdateGenre,
-  DeleteGenre,
-  DeleteMultipleGenre,
-  SearchGenre
-} from '@/services/genres';
-import type { genre } from '@/types';
+  getAllCountry,
+  CreateCountry,
+  UpdateCountry,
+  DeleteCountry,
+  DeleteMultipleCountry,
+  SearchCountry
+} from '@/services/country';
+import type { country } from '@/types';
 import { ElNotification, ElMessageBox } from 'element-plus';
 import { ArrowDown } from '@element-plus/icons-vue';
 import { MESSAGE } from '@/common';
@@ -272,7 +272,7 @@ const inputBackdropFile = ref<HTMLInputElement | null>();
 const inputVideoFile = ref<HTMLInputElement | null>();
 const utils = useUtils();
 const store = useStore();
-const dataGenre = ref<any[]>([]);
+const dataCountry = ref<any[]>([]);
 const page = ref<number>(1);
 const pageSizeTable = ref<number>(20);
 const pageSize = ref<number>(-1);
@@ -293,15 +293,15 @@ const columns: TableColumnType[] = [
   //   width: 200,
   // },
   {
-    title: 'Tên thể loại',
-    dataIndex: 'name',
+    title: 'Tên quốc gia',
+    dataIndex: 'english_name',
     width: 200,
     sorter: true,
     fixed: 'left'
   },
   {
     title: 'Tên Tiếng Việt',
-    dataIndex: 'name_vietsub',
+    dataIndex: 'name',
     width: 200,
     sorter: true
   },
@@ -320,15 +320,15 @@ const columns: TableColumnType[] = [
 ];
 const modalAddVisible = ref<boolean>(false);
 const modalUploadVideoVisible = ref<boolean>(false);
-const formAddGenre = reactive({
-  id: '',
+const formAddCountry = reactive({
+  iso_639_1: '',
   name: '',
-  name_vietsub: '',
+  english_name: '',
   short_name: ''
 });
-const modalAddTitle = ref<string>('Thêm mới thể loại');
+const modalAddTitle = ref<string>('Thêm mới quốc gia');
 const isEdit = ref<boolean>(false);
-const currentEditGenre = ref<genre>();
+const currentEditCountry = ref<country>();
 const loadingAdd = ref<boolean>(false);
 const disabledAdd = ref<boolean>(true);
 const searchValue = ref<string>('');
@@ -338,9 +338,9 @@ const hasSelected = computed(() => selectedRowKeys.value.length > 0);
 const getData = () => {
   loading.value = true;
 
-  getAllGenre()
+  getAllCountry()
     .then((response) => {
-      dataGenre.value = response?.results;
+      dataCountry.value = response?.results;
     })
     .catch((e) => {})
     .finally(() => {
@@ -363,7 +363,7 @@ const onChangePage = (page: number, pageSize: number) => {
 
 const onClickAddBtn = () => {
   isEdit.value = false;
-  modalAddTitle.value = 'Thêm mới thể loại';
+  modalAddTitle.value = 'Thêm mới quốc gia';
   resetFeild();
   modalAddVisible.value = true;
 };
@@ -376,18 +376,18 @@ const onSubmitFormAdd = () => {
     .then(async (values) => {
       loadingAdd.value = true;
 
-      CreateGenre(values as genre)
+      CreateCountry(values as country)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
               title: MESSAGE.STATUS.SUCCESS,
-              message: 'Thêm mới thể loại thành công!',
+              message: 'Thêm mới quốc gia thành công!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: 'Thêm mới thể loại thất bại!',
+              message: response?.message || 'Thêm mới quốc gia thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -395,7 +395,7 @@ const onSubmitFormAdd = () => {
         .catch((e) => {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Thêm mới thể loại thất bại!',
+            message: 'Thêm mới quốc gia thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
         })
@@ -415,21 +415,21 @@ const onSubmitFormAdd = () => {
 onBeforeMount(() => {});
 
 const resetFeild = () => {
-  formAddGenre.id = '';
-  formAddGenre.name = '';
-  formAddGenre.name_vietsub = '';
-  formAddGenre.short_name = '';
+  formAddCountry.iso_639_1 = '';
+  formAddCountry.english_name = '';
+  formAddCountry.name = '';
+  formAddCountry.short_name = '';
 };
 
-const onClickEditGenre = (genre: any) => {
+const onClickEditCountry = (country: any) => {
   isEdit.value = true;
-  currentEditGenre.value = genre;
-  modalAddTitle.value = 'Chỉnh sửa thể loại';
+  currentEditCountry.value = country;
+  modalAddTitle.value = 'Chỉnh sửa quốc gia';
 
-  formAddGenre.id = genre.id;
-  formAddGenre.name = genre.name;
-  formAddGenre.name_vietsub = genre.name_vietsub;
-  formAddGenre.short_name = genre.short_name;
+  formAddCountry.iso_639_1 = country.iso_639_1;
+  formAddCountry.english_name = country.english_name;
+  formAddCountry.name = country.name;
+  formAddCountry.short_name = country.short_name;
 
   modalAddVisible.value = true;
 };
@@ -442,20 +442,20 @@ const onSubmitFormEdit = () => {
     .then(async (values) => {
       loadingAdd.value = true;
 
-      values.id = formAddGenre.id;
+      values.iso_639_1 = formAddCountry.iso_639_1;
 
-      UpdateGenre(values as genre)
+      UpdateCountry(values as country)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
               title: MESSAGE.STATUS.SUCCESS,
-              message: 'Chỉnh sửa thể loại thành công!',
+              message: 'Chỉnh sửa quốc gia thành công!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: 'Chỉnh sửa thể loại thất bại!',
+              message: response?.message || 'Chỉnh sửa quốc gia thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -463,7 +463,7 @@ const onSubmitFormEdit = () => {
         .catch((e) => {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Chỉnh sửa thể loại thất bại!',
+            message: 'Chỉnh sửa quốc gia thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
         })
@@ -480,25 +480,25 @@ const onSubmitFormEdit = () => {
     .finally(() => {});
 };
 
-const onClickDeleteGenre = (genre: any) => {
-  ElMessageBox.confirm('Bạn có chắc muốn xóa thể loại này không?', {
+const onClickDeleteCountry = (country: any) => {
+  ElMessageBox.confirm('Bạn có chắc muốn xóa quốc gia này không?', {
     title: 'Thông báo!',
     confirmButtonText: 'Có',
     cancelButtonText: 'Không'
   })
     .then(() => {
-      DeleteGenre(genre.id)
+      DeleteCountry(country.iso_639_1)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
               title: MESSAGE.STATUS.SUCCESS,
-              message: 'Xóa thể loại thành công!',
+              message: 'Xóa quốc gia thành công!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: 'Xóa thể loại thất bại!',
+              message: 'Xóa quốc gia thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -506,7 +506,7 @@ const onClickDeleteGenre = (genre: any) => {
         .catch((e) => {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Xóa thể loại thất bại!',
+            message: 'Xóa quốc gia thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
         })
@@ -525,9 +525,9 @@ const onSearch = (searchQuery: string) => {
 
   loading.value = true;
 
-  SearchGenre(searchQuery.trim())
+  SearchCountry(searchQuery.trim())
     .then((response) => {
-      dataGenre.value = response?.results;
+      dataCountry.value = response?.results;
       page.value = response.page;
       // pageSize.value = response.page_size;
       total.value = response.total;
@@ -543,24 +543,24 @@ const onSelectChange = (selectedRowKeys1: string[] | number[]) => {
 };
 
 const onClickDeleteBtn = () => {
-  ElMessageBox.confirm('Bạn có chắc muốn xóa các thể loại này không?', {
+  ElMessageBox.confirm('Bạn có chắc muốn xóa các quốc gia này không?', {
     title: 'Thông báo!',
     confirmButtonText: 'Có',
     cancelButtonText: 'Không'
   })
     .then(() => {
-      DeleteMultipleGenre(selectedRowKeys.value)
+      DeleteMultipleCountry(selectedRowKeys.value)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
               title: MESSAGE.STATUS.SUCCESS,
-              message: 'Xóa thể loại thành công!',
+              message: 'Xóa quốc gia thành công!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: 'Xóa thể loại thất bại!',
+              message: 'Xóa quốc gia thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -568,7 +568,7 @@ const onClickDeleteBtn = () => {
         .catch((e) => {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Xóa thể loại thất bại!',
+            message: 'Xóa quốc gia thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
         })
@@ -584,4 +584,4 @@ const onClickDeleteBtn = () => {
 };
 </script>
 
-<style lang="scss" src="./ManageGenre.scss"></style>
+<style lang="scss" src="./ManageCountry.scss"></style>

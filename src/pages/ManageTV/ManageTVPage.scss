@@ -24,6 +24,12 @@
       min-width: 300px;
       max-width: 500px;
     }
+
+    .right-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
   }
 
   .movie-table {
