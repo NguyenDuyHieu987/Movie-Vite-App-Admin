@@ -14,6 +14,7 @@ export declare interface mod {
 }
 
 export declare interface genre {
+  _id: string;
   id: number;
   name_vietsub: string;
   name: string;
@@ -21,6 +22,7 @@ export declare interface genre {
 }
 
 export declare interface country {
+  _id: string;
   iso_639_1: string;
   english_name: string;
   name: string;
@@ -28,6 +30,7 @@ export declare interface country {
 }
 
 export declare interface year {
+  _id: string;
   name: string;
 }
 

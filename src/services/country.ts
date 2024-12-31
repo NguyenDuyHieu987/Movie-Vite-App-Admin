@@ -25,7 +25,9 @@ export function getCountryVietSub(
   if (allCountries?.length != 0) {
     return allCountries.find((country) => country.name === original_language)!;
   } else {
-    return ALLCOUNTRIES.find((country) => country.name === original_language)!;
+    return ALLCOUNTRIES.find(
+      (country) => country.name === original_language
+    )! as country;
   }
 }
 
@@ -40,7 +42,7 @@ export function getCountryByShortName(
   } else {
     return ALLCOUNTRIES.find(
       (country) => country.short_name === country_short_name
-    )!;
+    )! as country;
   }
 }
 
@@ -55,7 +57,7 @@ export function getCountryByOriginalLanguage(
   } else {
     return ALLCOUNTRIES.find(
       (language) => language.iso_639_1 === original_language
-    )!;
+    )! as country;
   }
 }
 

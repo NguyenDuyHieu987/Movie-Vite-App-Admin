@@ -61,7 +61,7 @@ const routes = [
   {
     name: 'manage-year',
     path: '/manage-year',
-    component: () => import('./pages/ManageGenre/ManageGenre.vue'),
+    component: () => import('./pages/ManageYear/ManageYear.vue'),
     meta: {
       name: 'manage-year',
       layout: { name: 'default', component: DefaultLayout }

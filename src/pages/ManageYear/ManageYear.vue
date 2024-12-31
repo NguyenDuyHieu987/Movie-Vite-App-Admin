@@ -1,9 +1,9 @@
 <template>
-  <div class="manage-country-container">
+  <div class="manage-year-container">
     <div class="header-table">
-      <h2>Danh sách Quốc gia</h2>
+      <h2>Danh sách Năm</h2>
 
-      <!-- <RouterLink :to="{ path: '/addcountry' }"> -->
+      <!-- <RouterLink :to="{ path: '/addyear' }"> -->
 
       <a-button
         class="add-btn"
@@ -17,7 +17,7 @@
             fill="currentColor"
           />
         </template>
-        Thêm quốc gia
+        Thêm năm
       </a-button>
 
       <!-- </RouterLink> -->
@@ -25,9 +25,9 @@
 
     <div class="table-tools">
       <a-input-search
-        class="search-country"
+        class="search-year"
         v-model:value="searchValue"
-        placeholder="Nhập têm quốc gia để tìm kiếm..."
+        placeholder="Nhập têm năm để tìm kiếm..."
         enter-button="Tìm kiếm"
         size="large"
         @search="onSearch"
@@ -63,21 +63,21 @@
               fill="currentColor"
             />
           </template>
-          Xóa quốc gia
+          Xóa năm
         </a-button>
       </div>
     </div>
 
-    <div class="country-table">
+    <div class="year-table">
       <a-table
         class="ant-table-striped table-app-bg-header"
         :row-class-name="
           (_record: any, index: number) =>
             index % 2 === 1 ? 'table-striped' : null
         "
-        :data-source="dataCountry"
+        :data-source="dataYear"
         :columns="columns"
-        :row-key="(record: any) => record.iso_639_1"
+        :row-key="(record: any) => record._id"
         :loading="loading"
         :scroll="{
           y: '75vh',
@@ -99,7 +99,7 @@
           <template v-if="column.dataIndex === 'action'">
             <!-- <RouterLink
               class="underline"
-              :to="`/YourAccount/invoices/${record?.iso_639_1}`"
+              :to="`/YourAccount/invoices/${record?._id}`"
             >
               Chi tiết
             </RouterLink>
@@ -119,14 +119,14 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item @click="onClickEditCountry(record)">
+                  <el-dropdown-item @click="onClickEditYear(record)">
                     Chỉnh sửa
                   </el-dropdown-item>
                   <el-dropdown-item
-                    @click="onClickDeleteCountry(record)"
-                    class="menu-delete-country"
+                    @click="onClickDeleteYear(record)"
+                    class="menu-delete-year"
                   >
-                    Xóa quốc gia
+                    Xóa năm
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -136,7 +136,7 @@
       </a-table>
 
       <el-dialog
-        class="add-country-dialog"
+        class="add-year-dialog"
         v-model="modalAddVisible"
         :title="modalAddTitle"
         align-center
@@ -145,9 +145,9 @@
         <!-- width="500" -->
         <a-form
           ref="formRef"
-          name="country-form"
-          class="country-form"
-          :model="formAddCountry"
+          name="year-form"
+          class="year-form"
+          :model="formAddYear"
           hideRequiredMark
         >
           <!-- @finish="handleFinish" -->
@@ -155,62 +155,19 @@
           <a-row :gutter="16">
             <a-col :span="12">
               <a-form-item
-                label="Tên quốc gia"
-                name="english_name"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập tên quốc gia!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-input
-                  v-model:value="formAddCountry.english_name"
-                  placeholder="Tên quốc gia..."
-                  allow-clear
-                >
-                </a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
-              <a-form-item
-                label="Tên Tiếng Việt"
+                label="Tên năm"
                 name="name"
                 :rules="[
                   {
                     required: true,
-                    message: 'Vui lòng nhập tên Tiếng Việt!',
+                    message: 'Vui lòng nhập tên năm!',
                     trigger: ['change', 'blur']
                   }
                 ]"
               >
                 <a-input
-                  v-model:value="formAddCountry.name"
-                  placeholder="Tên Tiếng Việt..."
-                  allow-clear
-                >
-                </a-input>
-              </a-form-item>
-            </a-col>
-          </a-row>
-
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Tên rút gọn"
-                name="short_name"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập tên rút gọn!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-input
-                  v-model:value="formAddCountry.short_name"
-                  placeholder="Tên rút gọn..."
+                  v-model:value="formAddYear.name"
+                  placeholder="Tên năm..."
                   allow-clear
                 >
                 </a-input>
@@ -253,14 +210,14 @@ import { useUtils } from '@/utils';
 import { useStore } from '@/stores';
 import type { TableColumnType, FormInstance } from 'ant-design-vue';
 import {
-  getAllCountry,
-  CreateCountry,
-  UpdateCountry,
-  DeleteCountry,
-  DeleteMultipleCountry,
-  SearchCountry
-} from '@/services/country';
-import type { country } from '@/types';
+  getAllYear,
+  CreateYear,
+  UpdateYear,
+  DeleteYear,
+  DeleteMultipleYear,
+  SearchYear
+} from '@/services/year';
+import type { year } from '@/types';
 import { ElNotification, ElMessageBox } from 'element-plus';
 import { ArrowDown } from '@element-plus/icons-vue';
 import { MESSAGE } from '@/common';
@@ -272,7 +229,7 @@ const inputBackdropFile = ref<HTMLInputElement | null>();
 const inputVideoFile = ref<HTMLInputElement | null>();
 const utils = useUtils();
 const store = useStore();
-const dataCountry = ref<any[]>([]);
+const dataYear = ref<any[]>([]);
 const page = ref<number>(1);
 const pageSizeTable = ref<number>(20);
 const pageSize = ref<number>(-1);
@@ -284,7 +241,7 @@ const columns: TableColumnType[] = [
     title: 'STT',
     dataIndex: 'no',
     sorter: true,
-    width: '70px',
+    width: '20px',
     fixed: 'left'
   },
   // {
@@ -293,42 +250,29 @@ const columns: TableColumnType[] = [
   //   width: 200,
   // },
   {
-    title: 'Tên quốc gia',
-    dataIndex: 'english_name',
-    width: 200,
-    sorter: true,
-    fixed: 'left'
-  },
-  {
-    title: 'Tên Tiếng Việt',
+    title: 'Tên năm',
     dataIndex: 'name',
     width: 200,
     sorter: true
   },
   {
-    title: 'Tên rút gọn',
-    dataIndex: 'short_name',
-    sorter: true,
-    width: 120
-  },
-  {
     title: 'Hành động',
     dataIndex: 'action',
-    width: 100,
+    width: 50,
     fixed: 'right'
   }
 ];
 const modalAddVisible = ref<boolean>(false);
 const modalUploadVideoVisible = ref<boolean>(false);
-const formAddCountry = reactive({
-  iso_639_1: '',
+const formAddYear = reactive({
+  _id: '',
   name: '',
   english_name: '',
   short_name: ''
 });
-const modalAddTitle = ref<string>('Thêm mới quốc gia');
+const modalAddTitle = ref<string>('Thêm mới năm');
 const isEdit = ref<boolean>(false);
-const currentEditCountry = ref<country>();
+const currentEditYear = ref<year>();
 const loadingAdd = ref<boolean>(false);
 const disabledAdd = ref<boolean>(true);
 const searchValue = ref<string>('');
@@ -338,9 +282,9 @@ const hasSelected = computed(() => selectedRowKeys.value.length > 0);
 const getData = () => {
   loading.value = true;
 
-  getAllCountry()
+  getAllYear()
     .then((response) => {
-      dataCountry.value = response?.results;
+      dataYear.value = response?.results;
     })
     .catch((e) => {})
     .finally(() => {
@@ -363,7 +307,7 @@ const onChangePage = (page: number, pageSize: number) => {
 
 const onClickAddBtn = () => {
   isEdit.value = false;
-  modalAddTitle.value = 'Thêm mới quốc gia';
+  modalAddTitle.value = 'Thêm mới năm';
   resetFeild();
   modalAddVisible.value = true;
 };
@@ -376,18 +320,18 @@ const onSubmitFormAdd = () => {
     .then(async (values) => {
       loadingAdd.value = true;
 
-      CreateCountry(values as country)
+      CreateYear(values as year)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
               title: MESSAGE.STATUS.SUCCESS,
-              message: 'Thêm mới quốc gia thành công!',
+              message: 'Thêm mới năm thành công!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: response?.message || 'Thêm mới quốc gia thất bại!',
+              message: response?.message || 'Thêm mới năm thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -395,7 +339,7 @@ const onSubmitFormAdd = () => {
         .catch((e) => {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Thêm mới quốc gia thất bại!',
+            message: 'Thêm mới năm thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
         })
@@ -415,21 +359,21 @@ const onSubmitFormAdd = () => {
 onBeforeMount(() => {});
 
 const resetFeild = () => {
-  formAddCountry.iso_639_1 = '';
-  formAddCountry.english_name = '';
-  formAddCountry.name = '';
-  formAddCountry.short_name = '';
+  formAddYear._id = '';
+  formAddYear.english_name = '';
+  formAddYear.name = '';
+  formAddYear.short_name = '';
 };
 
-const onClickEditCountry = (country: any) => {
+const onClickEditYear = (year: any) => {
   isEdit.value = true;
-  currentEditCountry.value = country;
-  modalAddTitle.value = 'Chỉnh sửa quốc gia';
+  currentEditYear.value = year;
+  modalAddTitle.value = 'Chỉnh sửa năm';
 
-  formAddCountry.iso_639_1 = country.iso_639_1;
-  formAddCountry.english_name = country.english_name;
-  formAddCountry.name = country.name;
-  formAddCountry.short_name = country.short_name;
+  formAddYear._id = year._id;
+  formAddYear.english_name = year.english_name;
+  formAddYear.name = year.name;
+  formAddYear.short_name = year.short_name;
 
   modalAddVisible.value = true;
 };
@@ -442,20 +386,20 @@ const onSubmitFormEdit = () => {
     .then(async (values) => {
       loadingAdd.value = true;
 
-      values.iso_639_1 = formAddCountry.iso_639_1;
+      values._id = formAddYear._id;
 
-      UpdateCountry(values as country)
+      UpdateYear(values as year)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
               title: MESSAGE.STATUS.SUCCESS,
-              message: 'Chỉnh sửa quốc gia thành công!',
+              message: 'Chỉnh sửa năm thành công!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: response?.message || 'Chỉnh sửa quốc gia thất bại!',
+              message: response?.message || 'Chỉnh sửa năm thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -463,7 +407,7 @@ const onSubmitFormEdit = () => {
         .catch((e) => {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Chỉnh sửa quốc gia thất bại!',
+            message: 'Chỉnh sửa năm thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
         })
@@ -480,25 +424,25 @@ const onSubmitFormEdit = () => {
     .finally(() => {});
 };
 
-const onClickDeleteCountry = (country: any) => {
-  ElMessageBox.confirm('Bạn có chắc muốn xóa quốc gia này không?', {
+const onClickDeleteYear = (year: any) => {
+  ElMessageBox.confirm('Bạn có chắc muốn xóa năm này không?', {
     title: 'Thông báo!',
     confirmButtonText: 'Có',
     cancelButtonText: 'Không'
   })
     .then(() => {
-      DeleteCountry(country.iso_639_1)
+      DeleteYear(year._id)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
               title: MESSAGE.STATUS.SUCCESS,
-              message: 'Xóa quốc gia thành công!',
+              message: 'Xóa năm thành công!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: 'Xóa quốc gia thất bại!',
+              message: 'Xóa năm thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -506,7 +450,7 @@ const onClickDeleteCountry = (country: any) => {
         .catch((e) => {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Xóa quốc gia thất bại!',
+            message: 'Xóa năm thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
         })
@@ -525,9 +469,9 @@ const onSearch = (searchQuery: string) => {
 
   loading.value = true;
 
-  SearchCountry(searchQuery.trim())
+  SearchYear(searchQuery.trim())
     .then((response) => {
-      dataCountry.value = response?.results;
+      dataYear.value = response?.results;
       page.value = response.page;
       // pageSize.value = response.page_size;
       total.value = response.total;
@@ -543,24 +487,24 @@ const onSelectChange = (selectedRowKeys1: string[] | number[]) => {
 };
 
 const onClickDeleteBtn = () => {
-  ElMessageBox.confirm('Bạn có chắc muốn xóa các quốc gia này không?', {
+  ElMessageBox.confirm('Bạn có chắc muốn xóa các năm này không?', {
     title: 'Thông báo!',
     confirmButtonText: 'Có',
     cancelButtonText: 'Không'
   })
     .then(() => {
-      DeleteMultipleCountry(selectedRowKeys.value)
+      DeleteMultipleYear(selectedRowKeys.value)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
               title: MESSAGE.STATUS.SUCCESS,
-              message: 'Xóa quốc gia thành công!',
+              message: 'Xóa năm thành công!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: 'Xóa quốc gia thất bại!',
+              message: 'Xóa năm thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -568,7 +512,7 @@ const onClickDeleteBtn = () => {
         .catch((e) => {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Xóa quốc gia thất bại!',
+            message: 'Xóa năm thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
         })
@@ -584,4 +528,4 @@ const onClickDeleteBtn = () => {
 };
 </script>
 
-<style lang="scss" src="./ManageCountry.scss"></style>
+<style lang="scss" src="./ManageYear.scss"></style>

@@ -25,7 +25,7 @@ export function getGenreByShortName(
   if (allGenres?.length != 0) {
     return allGenres!.find((gen) => gen.short_name == genre_short_name);
   } else {
-    return ALLGENRES.find((gen) => gen.short_name == genre_short_name);
+    return ALLGENRES.find((gen) => gen.short_name == genre_short_name) as genre;
   }
 }
 
@@ -36,7 +36,7 @@ export function getGenreById(
   if (allGenres?.length != 0) {
     return allGenres!.find((gen) => gen.id == genre_id);
   } else {
-    return ALLGENRES?.find((gen) => gen.id == genre_id);
+    return ALLGENRES?.find((gen) => gen.id == genre_id) as genre;
   }
 }
 
@@ -47,7 +47,7 @@ export function getGenreByName(
   if (allGenres?.length != 0) {
     return allGenres!.find((gen) => gen.name == genre_name);
   } else {
-    return ALLGENRES.find((gen) => gen.name == genre_name);
+    return ALLGENRES.find((gen) => gen.name == genre_name) as genre;
   }
 }
 
