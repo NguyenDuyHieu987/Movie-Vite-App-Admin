@@ -100,7 +100,12 @@
             {{ record.movieData.name }}
           </template>
           <template v-if="column.dataIndex === 'release_time'">
-            {{ dayjs(value).local().utc().format('DD/MM/YYYY hh:mm A') }}
+            {{
+              dayjs(value)
+                // .local()
+                // .utc()
+                .format('DD/MM/YYYY hh:mm A')
+            }}
           </template>
           <template v-if="column.dataIndex === 'number_of_interactions'">
             {{ value.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, '.') }}
@@ -212,9 +217,10 @@
                   style="width: 100%"
                   size="large"
                   format="YYYY/MM/DD hh:mm:ss A"
-                  value-format="YYYY-MM-DD hh:mm:ss"
+                  date-format="YYYY-MM-DD"
                   time-format="hh:mm:ss A"
                 />
+                <!-- value-format="YYYY-MM-DD hh:mm:ss A" -->
               </a-form-item>
             </a-col>
           </a-row>
@@ -411,7 +417,7 @@ const shortcutsReleaseTime = [
 const getData = () => {
   loading.value = true;
 
-  getAllBroadcast()
+  getAllBroadcast(page.value, pageSize.value)
     .then((response) => {
       dataBroadcast.value = response?.results;
     })
@@ -448,6 +454,11 @@ const onSubmitFormAdd = () => {
     .validateFields()
     .then(async (values) => {
       loadingAdd.value = true;
+
+      values.release_time = dayjs(formAddBroadcast.release_time)
+        // .local()
+        // .utc()
+        .format('YYYY-MM-DDTHH:mm:ssZ');
 
       CreateBroadcast(values as Broadcast)
         .then((response) => {
@@ -507,9 +518,10 @@ const onClickEditBroadcast = (broadcast: any) => {
   formAddBroadcast.name = broadcast.name;
   formAddBroadcast.description = broadcast.description;
   formAddBroadcast.release_time = dayjs(broadcast.release_time)
-    .local()
-    .utc()
-    .format('YYYY-MM-DDThh:mm:ssZ');
+    // .local()
+    // .utc()
+    // .format('YYYY-MM-DDTHH:mm:ssZ');
+    .format('YYYY-MM-DD hh:mm:ss A');
 
   modalAddVisible.value = true;
 };
@@ -523,6 +535,10 @@ const onSubmitFormEdit = () => {
       loadingAdd.value = true;
 
       values.id = formAddBroadcast.id;
+      values.release_time = dayjs(formAddBroadcast.release_time)
+        // .local()
+        // .utc()
+        .format('YYYY-MM-DDTHH:mm:ssZ');
 
       UpdateBroadcast(values as Broadcast)
         .then((response) => {
