@@ -1,0 +1,49 @@
+.manage-broadcast-container {
+  .header-table {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h2 {
+      margin-right: 20px;
+    }
+
+    .add-btn {
+      margin-left: auto;
+    }
+  }
+
+  .table-tools {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
+    .search-broadcast {
+      width: 40%;
+      min-width: 300px;
+      max-width: 500px;
+    }
+
+    .right-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+  }
+
+  .broadcast-table {
+  }
+}
+
+.add-broadcast-dialog {
+  .poster-image {
+    width: 150px;
+    margin-top: 10px;
+  }
+
+  .backdrop-image {
+    height: 150px;
+    margin-top: 10px;
+  }
+}

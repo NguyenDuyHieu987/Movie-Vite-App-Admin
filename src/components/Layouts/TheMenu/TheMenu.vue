@@ -23,6 +23,20 @@
       </template>
     </el-menu-item>
 
+    <el-menu-item index="/manage-broadcast">
+      <el-icon>
+        <BroadcastOnHome
+          width="1.5rem"
+          height="1.5rem"
+          fill="currentColor"
+        />
+      </el-icon>
+
+      <template #title>
+        <RouterLink to="/manage-broadcast">Quản lý phát sóng</RouterLink>
+      </template>
+    </el-menu-item>
+
     <el-sub-menu
       index="/discover/movie"
       popperClass="sub-menu-popper"
@@ -113,6 +127,7 @@
 
 <script setup lang="ts">
 import { HomeOutlined } from '@ant-design/icons-vue';
+import BroadcastOnHome from '@/assets/svgs/icons/broadcast-on-home.svg?component';
 import VideoCamera from '@/assets/svgs/icons/video-camera.svg?component';
 import MovieReel from '@/assets/svgs/icons/movie-reel.svg?component';
 import Light from '@/assets/svgs/icons/light.svg?component';

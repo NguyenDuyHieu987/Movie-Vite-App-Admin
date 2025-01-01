@@ -31,6 +31,7 @@ declare module 'vue' {
     ATable: typeof import('ant-design-vue/es')['Table']
     ATag: typeof import('ant-design-vue/es')['Tag']
     ATextarea: typeof import('ant-design-vue/es')['Textarea']
+    ATimePicker: typeof import('ant-design-vue/es')['TimePicker']
     BackPage: typeof import('./src/components/BackPage/BackPage.vue')['default']
     BreadCrumb: typeof import('./src/components/Layouts/BreadCrumb/BreadCrumb.vue')['default']
     Button: typeof import('./src/components/Button/Button.vue')['default']

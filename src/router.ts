@@ -18,6 +18,15 @@ const routes = [
     }
   },
   {
+    name: 'manage-broadcast',
+    path: '/manage-broadcast',
+    component: () => import('./pages/ManageBroadcast/ManageBroadcast.vue'),
+    meta: {
+      name: 'manage-broadcast',
+      layout: { name: 'default', component: DefaultLayout }
+    }
+  },
+  {
     name: 'manage-movie',
     path: '/manage-movie',
     component: () => import('./pages/ManageMovie/ManageMovie.vue'),

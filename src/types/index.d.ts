@@ -267,3 +267,20 @@ export declare type EpisodeForm = {
   createdAt?: Date;
   updatedAt?: Date;
 };
+
+export declare interface Broadcast {
+  id: string;
+  movie_id: string;
+  episode_id: string;
+  type: string;
+  number_of_interactions: Number;
+  backdrop_path: string;
+  poster_path: string;
+  release_time: string;
+  name: string;
+  description: string;
+  created_at: Date;
+  updated_at: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
