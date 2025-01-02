@@ -46,4 +46,10 @@
     height: 150px;
     margin-top: 10px;
   }
+
+  .dialog-footer {
+    button + button {
+      margin-left: 12px;
+    }
+  }
 }

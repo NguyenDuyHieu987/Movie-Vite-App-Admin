@@ -20,18 +20,18 @@
 } */
 
 .ant-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: var(--font-size-normal);
 
   &:not(.ant-btn-link) {
-    height: 35px;
+    // height: 35px;
     padding: 0px 15px;
     // line-height: var(--button-line-height);
     line-height: normal;
     color: inherit;
-    border: 1px solid var(--btn-border-color);
+    // border: 1px solid var(--btn-border-color);
     border-radius: var(--border-radius-normal);
     outline: none;
     box-shadow: none;
@@ -59,7 +59,7 @@
 
     &:hover,
     &:not(:disabled, .ant-btn-text):hover {
-      border-color: var(--btn-hover-border-color);
+      // border-color: var(--btn-hover-border-color);
       // color: inherit;
     }
 

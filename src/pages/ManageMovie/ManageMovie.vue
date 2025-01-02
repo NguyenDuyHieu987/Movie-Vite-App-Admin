@@ -29,7 +29,6 @@
         v-model:value="searchValue"
         placeholder="Nhập têm phim để tìm kiếm..."
         enter-button="Tìm kiếm"
-        size="large"
         @search="onSearch"
       />
 

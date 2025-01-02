@@ -29,7 +29,6 @@
         v-model:value="searchValue"
         placeholder="Nhập têm buổi phát sóng để tìm kiếm..."
         enter-button="Tìm kiếm"
-        size="large"
         @search="onSearch"
       />
 
@@ -248,7 +247,78 @@
               </a-form-item>
             </a-col>
           </a-row>
+
+          <a-row :gutter="16">
+            <a-col :span="12">
+              <a-form-item
+                label="Mô tả"
+                name="movie_id"
+                :rules="[
+                  {
+                    required: true,
+                    message: 'Vui lòng chọn phim!',
+                    trigger: ['change', 'blur']
+                  }
+                ]"
+              >
+                <a-select
+                  v-model:value="formAddBroadcast.movie_id"
+                  show-search
+                  placeholder="Chọn phim..."
+                  size="large"
+                  :filter-option="false"
+                  style="width: 100%"
+                  :options="optionsMovie"
+                  @search="searchMovie"
+                  @select="selectMovie"
+                >
+                  <template
+                    v-if="loadingMovie"
+                    #notFoundContent
+                  >
+                    <a-spin size="small" />
+                  </template>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col
+              v-if="isEpisodes"
+              :span="12"
+            >
+              <a-form-item
+                label="Mô tả"
+                name="episode_id"
+                :rules="[
+                  {
+                    required: true,
+                    message: 'Vui lòng chọn tập!',
+                    trigger: ['change', 'blur']
+                  }
+                ]"
+              >
+                <a-select
+                  v-model:value="formAddBroadcast.episode_id"
+                  show-search
+                  placeholder="Chọn tập..."
+                  size="large"
+                  style="width: 100%"
+                  :filter-option="false"
+                  :default-active-first-option="false"
+                  :options="optionsEpisode"
+                  @search="searchEpisode"
+                >
+                  <template
+                    v-if="loadingEpisode"
+                    #notFoundContent
+                  >
+                    <a-spin size="small" />
+                  </template>
+                </a-select>
+              </a-form-item>
+            </a-col>
+          </a-row>
         </a-form>
+
         <template #footer>
           <div class="dialog-footer">
             <el-button @click="modalAddVisible = false">Đóng</el-button>
@@ -297,6 +367,9 @@ import { ArrowDown } from '@element-plus/icons-vue';
 import { MESSAGE } from '@/common';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import { GetAllMovie, SearchMovie } from '@/services/movie';
+import { debounce } from 'lodash';
+import { getListEpisode, SearchEpisode } from '@/services/episode';
 
 dayjs.extend(utc);
 
@@ -308,12 +381,15 @@ const inputVideoFile = ref<HTMLInputElement | null>();
 const utils = useUtils();
 const store = useStore();
 const dataBroadcast = ref<any[]>([]);
+const dataMovie = ref<any[]>([]);
+const dataEpisodes = ref<any[]>([]);
 const page = ref<number>(1);
 const pageSizeTable = ref<number>(20);
 const pageSize = ref<number>(-1);
 const total = ref<number>(0);
 const loading = ref<boolean>(false);
-const loadingUpload = ref<boolean>(false);
+const loadingMovie = ref<boolean>(false);
+const loadingEpisode = ref<boolean>(false);
 const columns: TableColumnType[] = [
   {
     title: 'STT',
@@ -365,11 +441,13 @@ const columns: TableColumnType[] = [
   }
 ];
 const modalAddVisible = ref<boolean>(false);
-const modalUploadVideoVisible = ref<boolean>(false);
+const modalSelectMovieVisible = ref<boolean>(false);
+const modalSelectEpisodeVisible = ref<boolean>(false);
+const isEpisodes = ref<boolean>(false);
 const formAddBroadcast = reactive({
   id: '',
-  movie_id: '',
-  episode_id: '',
+  movie_id: null,
+  episode_id: null,
   name: '',
   description: '',
   release_time: ''
@@ -382,6 +460,13 @@ const disabledAdd = ref<boolean>(true);
 const searchValue = ref<string>('');
 const selectedRowKeys = ref<string[] | number[]>([]);
 const hasSelected = computed(() => selectedRowKeys.value.length > 0);
+const optionsMovie = ref<{ label: string; value: string; disabled: boolean }[]>(
+  []
+);
+const optionsEpisode = ref<
+  { label: string; value: string; disabled: boolean }[]
+>([]);
+const selectedMovie = ref<any>();
 
 const shortcutsReleaseTime = [
   {
@@ -429,6 +514,100 @@ const getData = () => {
 
 getData();
 
+const getDataMovie = () => {
+  loadingMovie.value = true;
+
+  GetAllMovie('all', 1, -1)
+    .then((response) => {
+      dataMovie.value = response?.results;
+      optionsMovie.value = dataMovie.value.map((item) => ({
+        label: `${item.name} - ${item.original_name}`,
+        value: item.id,
+        disabled: false
+      }));
+    })
+    .catch((e) => {})
+    .finally(() => {
+      loadingMovie.value = false;
+    });
+};
+
+const searchMovie = debounce((searchQuery: string, callback: any) => {
+  if (!searchQuery) return;
+  loadingMovie.value = true;
+
+  SearchMovie('all', searchQuery.trim(), 1, -1)
+    .then((response) => {
+      dataMovie.value = response?.results;
+      optionsMovie.value = dataMovie.value.map((item) => ({
+        label: `${item.name} - ${item.original_name}`,
+        value: item.id,
+        disabled: false
+      }));
+
+      callback(optionsMovie.value);
+    })
+    .catch((e) => {})
+    .finally(() => {
+      loadingMovie.value = false;
+    });
+}, 50);
+
+const selectMovie = (value: string) => {
+  selectedMovie.value = dataMovie.value.find((item) => item.id == value);
+  if (selectedMovie.value.media_type == 'tv') {
+    getDataEpisde(selectedMovie.value.id, selectedMovie.value.season_id);
+    isEpisodes.value = true;
+  } else {
+    isEpisodes.value = false;
+  }
+};
+
+const getDataEpisde = async (movie_id: string, season_id: string) => {
+  loadingEpisode.value = true;
+
+  getListEpisode(movie_id, season_id, 1, -1)
+    .then((response) => {
+      dataEpisodes.value = response?.results;
+      optionsEpisode.value = dataEpisodes.value.map((item) => ({
+        label: `${item.name}`,
+        value: item.id,
+        disabled: false
+      }));
+    })
+    .catch((e) => {})
+    .finally(() => {
+      loadingEpisode.value = false;
+    });
+};
+
+const searchEpisode = debounce((searchQuery: string, callback: any) => {
+  if (!searchQuery) return;
+  loadingEpisode.value = true;
+
+  SearchEpisode(
+    selectedMovie.value.id,
+    selectedMovie.value.season_id,
+    searchQuery.trim(),
+    1,
+    -1
+  )
+    .then((response) => {
+      dataEpisodes.value = response?.results;
+      optionsEpisode.value = dataEpisodes.value.map((item: any) => ({
+        label: `${item.name}`,
+        value: item.id,
+        disabled: false
+      }));
+
+      callback(optionsEpisode.value);
+    })
+    .catch((e) => {})
+    .finally(() => {
+      loadingEpisode.value = false;
+    });
+}, 50);
+
 // const onChangeTable = (
 //   pagination,
 //   filters,
@@ -445,6 +624,7 @@ const onClickAddBtn = () => {
   modalAddTitle.value = 'Thêm mới buổi phát sóng';
   resetFeild();
   modalAddVisible.value = true;
+  getDataMovie();
 };
 
 const onSubmitFormAdd = () => {
@@ -499,9 +679,10 @@ const onSubmitFormAdd = () => {
 onBeforeMount(() => {});
 
 const resetFeild = () => {
+  isEpisodes.value = false;
   formAddBroadcast.id = '';
-  formAddBroadcast.movie_id = '';
-  formAddBroadcast.episode_id = '';
+  formAddBroadcast.movie_id = null;
+  formAddBroadcast.episode_id = null;
   formAddBroadcast.name = '';
   formAddBroadcast.description = '';
   formAddBroadcast.release_time = '';
@@ -517,11 +698,11 @@ const onClickEditBroadcast = (broadcast: any) => {
   formAddBroadcast.episode_id = broadcast.episode_id;
   formAddBroadcast.name = broadcast.name;
   formAddBroadcast.description = broadcast.description;
-  formAddBroadcast.release_time = dayjs(broadcast.release_time)
-    // .local()
-    // .utc()
-    // .format('YYYY-MM-DDTHH:mm:ssZ');
-    .format('YYYY-MM-DD hh:mm:ss A');
+  formAddBroadcast.release_time = broadcast.release_time;
+  // .local()
+  // .utc()
+  // .format('YYYY-MM-DDTHH:mm:ssZ');
+  // .format('YYYY-MM-DD hh:mm:ss A');
 
   modalAddVisible.value = true;
 };
