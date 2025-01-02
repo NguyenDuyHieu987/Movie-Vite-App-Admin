@@ -98,6 +98,13 @@
           <template v-if="column.dataIndex === 'movieData.name'">
             {{ record.movieData.name }}
           </template>
+          <template v-if="column.dataIndex === 'movieData.media_type'">
+            {{ record.movieData.media_type == 'movie' ? 'Phim lẻ' : null }}
+            {{ record.movieData.media_type == 'tv' ? 'Phim bộ' : null }}
+          </template>
+          <template v-if="column.dataIndex === 'episodeData.name'">
+            {{ record?.episodeData?.name || null }}
+          </template>
           <template v-if="column.dataIndex === 'release_time'">
             {{
               dayjs(value)
@@ -420,6 +427,18 @@ const columns: TableColumnType[] = [
   {
     title: 'Tên phim',
     dataIndex: 'movieData.name',
+    width: 200,
+    sorter: true
+  },
+  {
+    title: 'Loại phim',
+    dataIndex: 'movieData.media_type',
+    width: 200,
+    sorter: true
+  },
+  {
+    title: 'Tên tập',
+    dataIndex: 'episodeData.name',
     width: 200,
     sorter: true
   },
