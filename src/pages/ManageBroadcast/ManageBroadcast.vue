@@ -271,6 +271,7 @@
                   :options="optionsMovie"
                   @search="searchMovie"
                   @select="selectMovie"
+                  @blur="getDataMovie"
                 >
                   <template
                     v-if="loadingMovie"
@@ -306,6 +307,7 @@
                   :default-active-first-option="false"
                   :options="optionsEpisode"
                   @search="searchEpisode"
+                  @blur="getDataEpisde"
                 >
                   <template
                     v-if="loadingEpisode"
@@ -515,37 +517,47 @@ const getData = () => {
 getData();
 
 const getDataMovie = () => {
-  loadingMovie.value = true;
+  if (dataMovie.value.length > 0) {
+    optionsMovie.value = dataMovie.value.map((item) => ({
+      label: `${item.name} - ${item.original_name}`,
+      value: item.id,
+      disabled: false
+    }));
+    if (formAddBroadcast.movie_id) {
+      selectMovie(formAddBroadcast.movie_id);
+    }
+  } else {
+    loadingMovie.value = true;
 
-  GetAllMovie('all', 1, -1)
-    .then((response) => {
-      dataMovie.value = response?.results;
-      optionsMovie.value = dataMovie.value.map((item) => ({
-        label: `${item.name} - ${item.original_name}`,
-        value: item.id,
-        disabled: false
-      }));
-    })
-    .catch((e) => {})
-    .finally(() => {
-      loadingMovie.value = false;
-    });
+    GetAllMovie('all', 1, -1)
+      .then((response) => {
+        dataMovie.value = response?.results;
+        optionsMovie.value = dataMovie.value.map((item) => ({
+          label: `${item.name} - ${item.original_name}`,
+          value: item.id,
+          disabled: false
+        }));
+      })
+      .catch((e) => {})
+      .finally(() => {
+        loadingMovie.value = false;
+      });
+  }
 };
 
-const searchMovie = debounce((searchQuery: string, callback: any) => {
+getDataMovie();
+
+const searchMovie = debounce((searchQuery: string) => {
   if (!searchQuery) return;
   loadingMovie.value = true;
 
   SearchMovie('all', searchQuery.trim(), 1, -1)
     .then((response) => {
-      dataMovie.value = response?.results;
-      optionsMovie.value = dataMovie.value.map((item) => ({
+      optionsMovie.value = response?.results.map((item: any) => ({
         label: `${item.name} - ${item.original_name}`,
         value: item.id,
         disabled: false
       }));
-
-      callback(optionsMovie.value);
     })
     .catch((e) => {})
     .finally(() => {
@@ -556,32 +568,40 @@ const searchMovie = debounce((searchQuery: string, callback: any) => {
 const selectMovie = (value: string) => {
   selectedMovie.value = dataMovie.value.find((item) => item.id == value);
   if (selectedMovie.value.media_type == 'tv') {
-    getDataEpisde(selectedMovie.value.id, selectedMovie.value.season_id);
+    getDataEpisde();
     isEpisodes.value = true;
   } else {
     isEpisodes.value = false;
   }
 };
 
-const getDataEpisde = async (movie_id: string, season_id: string) => {
-  loadingEpisode.value = true;
+const getDataEpisde = async () => {
+  if (dataEpisodes.value.length > 0) {
+    optionsEpisode.value = dataEpisodes.value.map((item) => ({
+      label: `${item.name}`,
+      value: item.id,
+      disabled: false
+    }));
+  } else {
+    loadingEpisode.value = true;
 
-  getListEpisode(movie_id, season_id, 1, -1)
-    .then((response) => {
-      dataEpisodes.value = response?.results;
-      optionsEpisode.value = dataEpisodes.value.map((item) => ({
-        label: `${item.name}`,
-        value: item.id,
-        disabled: false
-      }));
-    })
-    .catch((e) => {})
-    .finally(() => {
-      loadingEpisode.value = false;
-    });
+    getListEpisode(selectedMovie.value.id, selectedMovie.value.season_id, 1, -1)
+      .then((response) => {
+        dataEpisodes.value = response?.results;
+        optionsEpisode.value = dataEpisodes.value.map((item) => ({
+          label: `${item.name}`,
+          value: item.id,
+          disabled: false
+        }));
+      })
+      .catch((e) => {})
+      .finally(() => {
+        loadingEpisode.value = false;
+      });
+  }
 };
 
-const searchEpisode = debounce((searchQuery: string, callback: any) => {
+const searchEpisode = debounce((searchQuery: string) => {
   if (!searchQuery) return;
   loadingEpisode.value = true;
 
@@ -593,14 +613,11 @@ const searchEpisode = debounce((searchQuery: string, callback: any) => {
     -1
   )
     .then((response) => {
-      dataEpisodes.value = response?.results;
-      optionsEpisode.value = dataEpisodes.value.map((item: any) => ({
+      optionsEpisode.value = response?.results.map((item: any) => ({
         label: `${item.name}`,
         value: item.id,
         disabled: false
       }));
-
-      callback(optionsEpisode.value);
     })
     .catch((e) => {})
     .finally(() => {
@@ -703,6 +720,8 @@ const onClickEditBroadcast = (broadcast: any) => {
   // .utc()
   // .format('YYYY-MM-DDTHH:mm:ssZ');
   // .format('YYYY-MM-DD hh:mm:ss A');
+
+  getDataMovie();
 
   modalAddVisible.value = true;
 };
