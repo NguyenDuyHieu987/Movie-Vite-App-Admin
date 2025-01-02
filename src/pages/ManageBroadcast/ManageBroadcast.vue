@@ -17,7 +17,7 @@
             fill="currentColor"
           />
         </template>
-        Thêm buổi phát sóng
+        Tạo buổi phát sóng
       </a-button>
 
       <!-- </RouterLink> -->
@@ -105,6 +105,51 @@
           <template v-if="column.dataIndex === 'episodeData.name'">
             {{ record?.episodeData?.name || null }}
           </template>
+          <template v-if="column.dataIndex === 'status'">
+            <a-tag
+              v-if="
+                utils.dateTimeFormater.toNow(
+                  record.release_time,
+                  record?.episodeData?.runtime || record?.movieData?.runtime
+                ).status == 'not-yet'
+              "
+              color="#87d068"
+            >
+              {{
+                utils.dateTimeFormater.toNow(
+                  record.release_time,
+                  record?.episodeData?.runtime || record?.movieData?.runtime
+                ).message
+              }}
+            </a-tag>
+            <a-tag
+              v-else-if="
+                utils.dateTimeFormater.toNow(
+                  record.release_time,
+                  record?.episodeData?.runtime || record?.movieData?.runtime
+                ).status == 'playing'
+              "
+              color="#108ee9"
+            >
+              {{
+                utils.dateTimeFormater.toNow(
+                  record.release_time,
+                  record?.episodeData?.runtime || record?.movieData?.runtime
+                ).message
+              }}
+            </a-tag>
+            <a-tag
+              v-else
+              color="#f50"
+            >
+              {{
+                utils.dateTimeFormater.toNow(
+                  record.release_time,
+                  record?.episodeData?.runtime || record?.movieData?.runtime
+                ).message
+              }}
+            </a-tag>
+          </template>
           <template v-if="column.dataIndex === 'release_time'">
             {{
               dayjs(value)
@@ -139,6 +184,14 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
+                  <el-dropdown-item>
+                    <a
+                      :href="`${APP_URL}/broadcast/${record.id}`"
+                      target="_blank"
+                    >
+                      Đến buổi phát sóng
+                    </a>
+                  </el-dropdown-item>
                   <el-dropdown-item @click="onClickEditBroadcast(record)">
                     Chỉnh sửa
                   </el-dropdown-item>
@@ -382,6 +435,7 @@ import { getListEpisode, SearchEpisode } from '@/services/episode';
 
 dayjs.extend(utc);
 
+const APP_URL = ref<string>(import.meta.env.VITE_APP_URL);
 const formRef = ref<FormInstance>();
 const formVidRef = ref<FormInstance>();
 const inputPosterFile = ref<HTMLInputElement | null>();
@@ -440,6 +494,12 @@ const columns: TableColumnType[] = [
     title: 'Tên tập',
     dataIndex: 'episodeData.name',
     width: 200,
+    sorter: true
+  },
+  {
+    title: 'Trạng thái',
+    dataIndex: 'status',
+    width: 250,
     sorter: true
   },
   {

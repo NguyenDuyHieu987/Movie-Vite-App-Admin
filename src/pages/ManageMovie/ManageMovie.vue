@@ -159,6 +159,14 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
+                  <el-dropdown-item>
+                    <a
+                      :href="`${APP_URL}/play-movie/${record.id}${utils.convertPath.toPathInfo_Play(record?.name)}`"
+                      target="_blank"
+                    >
+                      Đến trang xem phim
+                    </a>
+                  </el-dropdown-item>
                   <el-dropdown-item @click="onClickEditMovie(record)">
                     Chỉnh sửa
                   </el-dropdown-item>
@@ -683,6 +691,7 @@ import { Socket, io } from 'socket.io-client';
 import dayjs from 'dayjs';
 import Hls from 'hls.js';
 
+const APP_URL = ref<string>(import.meta.env.VITE_APP_URL);
 const formRef = ref<FormInstance>();
 const formVidRef = ref<FormInstance>();
 const video = ref<HTMLVideoElement>();

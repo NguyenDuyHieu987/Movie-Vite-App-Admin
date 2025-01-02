@@ -158,6 +158,14 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
+                  <el-dropdown-item>
+                    <a
+                      :href="`${APP_URL}/play-tv/${dataMovie.id}${utils.convertPath.toPathInfo_Play(dataMovie?.name)}?ep=${record.id}`"
+                      target="_blank"
+                    >
+                      Đến trang xem phim
+                    </a>
+                  </el-dropdown-item>
                   <el-dropdown-item @click="onClickEditEpisode(record)">
                     Chỉnh sửa
                   </el-dropdown-item>
@@ -522,6 +530,7 @@ defineOptions({
   name: 'manage-tv-episodes'
 });
 
+const APP_URL = ref<string>(import.meta.env.VITE_APP_URL);
 const formRef = ref<FormInstance>();
 const formVidRef = ref<FormInstance>();
 const video = ref<HTMLVideoElement>();

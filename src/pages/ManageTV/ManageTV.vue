@@ -165,6 +165,14 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
+                  <el-dropdown-item>
+                    <a
+                      :href="`${APP_URL}/play-tv/${record.id}${utils.convertPath.toPathInfo_Play(record?.name)}`"
+                      target="_blank"
+                    >
+                      Đến trang xem phim
+                    </a>
+                  </el-dropdown-item>
                   <el-dropdown-item
                     @click="
                       () =>
@@ -751,13 +759,16 @@ import { uploadVideo } from '@/services/video';
 import { Socket, io } from 'socket.io-client';
 import dayjs from 'dayjs';
 import { useRouter } from 'vue-router';
+import { useUtils } from '@/utils';
 
+const APP_URL = ref<string>(import.meta.env.VITE_APP_URL);
 const formRef = ref<FormInstance>();
 const formVidRef = ref<FormInstance>();
 const inputPosterFile = ref<HTMLInputElement | null>();
 const inputBackdropFile = ref<HTMLInputElement | null>();
 const inputVideoFile = ref<HTMLInputElement | null>();
 const router = useRouter();
+const utils = useUtils();
 const store = useStore();
 const dataMovie = ref<any[]>([]);
 const page = ref<number>(1);
