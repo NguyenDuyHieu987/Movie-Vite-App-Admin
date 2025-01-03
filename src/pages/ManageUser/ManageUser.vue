@@ -95,6 +95,9 @@
           <template v-if="column.dataIndex === 'no'">
             {{ index + 1 }}
           </template>
+          <template v-if="column.dataIndex === 'role'">
+            {{ _.capitalize(value) }}
+          </template>
           <template v-if="column.dataIndex === 'auth_type'">
             {{ _.capitalize(value) }}
           </template>
@@ -112,7 +115,7 @@
               v-if="value == 'active'"
               color="green"
             >
-              Đang hoạt động
+              Hoạt động
             </a-tag>
             <a-tag
               v-else-if="value == 'banned'"
@@ -194,19 +197,19 @@
           <a-row :gutter="16">
             <a-col :span="12">
               <a-form-item
-                label="Tên người dùng"
-                name="name"
+                label="Tên tài khoản"
+                name="username"
                 :rules="[
                   {
                     required: true,
-                    message: 'Vui lòng nhập tên người dùng!',
+                    message: 'Vui lòng nhập tên tài khoản!',
                     trigger: ['change', 'blur']
                   }
                 ]"
               >
                 <a-input
-                  v-model:value="formAddAccount.name"
-                  placeholder="Tên người dùng..."
+                  v-model:value="formAddAccount.username"
+                  placeholder="Tên tài khoản..."
                   allow-clear
                 >
                 </a-input>
@@ -214,19 +217,19 @@
             </a-col>
             <a-col :span="12">
               <a-form-item
-                label="Tên Tiếng Việt"
-                name="name_vietsub"
+                label="Họ và tên"
+                name="full_name"
                 :rules="[
                   {
                     required: true,
-                    message: 'Vui lòng nhập tên Tiếng Việt!',
+                    message: 'Vui lòng nhập họ và tên',
                     trigger: ['change', 'blur']
                   }
                 ]"
               >
                 <a-input
-                  v-model:value="formAddAccount.name_vietsub"
-                  placeholder="Tên Tiếng Việt..."
+                  v-model:value="formAddAccount.full_name"
+                  placeholder="Họ và tên..."
                   allow-clear
                 >
                 </a-input>
@@ -237,22 +240,114 @@
           <a-row :gutter="16">
             <a-col :span="12">
               <a-form-item
-                label="Tên rút gọn"
-                name="short_name"
+                label="Email"
+                name="email"
                 :rules="[
                   {
                     required: true,
-                    message: 'Vui lòng nhập tên rút gọn!',
+                    message: 'Vui lòng nhập email!',
+                    trigger: ['change', 'blur']
+                  },
+                  {
+                    message:
+                      'Vui lòng nhập đúng định dạng email (vd: ...@gmail.com)!',
+                    pattern: new RegExp(
+                      /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
+                    ),
                     trigger: ['change', 'blur']
                   }
                 ]"
               >
                 <a-input
-                  v-model:value="formAddAccount.short_name"
-                  placeholder="Tên rút gọn..."
+                  v-model:value="formAddAccount.email"
+                  placeholder="Email..."
                   allow-clear
                 >
                 </a-input>
+              </a-form-item>
+            </a-col>
+
+            <a-col :span="12">
+              <a-form-item
+                label="Xác thực băng"
+                name="auth_type"
+                :rules="[
+                  {
+                    required: true,
+                    message: 'Vui lòng chọn phương thức xác thực!',
+                    trigger: ['change', 'blur']
+                  }
+                ]"
+              >
+                <a-select v-model:value="formAddAccount.auth_type">
+                  <a-select-option value="email">Email</a-select-option>
+                  <a-select-option value="google">Google</a-select-option>
+                  <a-select-option value="facebook">Facebook</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+          </a-row>
+
+          <a-row :gutter="16">
+            <a-col :span="8">
+              <a-form-item
+                label="Quyền"
+                name="role"
+                :rules="[
+                  {
+                    required: true,
+                    message: 'Vui lòng nhập quyền!',
+                    trigger: ['change', 'blur']
+                  }
+                ]"
+              >
+                <a-select v-model:value="formAddAccount.role">
+                  <a-select-option value="normal">Normal</a-select-option>
+                  <a-select-option value="admin">Admin</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+
+            <a-col :span="8">
+              <a-form-item
+                label="Xác thực băng"
+                name="avatar"
+                :rules="[
+                  {
+                    required: true,
+                    message: 'Vui lòng chọn phương thức xác thực!',
+                    trigger: ['change', 'blur']
+                  }
+                ]"
+              >
+                <el-input-number
+                  v-model="formAddAccount.avatar"
+                  :min="1"
+                  :max="10"
+                  :step="1"
+                  size="large"
+                  style="width: 100%"
+                />
+              </a-form-item>
+            </a-col>
+
+            <a-col :span="8">
+              <a-form-item
+                label="Trạng thái"
+                name="status"
+                :rules="[
+                  {
+                    required: true,
+                    message: 'Vui lòng nhập trạng thái!',
+                    trigger: ['change', 'blur']
+                  }
+                ]"
+              >
+                <a-select v-model:value="formAddAccount.status">
+                  <a-select-option value="active">Hoạt động</a-select-option>
+                  <a-select-option value="banned">Bị ban</a-select-option>
+                  <a-select-option value="deleted">Đã xóa</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
           </a-row>
@@ -354,7 +449,7 @@ const columns: TableColumnType[] = [
     title: 'Email',
     dataIndex: 'email',
     sorter: true,
-    width: 150
+    width: 200
   },
   {
     title: 'Quyền',
@@ -397,9 +492,13 @@ const modalAddVisible = ref<boolean>(false);
 const modalUploadVideoVisible = ref<boolean>(false);
 const formAddAccount = reactive({
   id: '',
-  name: '',
-  name_vietsub: '',
-  short_name: ''
+  username: '',
+  full_name: '',
+  email: '',
+  role: 'normal',
+  auth_type: 'email',
+  status: 'active',
+  avatar: 1
 });
 const modalAddTitle = ref<string>('Thêm mới người dùng');
 const isEdit = ref<boolean>(false);
@@ -462,7 +561,7 @@ const onSubmitFormAdd = () => {
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: 'Thêm mới người dùng thất bại!',
+              message: response?.message || 'Thêm mới người dùng thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -491,20 +590,28 @@ onBeforeMount(() => {});
 
 const resetFeild = () => {
   formAddAccount.id = '';
-  formAddAccount.name = '';
-  formAddAccount.name_vietsub = '';
-  formAddAccount.short_name = '';
+  formAddAccount.username = '';
+  formAddAccount.full_name = '';
+  formAddAccount.email = '';
+  formAddAccount.auth_type = 'email';
+  formAddAccount.role = 'normal';
+  formAddAccount.status = 'active';
+  formAddAccount.avatar = 1;
 };
 
-const onClickEditAccount = (genre: any) => {
+const onClickEditAccount = (account: any) => {
   isEdit.value = true;
-  currentEditAccount.value = genre;
+  currentEditAccount.value = account;
   modalAddTitle.value = 'Chỉnh sửa người dùng';
 
-  formAddAccount.id = genre.id;
-  formAddAccount.name = genre.name;
-  formAddAccount.name_vietsub = genre.name_vietsub;
-  formAddAccount.short_name = genre.short_name;
+  formAddAccount.id = account.id;
+  formAddAccount.username = account.username;
+  formAddAccount.email = account.email;
+  formAddAccount.full_name = account.full_name;
+  formAddAccount.auth_type = account.auth_type;
+  formAddAccount.role = account.role;
+  formAddAccount.status = account.status;
+  formAddAccount.avatar = isNaN(account.avatar) ? 1 : account.avatar;
 
   modalAddVisible.value = true;
 };
@@ -530,7 +637,7 @@ const onSubmitFormEdit = () => {
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: 'Chỉnh sửa người dùng thất bại!',
+              message: response?.message || 'Chỉnh sửa người dùng thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
