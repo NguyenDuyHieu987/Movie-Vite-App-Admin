@@ -86,6 +86,15 @@ const routes = [
     }
   },
   {
+    name: 'manage-user',
+    path: '/manage-user',
+    component: () => import('./pages/ManageUser/ManageUser.vue'),
+    meta: {
+      name: 'manage-user',
+      layout: { name: 'default', component: DefaultLayout }
+    }
+  },
+  {
     name: 'login',
     path: '/login',
     component: () => import('./pages/Login/Login.vue'),

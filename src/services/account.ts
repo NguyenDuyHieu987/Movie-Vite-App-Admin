@@ -1,6 +1,26 @@
+import type { user } from '@/types';
 import { makeRequest } from './makeRequest';
 
 const PREFIX_ROUTE = 'account';
+
+export function getAllAccount(page: number = 1, limit: number = 20) {
+  return makeRequest(`/${PREFIX_ROUTE}/get-all`, {
+    page,
+    limit
+  });
+}
+
+export function SearchAccount(
+  query: string,
+  page: number = 1,
+  limit: number = 20
+) {
+  return makeRequest(`/${PREFIX_ROUTE}/search`, {
+    query,
+    page,
+    limit
+  });
+}
 
 export function AccountConfirm(
   params: {
@@ -106,5 +126,32 @@ export function ResetPassword(params: {
     method: 'POST',
     data: bodyFormData,
     getResponseHeaders: true
+  });
+}
+
+export function CreateAccount(accountForm: user) {
+  return makeRequest(`/${PREFIX_ROUTE}/create`, null, {
+    method: 'POST',
+    data: accountForm
+  });
+}
+
+export function UpdateAccount(accountForm: user) {
+  return makeRequest(`/${PREFIX_ROUTE}/update/${accountForm.id}`, null, {
+    method: 'POST',
+    data: accountForm
+  });
+}
+
+export function DeleteAccount(accountId: number | string) {
+  return makeRequest(`/${PREFIX_ROUTE}/delete/${accountId}`, null, {
+    method: 'DELETE'
+  });
+}
+
+export function DeleteMultipleAccount(listAccountId: string[] | number[]) {
+  return makeRequest(`/${PREFIX_ROUTE}/delete-multiple`, null, {
+    method: 'DELETE',
+    data: { listAccountId }
   });
 }

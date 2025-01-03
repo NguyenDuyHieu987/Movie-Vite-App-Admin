@@ -113,7 +113,7 @@
                   record?.episodeData?.runtime || record?.movieData?.runtime
                 ).status == 'not-yet'
               "
-              color="#87d068"
+              color="blue"
             >
               {{
                 utils.dateTimeFormater.toNow(
@@ -129,7 +129,7 @@
                   record?.episodeData?.runtime || record?.movieData?.runtime
                 ).status == 'playing'
               "
-              color="#108ee9"
+              color="green"
             >
               {{
                 utils.dateTimeFormater.toNow(
@@ -140,8 +140,9 @@
             </a-tag>
             <a-tag
               v-else
-              color="#f50"
+              color="red"
             >
+              <!-- color="#f50" -->
               {{
                 utils.dateTimeFormater.toNow(
                   record.release_time,
@@ -731,6 +732,20 @@ const onSubmitFormAdd = () => {
     .then(async (values) => {
       loadingAdd.value = true;
 
+      const currentTime = new Date();
+
+      const releaseTime = new Date(formAddBroadcast.release_time);
+
+      if (releaseTime <= currentTime) {
+        ElNotification.error({
+          title: MESSAGE.STATUS.FAILED,
+          message: 'Ngày phát sóng phải lớn hên ngày hiện tại!',
+          duration: MESSAGE.DURATION.DEFAULT
+        });
+        loadingAdd.value = false;
+        return;
+      }
+
       values.release_time = dayjs(formAddBroadcast.release_time)
         // .local()
         // .utc()
@@ -812,6 +827,20 @@ const onSubmitFormEdit = () => {
     .validateFields()
     .then(async (values) => {
       loadingAdd.value = true;
+
+      const currentTime = new Date();
+
+      const releaseTime = new Date(formAddBroadcast.release_time);
+
+      if (releaseTime <= currentTime) {
+        ElNotification.error({
+          title: MESSAGE.STATUS.FAILED,
+          message: 'Ngày phát sóng phải lớn hên ngày hiện tại!',
+          duration: MESSAGE.DURATION.DEFAULT
+        });
+        loadingAdd.value = false;
+        return;
+      }
 
       values.id = formAddBroadcast.id;
       values.release_time = dayjs(formAddBroadcast.release_time)

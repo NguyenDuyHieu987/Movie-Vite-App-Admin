@@ -122,6 +122,20 @@
         <RouterLink to="/manage-country">Quản lý quốc gia</RouterLink>
       </template>
     </el-menu-item>
+
+    <el-menu-item index="/manage-user">
+      <el-icon>
+        <UsersIcon
+          width="1.5rem"
+          height="1.5rem"
+          fill="currentColor"
+        />
+      </el-icon>
+
+      <template #title>
+        <RouterLink to="/manage-user">Quản lý người dùng</RouterLink>
+      </template>
+    </el-menu-item>
   </el-menu>
 </template>
 
@@ -129,6 +143,7 @@
 import { HomeOutlined } from '@ant-design/icons-vue';
 import BroadcastOnHome from '@/assets/svgs/icons/broadcast-on-home.svg?component';
 import VideoCamera from '@/assets/svgs/icons/video-camera.svg?component';
+import UsersIcon from '@/assets/svgs/icons/users.svg?component';
 import MovieReel from '@/assets/svgs/icons/movie-reel.svg?component';
 import Light from '@/assets/svgs/icons/light.svg?component';
 import ListIcon from '@/assets/svgs/icons/list.svg?component';

@@ -11,7 +11,7 @@ import { useStore } from '@/stores';
 import { TOKEN, MESSAGE } from '@/common';
 
 export const useAuthStore = defineStore('auth', () => {
-  const userAccount = ref<user>(null);
+  const userAccount = ref<user | null>(null);
   const subscription = ref<subscription>(null);
   const role = computed<string>(() => userAccount.value?.role || 'normal');
   const isLogin = computed<boolean>(() => !!userAccount.value);
