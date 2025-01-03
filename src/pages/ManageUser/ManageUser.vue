@@ -170,6 +170,12 @@
                   >
                     Xóa người dùng
                   </el-dropdown-item>
+                  <el-dropdown-item
+                    @click="onClickDeletePermanentAccount(record)"
+                    class="menu-delete-user"
+                  >
+                    Xóa vĩnh viễn
+                  </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -391,6 +397,7 @@ import {
   CreateAccount,
   UpdateAccount,
   DeleteAccount,
+  DeletePermanentAccount,
   DeleteMultipleAccount,
   SearchAccount
 } from '@/services/account';
@@ -670,6 +677,46 @@ const onClickDeleteAccount = (genre: any) => {
   })
     .then(() => {
       DeleteAccount(genre.id)
+        .then((response) => {
+          if (response?.success) {
+            ElNotification.success({
+              title: MESSAGE.STATUS.SUCCESS,
+              message: 'Xóa người dùng thành công!',
+              duration: MESSAGE.DURATION.DEFAULT
+            });
+          } else {
+            ElNotification.error({
+              title: MESSAGE.STATUS.FAILED,
+              message: 'Xóa người dùng thất bại!',
+              duration: MESSAGE.DURATION.DEFAULT
+            });
+          }
+        })
+        .catch((e) => {
+          ElNotification.error({
+            title: MESSAGE.STATUS.FAILED,
+            message: 'Xóa người dùng thất bại!',
+            duration: MESSAGE.DURATION.DEFAULT
+          });
+        })
+        .finally(() => {
+          resetFeild();
+          getData();
+        });
+    })
+    .catch(() => {
+      // catch error
+    });
+};
+
+const onClickDeletePermanentAccount = (genre: any) => {
+  ElMessageBox.confirm('Bạn có chắc muốn xóa vĩnh viễn người dùng này không?', {
+    title: 'Thông báo!',
+    confirmButtonText: 'Có',
+    cancelButtonText: 'Không'
+  })
+    .then(() => {
+      DeletePermanentAccount(genre.id)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({

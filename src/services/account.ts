@@ -149,6 +149,12 @@ export function DeleteAccount(accountId: number | string) {
   });
 }
 
+export function DeletePermanentAccount(accountId: number | string) {
+  return makeRequest(`/${PREFIX_ROUTE}/delete-permanent/${accountId}`, null, {
+    method: 'DELETE'
+  });
+}
+
 export function DeleteMultipleAccount(listAccountId: string[] | number[]) {
   return makeRequest(`/${PREFIX_ROUTE}/delete-multiple`, null, {
     method: 'DELETE',
