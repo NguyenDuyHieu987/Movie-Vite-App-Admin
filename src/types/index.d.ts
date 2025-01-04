@@ -19,17 +19,8 @@ export declare interface mod {
 export declare interface modList {
   _id: string;
   id: string;
-  modId: string;
-}
-
-export declare interface modList {
-  id: string;
   listMovieId: string[] | number[];
-  media_type: string;
-  name: string;
-  type: string;
-  order: number;
-  path: string;
+  modId: string;
 }
 
 export declare interface genre {

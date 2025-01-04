@@ -43,7 +43,12 @@
         <a-button
           class="reset-btn"
           type="primary"
-          @click="getData"
+          @click="
+            () => {
+              filterType = 'all';
+              getData();
+            }
+          "
         >
           <template #icon>
             <SvgoDirectorySync
@@ -83,7 +88,7 @@
         "
         :data-source="dataModList"
         :columns="columns"
-        :row-key="(record: any) => record.id"
+        :row-key="(record: any) => record._id"
         :loading="loading"
         :scroll="{
           y: '75vh',
@@ -479,6 +484,8 @@ const onSubmitFormAdd = () => {
     .then(async (values) => {
       loadingAdd.value = true;
 
+      values.listMovieId = formAddModList.listMovieId;
+
       CreateModList(values as modList)
         .then((response) => {
           if (response?.success) {
@@ -530,8 +537,8 @@ const onClickEditModList = (modList: any) => {
   modalAddTitle.value = 'Chỉnh sửa danh mục';
 
   formAddModList._id = modList._id;
-  formAddModList.id = modList.id;
-  formAddModList.listMovieId = [modList.id];
+  formAddModList.id = modList.movieData.id;
+  formAddModList.listMovieId = [modList.movieData.id];
   formAddModList.modId = modList.modId;
 
   modalAddVisible.value = true;
@@ -544,6 +551,10 @@ const onSubmitFormEdit = () => {
     .validateFields()
     .then(async (values) => {
       loadingAdd.value = true;
+
+      values._id = formAddModList._id;
+      values.listMovieId = formAddModList.listMovieId;
+      values.id = formAddModList.listMovieId[0];
 
       UpdateModList(values as modList)
         .then((response) => {
@@ -649,6 +660,10 @@ const onSelectChange = (selectedRowKeys1: string[] | number[]) => {
 };
 
 const onSelectChangeMovie = (selectedRowKeys1: string[] | number[]) => {
+  if (isEdit.value && selectedRowKeys1.length > 1) {
+    selectedRowKeys1.shift();
+  }
+
   formAddModList.listMovieId = selectedRowKeys1;
 };
 
