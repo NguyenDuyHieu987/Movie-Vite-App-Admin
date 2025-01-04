@@ -1,11 +1,20 @@
 import { useUtils } from '@/utils';
 import { makeRequest } from './makeRequest';
-import type { formfilter } from '@/types';
+import type { formfilter, mod } from '@/types';
 
 const PREFIX_ROUTE = 'mod';
 
 export function getAllMod() {
-  return makeRequest(`/${PREFIX_ROUTE}/get-all`);
+  return makeRequest(`/${PREFIX_ROUTE}/get-all`, {
+    no_cache: 1
+  });
+}
+
+export function SearchMod(query: string) {
+  return makeRequest(`/${PREFIX_ROUTE}/search`, {
+    query,
+    no_cache: 1
+  });
 }
 
 export function getAllModWithData(
@@ -49,5 +58,32 @@ export function FilterModWithData(formFilter: formfilter) {
     with_original_language: formFilter.country,
     page: formFilter.page,
     limit: formFilter.limit
+  });
+}
+
+export function CreateMod(accountForm: mod) {
+  return makeRequest(`/${PREFIX_ROUTE}/create`, null, {
+    method: 'POST',
+    data: accountForm
+  });
+}
+
+export function UpdateMod(accountForm: mod) {
+  return makeRequest(`/${PREFIX_ROUTE}/update/${accountForm.id}`, null, {
+    method: 'POST',
+    data: accountForm
+  });
+}
+
+export function DeleteMod(accountId: number | string) {
+  return makeRequest(`/${PREFIX_ROUTE}/delete/${accountId}`, null, {
+    method: 'DELETE'
+  });
+}
+
+export function DeleteMultipleMod(listModId: string[] | number[]) {
+  return makeRequest(`/${PREFIX_ROUTE}/delete-multiple`, null, {
+    method: 'DELETE',
+    data: { listModId }
   });
 }

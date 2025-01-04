@@ -121,7 +121,7 @@
               v-else-if="value == 'banned'"
               color="magenta"
             >
-              Bị ban
+              Bị cấm
             </a-tag>
             <a-tag
               v-else-if="value == 'deleted'"
@@ -168,13 +168,13 @@
                     @click="onClickDeleteAccount(record)"
                     class="menu-delete-user"
                   >
-                    Xóa người dùng
+                    <el-text type="danger">Xóa người dùng</el-text>
                   </el-dropdown-item>
                   <el-dropdown-item
                     @click="onClickDeletePermanentAccount(record)"
                     class="menu-delete-user"
                   >
-                    Xóa vĩnh viễn
+                    <el-text type="danger">Xóa vĩnh viễn</el-text>
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -316,12 +316,12 @@
 
             <a-col :span="8">
               <a-form-item
-                label="Xác thực băng"
+                label="Ảnh đại diện"
                 name="avatar"
                 :rules="[
                   {
                     required: true,
-                    message: 'Vui lòng chọn phương thức xác thực!',
+                    message: 'Vui lòng nhập ảnh đại diện!',
                     trigger: ['change', 'blur']
                   }
                 ]"

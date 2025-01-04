@@ -200,7 +200,7 @@
                     @click="onClickDeleteBroadcast(record)"
                     class="menu-delete-broadcast"
                   >
-                    Xóa buổi phát sóng
+                    <el-text type="danger">Xóa buổi phát sóng</el-text>
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </template>

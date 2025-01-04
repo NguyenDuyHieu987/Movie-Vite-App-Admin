@@ -176,7 +176,7 @@
                     @click="onClickDeleteEpisode(record)"
                     class="menu-delete-episode"
                   >
-                    Xóa tập
+                    <el-text type="danger">Xóa tập</el-text>
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </template>

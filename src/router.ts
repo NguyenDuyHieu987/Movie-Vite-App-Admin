@@ -18,6 +18,30 @@ const routes = [
     }
   },
   {
+    path: '/manage-mod',
+    children: [
+      {
+        name: 'manage-mod',
+        path: '',
+        component: () => import('./pages/ManageMod/ManageMod.vue'),
+        meta: {
+          name: 'manage-mod',
+          layout: { name: 'default', component: DefaultLayout }
+        }
+      },
+      {
+        name: 'manage-modlist',
+        path: '/manage-modlist',
+        component: () =>
+          import('./pages/ManageMod/ManageModList/ManageModList.vue'),
+        meta: {
+          name: 'manage-modlist',
+          layout: { name: 'default', component: DefaultLayout }
+        }
+      }
+    ]
+  },
+  {
     name: 'manage-broadcast',
     path: '/manage-broadcast',
     component: () => import('./pages/ManageBroadcast/ManageBroadcast.vue'),

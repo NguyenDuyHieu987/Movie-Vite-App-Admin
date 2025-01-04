@@ -1,0 +1,64 @@
+.manage-mod-container {
+  .header-table {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h2 {
+      margin-right: 20px;
+    }
+
+    .add-btn {
+      margin-left: auto;
+    }
+  }
+
+  .table-tools {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
+    .search-mod {
+      width: 40%;
+      min-width: 300px;
+      max-width: 500px;
+    }
+
+    .right-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+  }
+
+  .mod-table {
+    .avatar-box {
+      display: flex;
+      align-items: center;
+      justify-self: center;
+      height: 50px;
+      width: 50px;
+      border-radius: 50%;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+}
+
+.add-mod-dialog {
+  .poster-image {
+    width: 150px;
+    margin-top: 10px;
+  }
+
+  .backdrop-image {
+    height: 150px;
+    margin-top: 10px;
+  }
+}

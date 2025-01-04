@@ -1,9 +1,37 @@
 import { useUtils } from '@/utils';
 import { makeRequest } from './makeRequest';
 import { FilterMovie } from './discover';
-import type { formfilter } from '@/types';
+import type { formfilter, modList } from '@/types';
 
 const PREFIX_ROUTE = 'modlist';
+
+export function getAllModList(
+  type: string = 'all',
+  page: number = 1,
+  limit: number = 20
+) {
+  return makeRequest(`/${PREFIX_ROUTE}/get-all`, {
+    type,
+    page,
+    limit,
+    no_cache: 1
+  });
+}
+
+export function SearchModList(
+  query: string,
+  type: string = 'all',
+  page: number = 1,
+  limit: number = 20
+) {
+  return makeRequest(`/${PREFIX_ROUTE}/search`, {
+    query,
+    type,
+    page,
+    limit,
+    no_cache: 1
+  });
+}
 
 export function FilterModList(formFilter: formfilter) {
   const utils = useUtils();
@@ -41,4 +69,31 @@ export function FilterModList(formFilter: formfilter) {
       limit: formFilter.limit
     }
   );
+}
+
+export function CreateModList(accountForm: modList) {
+  return makeRequest(`/${PREFIX_ROUTE}/create`, null, {
+    method: 'POST',
+    data: accountForm
+  });
+}
+
+export function UpdateModList(accountForm: modList) {
+  return makeRequest(`/${PREFIX_ROUTE}/update/${accountForm._id}`, null, {
+    method: 'POST',
+    data: accountForm
+  });
+}
+
+export function DeleteModList(accountId: number | string) {
+  return makeRequest(`/${PREFIX_ROUTE}/delete/${accountId}`, null, {
+    method: 'DELETE'
+  });
+}
+
+export function DeleteMultipleModList(listModListId: string[] | number[]) {
+  return makeRequest(`/${PREFIX_ROUTE}/delete-multiple`, null, {
+    method: 'DELETE',
+    data: { listModListId }
+  });
 }

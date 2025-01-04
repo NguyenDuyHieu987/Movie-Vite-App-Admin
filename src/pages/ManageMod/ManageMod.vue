@@ -1,9 +1,9 @@
 <template>
-  <div class="manage-country-container">
+  <div class="manage-mod-container">
     <div class="header-table">
-      <h2>Danh sách Quốc gia</h2>
+      <h2>Danh sách Danh mục</h2>
 
-      <!-- <RouterLink :to="{ path: '/addcountry' }"> -->
+      <!-- <RouterLink :to="{ path: '/addmod' }"> -->
 
       <a-button
         class="add-btn"
@@ -17,7 +17,7 @@
             fill="currentColor"
           />
         </template>
-        Thêm quốc gia
+        Thêm danh mục
       </a-button>
 
       <!-- </RouterLink> -->
@@ -25,9 +25,9 @@
 
     <div class="table-tools">
       <a-input-search
-        class="search-country"
+        class="search-mod"
         v-model:value="searchValue"
-        placeholder="Nhập têm quốc gia để tìm kiếm..."
+        placeholder="Nhập têm danh mục để tìm kiếm..."
         enter-button="Tìm kiếm"
         @search="onSearch"
       />
@@ -62,21 +62,21 @@
               fill="currentColor"
             />
           </template>
-          Xóa quốc gia
+          Xóa danh mục
         </a-button>
       </div>
     </div>
 
-    <div class="country-table">
+    <div class="mod-table">
       <a-table
         class="ant-table-striped table-app-bg-header"
         :row-class-name="
           (_record: any, index: number) =>
             index % 2 === 1 ? 'table-striped' : null
         "
-        :data-source="dataCountry"
+        :data-source="dataMod"
         :columns="columns"
-        :row-key="(record: any) => record.iso_639_1"
+        :row-key="(record: any) => record.id"
         :loading="loading"
         :scroll="{
           y: '75vh',
@@ -98,7 +98,7 @@
           <template v-if="column.dataIndex === 'action'">
             <!-- <RouterLink
               class="underline"
-              :to="`/YourAccount/invoices/${record?.iso_639_1}`"
+              :to="`/YourMod/invoices/${record?.id}`"
             >
               Chi tiết
             </RouterLink>
@@ -118,14 +118,14 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item @click="onClickEditCountry(record)">
+                  <el-dropdown-item @click="onClickEditMod(record)">
                     Chỉnh sửa
                   </el-dropdown-item>
                   <el-dropdown-item
-                    @click="onClickDeleteCountry(record)"
-                    class="menu-delete-country"
+                    @click="onClickDeleteMod(record)"
+                    class="menu-delete-mod"
                   >
-                    <el-text type="danger">Xóa quốc gia</el-text>
+                    <el-text type="danger">Xóa danh mục</el-text>
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -135,7 +135,7 @@
       </a-table>
 
       <el-dialog
-        class="add-country-dialog"
+        class="add-mod-dialog"
         v-model="modalAddVisible"
         :title="modalAddTitle"
         align-center
@@ -144,9 +144,9 @@
         <!-- width="500" -->
         <a-form
           ref="formRef"
-          name="country-form"
-          class="country-form"
-          :model="formAddCountry"
+          name="mod-form"
+          class="mod-form"
+          :model="formAddMod"
           hideRequiredMark
         >
           <!-- @finish="handleFinish" -->
@@ -154,19 +154,19 @@
           <a-row :gutter="16">
             <a-col :span="12">
               <a-form-item
-                label="Tên quốc gia"
-                name="english_name"
+                label="Tên danh mục"
+                name="name"
                 :rules="[
                   {
                     required: true,
-                    message: 'Vui lòng nhập tên quốc gia!',
+                    message: 'Vui lòng nhập tên danh mục!',
                     trigger: ['change', 'blur']
                   }
                 ]"
               >
                 <a-input
-                  v-model:value="formAddCountry.english_name"
-                  placeholder="Tên quốc gia..."
+                  v-model:value="formAddMod.name"
+                  placeholder="Tên danh mục..."
                   allow-clear
                 >
                 </a-input>
@@ -174,19 +174,19 @@
             </a-col>
             <a-col :span="12">
               <a-form-item
-                label="Tên Tiếng Việt"
-                name="name"
+                label="Loại danh mục"
+                name="type"
                 :rules="[
                   {
                     required: true,
-                    message: 'Vui lòng nhập tên Tiếng Việt!',
+                    message: 'Vui lòng nhập loại danh mục',
                     trigger: ['change', 'blur']
                   }
                 ]"
               >
                 <a-input
-                  v-model:value="formAddCountry.name"
-                  placeholder="Tên Tiếng Việt..."
+                  v-model:value="formAddMod.type"
+                  placeholder="Loại danh mục..."
                   allow-clear
                 >
                 </a-input>
@@ -197,19 +197,63 @@
           <a-row :gutter="16">
             <a-col :span="12">
               <a-form-item
-                label="Tên rút gọn"
-                name="short_name"
+                label="Loại phim"
+                name="media_type"
                 :rules="[
                   {
                     required: true,
-                    message: 'Vui lòng nhập tên rút gọn!',
+                    message: 'Vui lòng chọn loại phim!',
+                    trigger: ['change', 'blur']
+                  }
+                ]"
+              >
+                <a-select v-model:value="formAddMod.media_type">
+                  <a-select-option value="all">Tất cả</a-select-option>
+                  <a-select-option value="movie">Phim lẻ</a-select-option>
+                  <a-select-option value="tv">Phim bộ</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+
+            <a-col :span="12">
+              <a-form-item
+                label="Thứ tự"
+                name="order"
+                :rules="[
+                  {
+                    required: true,
+                    message: 'Vui lòng nhập thứ tự!',
+                    trigger: ['change', 'blur']
+                  }
+                ]"
+              >
+                <el-input-number
+                  v-model="formAddMod.order"
+                  :min="1"
+                  :step="1"
+                  size="large"
+                  style="width: 100%"
+                />
+              </a-form-item>
+            </a-col>
+          </a-row>
+
+          <a-row :gutter="16">
+            <a-col :span="12">
+              <a-form-item
+                label="Đường dẫn"
+                name="path"
+                :rules="[
+                  {
+                    required: true,
+                    message: 'Vui lòng nhập đường dẫn',
                     trigger: ['change', 'blur']
                   }
                 ]"
               >
                 <a-input
-                  v-model:value="formAddCountry.short_name"
-                  placeholder="Tên rút gọn..."
+                  v-model:value="formAddMod.path"
+                  placeholder="Đường dẫn..."
                   allow-clear
                 >
                 </a-input>
@@ -252,17 +296,23 @@ import { useUtils } from '@/utils';
 import { useStore } from '@/stores';
 import type { TableColumnType, FormInstance } from 'ant-design-vue';
 import {
-  getAllCountry,
-  CreateCountry,
-  UpdateCountry,
-  DeleteCountry,
-  DeleteMultipleCountry,
-  SearchCountry
-} from '@/services/country';
-import type { country } from '@/types';
+  getAllMod,
+  CreateMod,
+  UpdateMod,
+  DeleteMod,
+  DeleteMultipleMod,
+  SearchMod
+} from '@/services/mods';
+import { getUserAvatar } from '@/services/image';
+import type { mod } from '@/types';
 import { ElNotification, ElMessageBox } from 'element-plus';
 import { ArrowDown } from '@element-plus/icons-vue';
 import { MESSAGE } from '@/common';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import _ from 'lodash';
+
+dayjs.extend(utc);
 
 const formRef = ref<FormInstance>();
 const formVidRef = ref<FormInstance>();
@@ -271,7 +321,7 @@ const inputBackdropFile = ref<HTMLInputElement | null>();
 const inputVideoFile = ref<HTMLInputElement | null>();
 const utils = useUtils();
 const store = useStore();
-const dataCountry = ref<any[]>([]);
+const dataMod = ref<any[]>([]);
 const page = ref<number>(1);
 const pageSizeTable = ref<number>(20);
 const pageSize = ref<number>(-1);
@@ -292,42 +342,56 @@ const columns: TableColumnType[] = [
   //   width: 200,
   // },
   {
-    title: 'Tên quốc gia',
-    dataIndex: 'english_name',
-    width: 200,
+    title: 'Tên danh mục',
+    dataIndex: 'name',
+    width: 150,
     sorter: true,
     fixed: 'left'
   },
   {
-    title: 'Tên Tiếng Việt',
-    dataIndex: 'name',
+    title: 'Loại danh mục',
+    dataIndex: 'type',
     width: 200,
     sorter: true
   },
   {
-    title: 'Tên rút gọn',
-    dataIndex: 'short_name',
+    title: 'Loại phim',
+    dataIndex: 'media_type',
+    sorter: true,
+    width: 200
+  },
+  {
+    title: 'Thứ tự',
+    dataIndex: 'order',
     sorter: true,
     width: 120
   },
   {
+    title: 'Đường dẫn',
+    dataIndex: 'path',
+    sorter: true,
+    width: 150
+  },
+  {
     title: 'Hành động',
     dataIndex: 'action',
-    width: 100,
+    width: 150,
     fixed: 'right'
   }
 ];
 const modalAddVisible = ref<boolean>(false);
 const modalUploadVideoVisible = ref<boolean>(false);
-const formAddCountry = reactive({
-  iso_639_1: '',
+const formAddMod = reactive({
+  id: '',
   name: '',
-  english_name: '',
-  short_name: ''
+  type: '',
+  media_type: 'all',
+  path: 'active',
+  order: 1
 });
-const modalAddTitle = ref<string>('Thêm mới quốc gia');
+const modalAddTitle = ref<string>('Thêm mới danh mục');
 const isEdit = ref<boolean>(false);
-const currentEditCountry = ref<country>();
+const currentEditMod = ref<mod>();
 const loadingAdd = ref<boolean>(false);
 const disabledAdd = ref<boolean>(true);
 const searchValue = ref<string>('');
@@ -337,9 +401,9 @@ const hasSelected = computed(() => selectedRowKeys.value.length > 0);
 const getData = () => {
   loading.value = true;
 
-  getAllCountry()
+  getAllMod()
     .then((response) => {
-      dataCountry.value = response?.results;
+      dataMod.value = response?.results;
     })
     .catch((e) => {})
     .finally(() => {
@@ -362,7 +426,7 @@ const onChangePage = (page: number, pageSize: number) => {
 
 const onClickAddBtn = () => {
   isEdit.value = false;
-  modalAddTitle.value = 'Thêm mới quốc gia';
+  modalAddTitle.value = 'Thêm mới danh mục';
   resetFeild();
   modalAddVisible.value = true;
 };
@@ -375,18 +439,18 @@ const onSubmitFormAdd = () => {
     .then(async (values) => {
       loadingAdd.value = true;
 
-      CreateCountry(values as country)
+      CreateMod(values as mod)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
               title: MESSAGE.STATUS.SUCCESS,
-              message: 'Thêm mới quốc gia thành công!',
+              message: 'Thêm mới danh mục thành công!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: response?.message || 'Thêm mới quốc gia thất bại!',
+              message: response?.message || 'Thêm mới danh mục thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -394,7 +458,7 @@ const onSubmitFormAdd = () => {
         .catch((e) => {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Thêm mới quốc gia thất bại!',
+            message: 'Thêm mới danh mục thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
         })
@@ -414,21 +478,25 @@ const onSubmitFormAdd = () => {
 onBeforeMount(() => {});
 
 const resetFeild = () => {
-  formAddCountry.iso_639_1 = '';
-  formAddCountry.english_name = '';
-  formAddCountry.name = '';
-  formAddCountry.short_name = '';
+  formAddMod.id = '';
+  formAddMod.name = '';
+  formAddMod.type = '';
+  formAddMod.media_type = 'all';
+  formAddMod.order = 1;
+  formAddMod.path = '';
 };
 
-const onClickEditCountry = (country: any) => {
+const onClickEditMod = (mod: any) => {
   isEdit.value = true;
-  currentEditCountry.value = country;
-  modalAddTitle.value = 'Chỉnh sửa quốc gia';
+  currentEditMod.value = mod;
+  modalAddTitle.value = 'Chỉnh sửa danh mục';
 
-  formAddCountry.iso_639_1 = country.iso_639_1;
-  formAddCountry.english_name = country.english_name;
-  formAddCountry.name = country.name;
-  formAddCountry.short_name = country.short_name;
+  formAddMod.id = mod.id;
+  formAddMod.name = mod.name;
+  formAddMod.type = mod.type;
+  formAddMod.media_type = mod.media_type;
+  formAddMod.order = mod.order;
+  formAddMod.path = mod.path;
 
   modalAddVisible.value = true;
 };
@@ -441,20 +509,20 @@ const onSubmitFormEdit = () => {
     .then(async (values) => {
       loadingAdd.value = true;
 
-      values.iso_639_1 = formAddCountry.iso_639_1;
+      values.id = formAddMod.id;
 
-      UpdateCountry(values as country)
+      UpdateMod(values as mod)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
               title: MESSAGE.STATUS.SUCCESS,
-              message: 'Chỉnh sửa quốc gia thành công!',
+              message: 'Chỉnh sửa danh mục thành công!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: response?.message || 'Chỉnh sửa quốc gia thất bại!',
+              message: response?.message || 'Chỉnh sửa danh mục thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -462,7 +530,7 @@ const onSubmitFormEdit = () => {
         .catch((e) => {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Chỉnh sửa quốc gia thất bại!',
+            message: 'Chỉnh sửa danh mục thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
         })
@@ -479,25 +547,25 @@ const onSubmitFormEdit = () => {
     .finally(() => {});
 };
 
-const onClickDeleteCountry = (country: any) => {
-  ElMessageBox.confirm('Bạn có chắc muốn xóa quốc gia này không?', {
+const onClickDeleteMod = (genre: any) => {
+  ElMessageBox.confirm('Bạn có chắc muốn xóa danh mục này không?', {
     title: 'Thông báo!',
     confirmButtonText: 'Có',
     cancelButtonText: 'Không'
   })
     .then(() => {
-      DeleteCountry(country.iso_639_1)
+      DeleteMod(genre.id)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
               title: MESSAGE.STATUS.SUCCESS,
-              message: 'Xóa quốc gia thành công!',
+              message: 'Xóa danh mục thành công!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: 'Xóa quốc gia thất bại!',
+              message: 'Xóa danh mục thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -505,7 +573,7 @@ const onClickDeleteCountry = (country: any) => {
         .catch((e) => {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Xóa quốc gia thất bại!',
+            message: 'Xóa danh mục thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
         })
@@ -524,9 +592,9 @@ const onSearch = (searchQuery: string) => {
 
   loading.value = true;
 
-  SearchCountry(searchQuery.trim())
+  SearchMod(searchQuery.trim())
     .then((response) => {
-      dataCountry.value = response?.results;
+      dataMod.value = response?.results;
       page.value = response.page;
       // pageSize.value = response.page_size;
       total.value = response.total;
@@ -542,24 +610,24 @@ const onSelectChange = (selectedRowKeys1: string[] | number[]) => {
 };
 
 const onClickDeleteBtn = () => {
-  ElMessageBox.confirm('Bạn có chắc muốn xóa các quốc gia này không?', {
+  ElMessageBox.confirm('Bạn có chắc muốn xóa các danh mục này không?', {
     title: 'Thông báo!',
     confirmButtonText: 'Có',
     cancelButtonText: 'Không'
   })
     .then(() => {
-      DeleteMultipleCountry(selectedRowKeys.value)
+      DeleteMultipleMod(selectedRowKeys.value)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
               title: MESSAGE.STATUS.SUCCESS,
-              message: 'Xóa quốc gia thành công!',
+              message: 'Xóa danh mục thành công!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: 'Xóa quốc gia thất bại!',
+              message: 'Xóa danh mục thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -567,7 +635,7 @@ const onClickDeleteBtn = () => {
         .catch((e) => {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Xóa quốc gia thất bại!',
+            message: 'Xóa danh mục thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
         })
@@ -583,4 +651,4 @@ const onClickDeleteBtn = () => {
 };
 </script>
 
-<style lang="scss" src="./ManageCountry.scss"></style>
+<style lang="scss" src="./ManageMod.scss"></style>

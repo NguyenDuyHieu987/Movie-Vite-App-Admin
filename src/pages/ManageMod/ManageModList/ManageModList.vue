@@ -1,9 +1,9 @@
 <template>
-  <div class="manage-country-container">
+  <div class="manage-modlist-container">
     <div class="header-table">
-      <h2>Danh sách Quốc gia</h2>
+      <h2>Danh sách Danh mục</h2>
 
-      <!-- <RouterLink :to="{ path: '/addcountry' }"> -->
+      <!-- <RouterLink :to="{ path: '/addmodlist' }"> -->
 
       <a-button
         class="add-btn"
@@ -17,7 +17,7 @@
             fill="currentColor"
           />
         </template>
-        Thêm quốc gia
+        Thêm danh mục
       </a-button>
 
       <!-- </RouterLink> -->
@@ -25,9 +25,9 @@
 
     <div class="table-tools">
       <a-input-search
-        class="search-country"
+        class="search-modlist"
         v-model:value="searchValue"
-        placeholder="Nhập têm quốc gia để tìm kiếm..."
+        placeholder="Nhập têm danh mục để tìm kiếm..."
         enter-button="Tìm kiếm"
         @search="onSearch"
       />
@@ -62,21 +62,21 @@
               fill="currentColor"
             />
           </template>
-          Xóa quốc gia
+          Xóa danh mục
         </a-button>
       </div>
     </div>
 
-    <div class="country-table">
+    <div class="modlist-table">
       <a-table
         class="ant-table-striped table-app-bg-header"
         :row-class-name="
           (_record: any, index: number) =>
             index % 2 === 1 ? 'table-striped' : null
         "
-        :data-source="dataCountry"
+        :data-source="dataModList"
         :columns="columns"
-        :row-key="(record: any) => record.iso_639_1"
+        :row-key="(record: any) => record.id"
         :loading="loading"
         :scroll="{
           y: '75vh',
@@ -95,10 +95,20 @@
           <template v-if="column.dataIndex === 'no'">
             {{ index + 1 }}
           </template>
+          <template v-if="column.dataIndex === 'modData.name'">
+            {{ record.modData.name }}
+          </template>
+          <template v-if="column.dataIndex === 'movieData.name'">
+            {{ record.movieData.name }}
+          </template>
+          <template v-if="column.dataIndex === 'movieData.media_type'">
+            {{ record.movieData.media_type == 'movie' ? 'Phim lẻ' : null }}
+            {{ record.movieData.media_type == 'tv' ? 'Phim bộ' : null }}
+          </template>
           <template v-if="column.dataIndex === 'action'">
             <!-- <RouterLink
               class="underline"
-              :to="`/YourAccount/invoices/${record?.iso_639_1}`"
+              :to="`/YourModList/invoices/${record?.id}`"
             >
               Chi tiết
             </RouterLink>
@@ -118,14 +128,14 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item @click="onClickEditCountry(record)">
+                  <el-dropdown-item @click="onClickEditModList(record)">
                     Chỉnh sửa
                   </el-dropdown-item>
                   <el-dropdown-item
-                    @click="onClickDeleteCountry(record)"
-                    class="menu-delete-country"
+                    @click="onClickDeleteModList(record)"
+                    class="menu-delete-modlist"
                   >
-                    <el-text type="danger">Xóa quốc gia</el-text>
+                    <el-text type="danger">Xóa danh mục</el-text>
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -135,18 +145,18 @@
       </a-table>
 
       <el-dialog
-        class="add-country-dialog"
+        class="add-modlist-dialog"
         v-model="modalAddVisible"
         :title="modalAddTitle"
         align-center
-        style="min-width: 600px"
+        style="min-width: 800px"
       >
         <!-- width="500" -->
         <a-form
           ref="formRef"
-          name="country-form"
-          class="country-form"
-          :model="formAddCountry"
+          name="modlist-form"
+          class="modlist-form"
+          :model="formAddModList"
           hideRequiredMark
         >
           <!-- @finish="handleFinish" -->
@@ -154,66 +164,57 @@
           <a-row :gutter="16">
             <a-col :span="12">
               <a-form-item
-                label="Tên quốc gia"
-                name="english_name"
+                label="Loại danh mục"
+                name="modId"
                 :rules="[
                   {
                     required: true,
-                    message: 'Vui lòng nhập tên quốc gia!',
+                    message: 'Vui lòng chọn loại danh mục!',
                     trigger: ['change', 'blur']
                   }
                 ]"
               >
-                <a-input
-                  v-model:value="formAddCountry.english_name"
-                  placeholder="Tên quốc gia..."
-                  allow-clear
+                <a-select
+                  v-model:value="formAddModList.modId"
+                  :options="optionsMod"
+                  @select="selectMod"
                 >
-                </a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
-              <a-form-item
-                label="Tên Tiếng Việt"
-                name="name"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập tên Tiếng Việt!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-input
-                  v-model:value="formAddCountry.name"
-                  placeholder="Tên Tiếng Việt..."
-                  allow-clear
-                >
-                </a-input>
+                </a-select>
               </a-form-item>
             </a-col>
           </a-row>
 
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Tên rút gọn"
-                name="short_name"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập tên rút gọn!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
+          <a-row>
+            <a-col :span="24">
+              <a-table
+                class="ant-table-striped table-app-bg-header"
+                :row-class-name="
+                  (_record: any, index: number) =>
+                    index % 2 === 1 ? 'table-striped' : null
+                "
+                :data-source="dataMovie"
+                :columns="columnsMovie"
+                :row-key="(record: any) => record.id"
+                :loading="loadingMovie"
+                :scroll="{
+                  y: '75vh',
+                  x: 900
+                }"
+                bordered
+                sticky
+                :row-selection="{
+                  selectedRowKeys: formAddModList.listMovieId,
+                  onChange: onSelectChangeMovie
+                }"
               >
-                <a-input
-                  v-model:value="formAddCountry.short_name"
-                  placeholder="Tên rút gọn..."
-                  allow-clear
-                >
-                </a-input>
-              </a-form-item>
+                <!-- :pagination="{ pageSize: pageSizeTable, onChange: onChangePage }" -->
+                <!-- @change="onChangeTable" -->
+                <template #bodyCell="{ column, text, value, record, index }">
+                  <template v-if="column.dataIndex === 'no'">
+                    {{ index + 1 }}
+                  </template>
+                </template>
+              </a-table>
             </a-col>
           </a-row>
         </a-form>
@@ -252,17 +253,25 @@ import { useUtils } from '@/utils';
 import { useStore } from '@/stores';
 import type { TableColumnType, FormInstance } from 'ant-design-vue';
 import {
-  getAllCountry,
-  CreateCountry,
-  UpdateCountry,
-  DeleteCountry,
-  DeleteMultipleCountry,
-  SearchCountry
-} from '@/services/country';
-import type { country } from '@/types';
+  getAllModList,
+  CreateModList,
+  UpdateModList,
+  DeleteModList,
+  DeleteMultipleModList,
+  SearchModList
+} from '@/services/modList';
+import { getUserAvatar } from '@/services/image';
+import type { modList } from '@/types';
 import { ElNotification, ElMessageBox } from 'element-plus';
 import { ArrowDown } from '@element-plus/icons-vue';
 import { MESSAGE } from '@/common';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import _ from 'lodash';
+import { getAllMod } from '@/services/mods';
+import { GetAllMovie } from '@/services/movie';
+
+dayjs.extend(utc);
 
 const formRef = ref<FormInstance>();
 const formVidRef = ref<FormInstance>();
@@ -271,12 +280,15 @@ const inputBackdropFile = ref<HTMLInputElement | null>();
 const inputVideoFile = ref<HTMLInputElement | null>();
 const utils = useUtils();
 const store = useStore();
-const dataCountry = ref<any[]>([]);
+const dataMod = ref<any[]>([]);
+const dataModList = ref<any[]>([]);
+const dataMovie = ref<any[]>([]);
 const page = ref<number>(1);
 const pageSizeTable = ref<number>(20);
 const pageSize = ref<number>(-1);
 const total = ref<number>(0);
 const loading = ref<boolean>(false);
+const loadingMovie = ref<boolean>(false);
 const loadingUpload = ref<boolean>(false);
 const columns: TableColumnType[] = [
   {
@@ -292,54 +304,102 @@ const columns: TableColumnType[] = [
   //   width: 200,
   // },
   {
-    title: 'Tên quốc gia',
-    dataIndex: 'english_name',
+    title: 'Tên danh mục',
+    dataIndex: 'modData.name',
+    width: 150,
+    sorter: true,
+    fixed: 'left'
+  },
+  {
+    title: 'Tên phim',
+    dataIndex: 'movieData.name',
+    width: 200,
+    sorter: true
+  },
+  {
+    title: 'Loại phim',
+    dataIndex: 'movieData.media_type',
+    sorter: true,
+    width: 200
+  },
+  {
+    title: 'Hành động',
+    dataIndex: 'action',
+    width: 150,
+    fixed: 'right'
+  }
+];
+const columnsMovie: TableColumnType[] = [
+  {
+    title: 'STT',
+    dataIndex: 'no',
+    sorter: true,
+    width: '70px',
+    fixed: 'left'
+  },
+  // {
+  //   title: 'ID',
+  //   dataIndex: 'id',
+  //   width: 200,
+  // },
+  {
+    title: 'Tên phim',
+    dataIndex: 'name',
     width: 200,
     sorter: true,
     fixed: 'left'
   },
   {
-    title: 'Tên Tiếng Việt',
-    dataIndex: 'name',
+    title: 'Tên phim gốc',
+    dataIndex: 'original_name',
     width: 200,
     sorter: true
-  },
-  {
-    title: 'Tên rút gọn',
-    dataIndex: 'short_name',
-    sorter: true,
-    width: 120
-  },
-  {
-    title: 'Hành động',
-    dataIndex: 'action',
-    width: 100,
-    fixed: 'right'
   }
 ];
 const modalAddVisible = ref<boolean>(false);
 const modalUploadVideoVisible = ref<boolean>(false);
-const formAddCountry = reactive({
-  iso_639_1: '',
-  name: '',
-  english_name: '',
-  short_name: ''
+const formAddModList = reactive<{
+  _id: string;
+  id: string;
+  listMovieId: string[] | number[];
+  modId: string;
+}>({
+  _id: '',
+  id: '',
+  listMovieId: [],
+  modId: ''
 });
-const modalAddTitle = ref<string>('Thêm mới quốc gia');
+const modalAddTitle = ref<string>('Thêm mới danh mục');
 const isEdit = ref<boolean>(false);
-const currentEditCountry = ref<country>();
+const currentEditModList = ref<modList>();
 const loadingAdd = ref<boolean>(false);
 const disabledAdd = ref<boolean>(true);
 const searchValue = ref<string>('');
+const optionsMod = ref<{ label: string; value: string; disabled: boolean }[]>(
+  []
+);
+const filterType = ref<string>('all');
 const selectedRowKeys = ref<string[] | number[]>([]);
 const hasSelected = computed(() => selectedRowKeys.value.length > 0);
 
 const getData = () => {
   loading.value = true;
 
-  getAllCountry()
+  getAllMod()
     .then((response) => {
-      dataCountry.value = response?.results;
+      dataMod.value = response?.results;
+      optionsMod.value = dataMod.value.map((item) => ({
+        label: `${item.name}`,
+        value: item.id,
+        disabled: false
+      }));
+    })
+    .catch((e) => {})
+    .finally(() => {});
+
+  getAllModList(filterType.value, page.value, pageSize.value)
+    .then((response) => {
+      dataModList.value = response?.results;
     })
     .catch((e) => {})
     .finally(() => {
@@ -347,7 +407,21 @@ const getData = () => {
     });
 };
 
+const getDataMovie = (media_type: string = 'all') => {
+  loadingMovie.value = true;
+
+  GetAllMovie(media_type, page.value, pageSize.value)
+    .then((response) => {
+      dataMovie.value = response?.results;
+    })
+    .catch((e) => {})
+    .finally(() => {
+      loadingMovie.value = false;
+    });
+};
+
 getData();
+getDataMovie();
 
 // const onChangeTable = (
 //   pagination,
@@ -356,13 +430,17 @@ getData();
 //   { action, currentDataSource }
 // ) => {};
 
+const selectMod = (value: string) => {
+  getDataMovie(dataMod.value.find((item) => item.id == value).media_type);
+};
+
 const onChangePage = (page: number, pageSize: number) => {
   pageSizeTable.value = pageSize;
 };
 
 const onClickAddBtn = () => {
   isEdit.value = false;
-  modalAddTitle.value = 'Thêm mới quốc gia';
+  modalAddTitle.value = 'Thêm mới danh mục';
   resetFeild();
   modalAddVisible.value = true;
 };
@@ -375,18 +453,18 @@ const onSubmitFormAdd = () => {
     .then(async (values) => {
       loadingAdd.value = true;
 
-      CreateCountry(values as country)
+      CreateModList(values as modList)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
               title: MESSAGE.STATUS.SUCCESS,
-              message: 'Thêm mới quốc gia thành công!',
+              message: 'Thêm mới danh mục thành công!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: response?.message || 'Thêm mới quốc gia thất bại!',
+              message: response?.message || 'Thêm mới danh mục thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -394,7 +472,7 @@ const onSubmitFormAdd = () => {
         .catch((e) => {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Thêm mới quốc gia thất bại!',
+            message: 'Thêm mới danh mục thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
         })
@@ -414,21 +492,21 @@ const onSubmitFormAdd = () => {
 onBeforeMount(() => {});
 
 const resetFeild = () => {
-  formAddCountry.iso_639_1 = '';
-  formAddCountry.english_name = '';
-  formAddCountry.name = '';
-  formAddCountry.short_name = '';
+  formAddModList._id = '';
+  formAddModList.id = '';
+  formAddModList.listMovieId = [];
+  formAddModList.modId = '';
 };
 
-const onClickEditCountry = (country: any) => {
+const onClickEditModList = (modList: any) => {
   isEdit.value = true;
-  currentEditCountry.value = country;
-  modalAddTitle.value = 'Chỉnh sửa quốc gia';
+  currentEditModList.value = modList;
+  modalAddTitle.value = 'Chỉnh sửa danh mục';
 
-  formAddCountry.iso_639_1 = country.iso_639_1;
-  formAddCountry.english_name = country.english_name;
-  formAddCountry.name = country.name;
-  formAddCountry.short_name = country.short_name;
+  formAddModList._id = modList._id;
+  formAddModList.id = modList.id;
+  formAddModList.listMovieId = [modList.id];
+  formAddModList.modId = modList.modId;
 
   modalAddVisible.value = true;
 };
@@ -441,20 +519,18 @@ const onSubmitFormEdit = () => {
     .then(async (values) => {
       loadingAdd.value = true;
 
-      values.iso_639_1 = formAddCountry.iso_639_1;
-
-      UpdateCountry(values as country)
+      UpdateModList(values as modList)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
               title: MESSAGE.STATUS.SUCCESS,
-              message: 'Chỉnh sửa quốc gia thành công!',
+              message: 'Chỉnh sửa danh mục thành công!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: response?.message || 'Chỉnh sửa quốc gia thất bại!',
+              message: response?.message || 'Chỉnh sửa danh mục thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -462,7 +538,7 @@ const onSubmitFormEdit = () => {
         .catch((e) => {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Chỉnh sửa quốc gia thất bại!',
+            message: 'Chỉnh sửa danh mục thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
         })
@@ -479,25 +555,25 @@ const onSubmitFormEdit = () => {
     .finally(() => {});
 };
 
-const onClickDeleteCountry = (country: any) => {
-  ElMessageBox.confirm('Bạn có chắc muốn xóa quốc gia này không?', {
+const onClickDeleteModList = (genre: any) => {
+  ElMessageBox.confirm('Bạn có chắc muốn xóa danh mục này không?', {
     title: 'Thông báo!',
     confirmButtonText: 'Có',
     cancelButtonText: 'Không'
   })
     .then(() => {
-      DeleteCountry(country.iso_639_1)
+      DeleteModList(genre.id)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
               title: MESSAGE.STATUS.SUCCESS,
-              message: 'Xóa quốc gia thành công!',
+              message: 'Xóa danh mục thành công!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: 'Xóa quốc gia thất bại!',
+              message: 'Xóa danh mục thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -505,7 +581,7 @@ const onClickDeleteCountry = (country: any) => {
         .catch((e) => {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Xóa quốc gia thất bại!',
+            message: 'Xóa danh mục thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
         })
@@ -524,9 +600,14 @@ const onSearch = (searchQuery: string) => {
 
   loading.value = true;
 
-  SearchCountry(searchQuery.trim())
+  SearchModList(
+    searchQuery.trim(),
+    filterType.value,
+    page.value,
+    pageSize.value
+  )
     .then((response) => {
-      dataCountry.value = response?.results;
+      dataModList.value = response?.results;
       page.value = response.page;
       // pageSize.value = response.page_size;
       total.value = response.total;
@@ -541,25 +622,29 @@ const onSelectChange = (selectedRowKeys1: string[] | number[]) => {
   selectedRowKeys.value = selectedRowKeys1;
 };
 
+const onSelectChangeMovie = (selectedRowKeys1: string[] | number[]) => {
+  formAddModList.listMovieId = selectedRowKeys1;
+};
+
 const onClickDeleteBtn = () => {
-  ElMessageBox.confirm('Bạn có chắc muốn xóa các quốc gia này không?', {
+  ElMessageBox.confirm('Bạn có chắc muốn xóa các danh mục này không?', {
     title: 'Thông báo!',
     confirmButtonText: 'Có',
     cancelButtonText: 'Không'
   })
     .then(() => {
-      DeleteMultipleCountry(selectedRowKeys.value)
+      DeleteMultipleModList(selectedRowKeys.value)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
               title: MESSAGE.STATUS.SUCCESS,
-              message: 'Xóa quốc gia thành công!',
+              message: 'Xóa danh mục thành công!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: 'Xóa quốc gia thất bại!',
+              message: 'Xóa danh mục thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -567,7 +652,7 @@ const onClickDeleteBtn = () => {
         .catch((e) => {
           ElNotification.error({
             title: MESSAGE.STATUS.FAILED,
-            message: 'Xóa quốc gia thất bại!',
+            message: 'Xóa danh mục thất bại!',
             duration: MESSAGE.DURATION.DEFAULT
           });
         })
@@ -583,4 +668,4 @@ const onClickDeleteBtn = () => {
 };
 </script>
 
-<style lang="scss" src="./ManageCountry.scss"></style>
+<style lang="scss" src="./ManageModList.scss"></style>

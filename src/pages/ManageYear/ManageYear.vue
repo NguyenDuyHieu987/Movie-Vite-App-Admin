@@ -125,7 +125,7 @@
                     @click="onClickDeleteYear(record)"
                     class="menu-delete-year"
                   >
-                    Xóa năm
+                    <el-text type="danger">Xóa năm</el-text>
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </template>

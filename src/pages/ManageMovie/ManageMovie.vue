@@ -177,7 +177,7 @@
                     @click="onClickDeleteMovie(record)"
                     class="menu-delete-movie"
                   >
-                    Xóa phim
+                    <el-text type="danger">Xóa phim</el-text>
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </template>

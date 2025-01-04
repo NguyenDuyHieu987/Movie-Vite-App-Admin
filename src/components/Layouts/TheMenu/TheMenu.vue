@@ -23,6 +23,34 @@
       </template>
     </el-menu-item>
 
+    <el-sub-menu
+      index="/manage-mod-list"
+      popperClass="sub-menu-popper"
+    >
+      <template #title>
+        <el-icon>
+          <ViewCarousel
+            width="1.5rem"
+            height="1.5rem"
+            fill="currentColor"
+          />
+        </el-icon>
+        <span>Quản lý danh mục</span>
+      </template>
+
+      <el-menu-item index="/manage-mod">
+        <template #title>
+          <RouterLink to="/manage-mod">Danh mục</RouterLink>
+        </template>
+      </el-menu-item>
+
+      <el-menu-item index="/manage-modlist">
+        <template #title>
+          <RouterLink to="/manage-modlist">Danh sách danh mục</RouterLink>
+        </template>
+      </el-menu-item>
+    </el-sub-menu>
+
     <el-menu-item index="/manage-broadcast">
       <el-icon>
         <BroadcastOnHome
@@ -38,7 +66,7 @@
     </el-menu-item>
 
     <el-sub-menu
-      index="/discover/movie"
+      index="/manage-movie-tv"
       popperClass="sub-menu-popper"
     >
       <template #title>
@@ -141,6 +169,7 @@
 
 <script setup lang="ts">
 import { HomeOutlined } from '@ant-design/icons-vue';
+import ViewCarousel from '@/assets/svgs/icons/view-carousel.svg?component';
 import BroadcastOnHome from '@/assets/svgs/icons/broadcast-on-home.svg?component';
 import VideoCamera from '@/assets/svgs/icons/video-camera.svg?component';
 import UsersIcon from '@/assets/svgs/icons/users.svg?component';

@@ -11,6 +11,25 @@ export declare interface mod {
   id: string;
   media_type: string;
   name: string;
+  type: string;
+  order: number;
+  path: string;
+}
+
+export declare interface modList {
+  _id: string;
+  id: string;
+  modId: string;
+}
+
+export declare interface modList {
+  id: string;
+  listMovieId: string[] | number[];
+  media_type: string;
+  name: string;
+  type: string;
+  order: number;
+  path: string;
 }
 
 export declare interface genre {

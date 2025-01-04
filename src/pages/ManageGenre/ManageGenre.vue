@@ -125,7 +125,7 @@
                     @click="onClickDeleteGenre(record)"
                     class="menu-delete-genre"
                   >
-                    Xóa thể loại
+                    <el-text type="danger">Xóa thể loại</el-text>
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
