@@ -12,6 +12,8 @@ footer.footer {
   font-size: 1.4rem;
   color: var(--text-color);
   border-top: 1px solid var(--border-regular-light);
+  margin: 0 var(--padding-body) calc(0px - var(--padding-body))
+    var(--padding-body);
 
   .footer-container {
     display: flex;
