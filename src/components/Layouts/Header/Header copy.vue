@@ -5,68 +5,66 @@
   >
     <div class="header-bar-container">
       <div class="left-header">
-        <div class="nav-tabs-view">
-          <div
-            v-for="(item, index) in store.tabsView"
-            :key="index"
-            :index="index"
-            class="nav-tabs-view-item"
-            :title="item?.name"
-          >
-            <RouterView
-              :to="item.path"
-              class="search-query"
-            >
-              {{ item.name }}
-            </RouterView>
-            <XCircle
-              class="remove-icon"
-              width="1.4rem"
-              height="1.4rem"
-              fill="currentColor"
+        <button
+          class="menu-btn"
+          :class="{
+            show: props.layout == 'service' || props.layout == 'center-page'
+          }"
+          @click="store.toogleDrawer()"
+        >
+          <MenuOutlined />
+        </button>
+
+        <div class="logo">
+          <RouterLink to="/">
+            <img
+              :src="getImage('logo.png', 'logo', { w: 45 })"
+              alt=""
+              :height="30"
+              :width="30"
+              preload
             />
-            <!-- @click="handleRemoveSearchHistory(item)" -->
-          </div>
+            <span> PhimHay247</span>
+          </RouterLink>
         </div>
       </div>
 
-      <div class="right-header">
-        <div
-          v-if="props.layout == 'default'"
-          class="search-header-box"
+      <div
+        v-if="props.layout == 'default'"
+        class="search-header-box"
+      >
+        <a-input-search
+          v-model:value="valueInput"
+          class="search-header"
+          placeholder="Nhập nội dung muốn tìm kiếm..."
+          size="large"
+          allow-clear
+          bordered
+          :loading="false"
+          @change="handleChangeInput(valueInput)"
+          @search="handleSearch"
+          @focus="handleFoucusSearchInput"
+          @blur="handleBlurSearchInput"
         >
-          <a-input-search
-            v-model:value="valueInput"
-            class="search-header"
-            placeholder="Nhập nội dung muốn tìm kiếm..."
-            size="large"
-            allow-clear
-            bordered
-            :loading="false"
-            @change="handleChangeInput(valueInput)"
-            @search="handleSearch"
-            @focus="handleFoucusSearchInput"
-            @blur="handleBlurSearchInput"
-          >
-            <template #enterButton>
-              <el-tooltip
-                content="Tìm kiếm"
-                effect="dark"
-                placement="bottom"
-                popper-class="popper-tooltip"
-                :offset="22"
-              >
-                <MagnifyingGlass
-                  class="fa-magnifying-glass"
-                  width="1.8rem"
-                  height="1.8rem"
-                  fill="currentColor"
-                />
-              </el-tooltip>
-            </template>
-          </a-input-search>
+          <template #enterButton>
+            <el-tooltip
+              content="Tìm kiếm"
+              effect="dark"
+              placement="bottom"
+              popper-class="popper-tooltip"
+              :offset="22"
+            >
+              <MagnifyingGlass
+                class="fa-magnifying-glass"
+                width="1.8rem"
+                height="1.8rem"
+                fill="currentColor"
+              />
+            </el-tooltip>
+          </template>
+        </a-input-search>
 
-          <!-- <SearchDropdown
+        <!-- <SearchDropdown
           v-model:dataSearch="dataSearch"
           v-model:dataTopSearch="dataTopSearch"
           v-model:dataSearchHistory="dataSearchHistory"
@@ -76,7 +74,9 @@
           :loadingSearch="loadingSearch"
           :loadingTopSearch="loadingTopSearch"
         /> -->
-        </div>
+      </div>
+
+      <div class="right-header">
         <el-skeleton
           :loading="loadingUser"
           animated
@@ -137,7 +137,7 @@
 </template>
 
 <script setup lang="ts">
-import XCircle from '@/assets/svgs/icons/x-circle.svg?component';
+import { MenuOutlined } from '@ant-design/icons-vue';
 import MagnifyingGlass from '@/assets/svgs/icons/magnifying-glass.svg?component';
 // import UserCircle from '@/assets/svgs/icons/user-circle.svg?component';
 

@@ -46,7 +46,7 @@
 
       <el-menu-item index="/manage-modlist">
         <template #title>
-          <RouterLink to="/manage-modlist">Danh sách danh mục</RouterLink>
+          <RouterLink to="/manage-modlist">Dữ liệu danh mục</RouterLink>
         </template>
       </el-menu-item>
     </el-sub-menu>

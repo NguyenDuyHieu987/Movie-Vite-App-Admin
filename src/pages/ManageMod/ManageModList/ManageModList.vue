@@ -1,266 +1,268 @@
 <template>
-  <div class="manage-modlist-container">
-    <div class="header-table">
-      <h2>Danh sách Dữ liệu danh mục</h2>
+  <div class="page-container padding-content">
+    <div class="manage-modlist-container">
+      <div class="header-table">
+        <h2>Danh sách Dữ liệu danh mục</h2>
 
-      <!-- <RouterLink :to="{ path: '/addmodlist' }"> -->
+        <!-- <RouterLink :to="{ path: '/addmodlist' }"> -->
 
-      <a-button
-        class="add-btn"
-        type="primary"
-        @click="onClickAddBtn"
-      >
-        <template #icon>
-          <PlusIcon
-            width="1.8rem"
-            height="1.8rem"
-            fill="currentColor"
-          />
-        </template>
-        Thêm danh mục
-      </a-button>
-
-      <!-- </RouterLink> -->
-    </div>
-
-    <div class="table-tools">
-      <a-input-search
-        class="search-modlist"
-        v-model:value="searchValue"
-        placeholder="Nhập têm danh mục để tìm kiếm..."
-        enter-button="Tìm kiếm"
-        @search="onSearch"
-      />
-
-      <div class="right-actions">
-        <a-select
-          v-model:value="filterType"
-          :options="optionsModType"
-          @select="selectTypeMod"
-          style="width: 100px"
-        >
-        </a-select>
         <a-button
-          class="reset-btn"
+          class="add-btn"
           type="primary"
-          @click="
-            () => {
-              filterType = 'all';
-              getData();
-            }
-          "
+          @click="onClickAddBtn"
         >
           <template #icon>
-            <SvgoDirectorySync
+            <PlusIcon
               width="1.8rem"
               height="1.8rem"
               fill="currentColor"
             />
           </template>
-          Làm mới
+          Thêm danh mục
         </a-button>
 
-        <a-button
-          class="delete-multiple-btn"
-          type="primary"
-          danger
-          @click="onClickDeleteBtn"
-          :disabled="!hasSelected"
-        >
-          <template #icon>
-            <DeleteSweepIcon
-              width="1.8rem"
-              height="1.8rem"
-              fill="currentColor"
-            />
-          </template>
-          Xóa danh mục
-        </a-button>
+        <!-- </RouterLink> -->
       </div>
-    </div>
 
-    <div class="modlist-table">
-      <a-table
-        class="ant-table-striped table-app-bg-header"
-        :row-class-name="
-          (_record: any, index: number) =>
-            index % 2 === 1 ? 'table-striped' : null
-        "
-        :data-source="dataModList"
-        :columns="columns"
-        :row-key="(record: any) => record._id"
-        :loading="loading"
-        :scroll="{
-          y: '75vh',
-          x: 900
-        }"
-        bordered
-        sticky
-        :row-selection="{
-          selectedRowKeys: selectedRowKeys,
-          onChange: onSelectChange
-        }"
-      >
-        <!-- :pagination="{ pageSize: pageSizeTable, onChange: onChangePage }" -->
-        <!-- @change="onChangeTable" -->
-        <template #bodyCell="{ column, text, value, record, index }">
-          <template v-if="column.dataIndex === 'no'">
-            {{ index + 1 }}
-          </template>
-          <template v-if="column.dataIndex === 'modData.name'">
-            {{ record.modData.name }}
-          </template>
-          <template v-if="column.dataIndex === 'movieData.name'">
-            {{ record.movieData.name }}
-          </template>
-          <template v-if="column.dataIndex === 'movieData.media_type'">
-            {{ record.movieData.media_type == 'movie' ? 'Phim lẻ' : null }}
-            {{ record.movieData.media_type == 'tv' ? 'Phim bộ' : null }}
-          </template>
-          <template v-if="column.dataIndex === 'action'">
-            <!-- <RouterLink
-              class="underline"
-              :to="`/YourModList/invoices/${record?.id}`"
-            >
-              Chi tiết
-            </RouterLink>
-            <a-button
-              type="link"
-              @click="modalUploadVideoVisible = true"
-            >
-              Upload video
-            </a-button> -->
+      <div class="table-tools">
+        <a-input-search
+          class="search-modlist"
+          v-model:value="searchValue"
+          placeholder="Nhập têm danh mục để tìm kiếm..."
+          enter-button="Tìm kiếm"
+          @search="onSearch"
+        />
 
-            <el-dropdown>
-              <span class="el-dropdown-link">
-                <el-button type="primary">
-                  Actions
-                  <el-icon class="el-icon--right"><arrow-down /></el-icon>
-                </el-button>
-              </span>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item @click="onClickEditModList(record)">
-                    Chỉnh sửa
-                  </el-dropdown-item>
-                  <el-dropdown-item
-                    @click="onClickDeleteModList(record)"
-                    class="menu-delete-modlist"
-                  >
-                    <el-text type="danger">Xóa danh mục</el-text>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </template>
-        </template>
-      </a-table>
-
-      <el-dialog
-        class="add-modlist-dialog"
-        v-model="modalAddVisible"
-        :title="modalAddTitle"
-        align-center
-        style="min-width: 800px"
-      >
-        <!-- width="500" -->
-        <a-form
-          ref="formRef"
-          name="modlist-form"
-          class="modlist-form"
-          :model="formAddModList"
-          hideRequiredMark
-        >
-          <!-- @finish="handleFinish" -->
-
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Loại danh mục"
-                name="modId"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng chọn loại danh mục!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-select
-                  v-model:value="formAddModList.modId"
-                  :options="optionsMod"
-                  @select="selectMod"
-                >
-                </a-select>
-              </a-form-item>
-            </a-col>
-          </a-row>
-
-          <a-row>
-            <a-col :span="24">
-              <a-input-search
-                class="search-movie"
-                v-model:value="searchMovieValue"
-                placeholder="Nhập têm phim để tìm kiếm..."
-                enter-button="Tìm kiếm"
-                @search="onSearchMovie"
-                style="width: 350px; margin-bottom: 15px"
+        <div class="right-actions">
+          <a-select
+            v-model:value="filterType"
+            :options="optionsModType"
+            @select="selectTypeMod"
+            style="width: 100px"
+          >
+          </a-select>
+          <a-button
+            class="reset-btn"
+            type="primary"
+            @click="
+              () => {
+                filterType = 'all';
+                getData();
+              }
+            "
+          >
+            <template #icon>
+              <SvgoDirectorySync
+                width="1.8rem"
+                height="1.8rem"
+                fill="currentColor"
               />
+            </template>
+            Làm mới
+          </a-button>
 
-              <a-table
-                class="ant-table-striped table-app-bg-header"
-                :row-class-name="
-                  (_record: any, index: number) =>
-                    index % 2 === 1 ? 'table-striped' : null
-                "
-                :data-source="dataMovie"
-                :columns="columnsMovie"
-                :row-key="(record: any) => record.id"
-                :loading="loadingMovie"
-                :scroll="{
-                  y: '75vh',
-                  x: 900
-                }"
-                bordered
-                sticky
-                :row-selection="{
-                  selectedRowKeys: formAddModList.listMovieId,
-                  onChange: onSelectChangeMovie
-                }"
+          <a-button
+            class="delete-multiple-btn"
+            type="primary"
+            danger
+            @click="onClickDeleteBtn"
+            :disabled="!hasSelected"
+          >
+            <template #icon>
+              <DeleteSweepIcon
+                width="1.8rem"
+                height="1.8rem"
+                fill="currentColor"
+              />
+            </template>
+            Xóa danh mục
+          </a-button>
+        </div>
+      </div>
+
+      <div class="modlist-table">
+        <a-table
+          class="ant-table-striped table-app-bg-header"
+          :row-class-name="
+            (_record: any, index: number) =>
+              index % 2 === 1 ? 'table-striped' : null
+          "
+          :data-source="dataModList"
+          :columns="columns"
+          :row-key="(record: any) => record._id"
+          :loading="loading"
+          :scroll="{
+            y: '75vh',
+            x: 900
+          }"
+          bordered
+          sticky
+          :row-selection="{
+            selectedRowKeys: selectedRowKeys,
+            onChange: onSelectChange
+          }"
+        >
+          <!-- :pagination="{ pageSize: pageSizeTable, onChange: onChangePage }" -->
+          <!-- @change="onChangeTable" -->
+          <template #bodyCell="{ column, text, value, record, index }">
+            <template v-if="column.dataIndex === 'no'">
+              {{ index + 1 }}
+            </template>
+            <template v-if="column.dataIndex === 'modData.name'">
+              {{ record.modData.name }}
+            </template>
+            <template v-if="column.dataIndex === 'movieData.name'">
+              {{ record.movieData.name }}
+            </template>
+            <template v-if="column.dataIndex === 'movieData.media_type'">
+              {{ record.movieData.media_type == 'movie' ? 'Phim lẻ' : null }}
+              {{ record.movieData.media_type == 'tv' ? 'Phim bộ' : null }}
+            </template>
+            <template v-if="column.dataIndex === 'action'">
+              <!-- <RouterLink
+                class="underline"
+                :to="`/YourModList/invoices/${record?.id}`"
               >
-                <!-- :pagination="{ pageSize: pageSizeTable, onChange: onChangePage }" -->
-                <!-- @change="onChangeTable" -->
-                <template #bodyCell="{ column, text, value, record, index }">
-                  <template v-if="column.dataIndex === 'no'">
-                    {{ index + 1 }}
-                  </template>
+                Chi tiết
+              </RouterLink>
+              <a-button
+                type="link"
+                @click="modalUploadVideoVisible = true"
+              >
+                Upload video
+              </a-button> -->
+
+              <el-dropdown>
+                <span class="el-dropdown-link">
+                  <el-button type="primary">
+                    Actions
+                    <el-icon class="el-icon--right"><arrow-down /></el-icon>
+                  </el-button>
+                </span>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item @click="onClickEditModList(record)">
+                      Chỉnh sửa
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      @click="onClickDeleteModList(record)"
+                      class="menu-delete-modlist"
+                    >
+                      <el-text type="danger">Xóa danh mục</el-text>
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
                 </template>
-              </a-table>
-            </a-col>
-          </a-row>
-        </a-form>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="modalAddVisible = false">Đóng</el-button>
-            <el-button
-              v-if="isEdit"
-              type="primary"
-              @click="onSubmitFormEdit"
-              :loading="loadingAdd"
-            >
-              Lưu
-            </el-button>
-            <el-button
-              v-else
-              type="primary"
-              @click="onSubmitFormAdd"
-              :loading="loadingAdd"
-            >
-              Thêm
-            </el-button>
-          </div>
-        </template>
-      </el-dialog>
+              </el-dropdown>
+            </template>
+          </template>
+        </a-table>
+
+        <el-dialog
+          class="add-modlist-dialog"
+          v-model="modalAddVisible"
+          :title="modalAddTitle"
+          align-center
+          style="min-width: 800px"
+        >
+          <!-- width="500" -->
+          <a-form
+            ref="formRef"
+            name="modlist-form"
+            class="modlist-form"
+            :model="formAddModList"
+            hideRequiredMark
+          >
+            <!-- @finish="handleFinish" -->
+
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item
+                  label="Loại danh mục"
+                  name="modId"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng chọn loại danh mục!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <a-select
+                    v-model:value="formAddModList.modId"
+                    :options="optionsMod"
+                    @select="selectMod"
+                  >
+                  </a-select>
+                </a-form-item>
+              </a-col>
+            </a-row>
+
+            <a-row>
+              <a-col :span="24">
+                <a-input-search
+                  class="search-movie"
+                  v-model:value="searchMovieValue"
+                  placeholder="Nhập têm phim để tìm kiếm..."
+                  enter-button="Tìm kiếm"
+                  @search="onSearchMovie"
+                  style="width: 350px; margin-bottom: 15px"
+                />
+
+                <a-table
+                  class="ant-table-striped table-app-bg-header"
+                  :row-class-name="
+                    (_record: any, index: number) =>
+                      index % 2 === 1 ? 'table-striped' : null
+                  "
+                  :data-source="dataMovie"
+                  :columns="columnsMovie"
+                  :row-key="(record: any) => record.id"
+                  :loading="loadingMovie"
+                  :scroll="{
+                    y: '75vh',
+                    x: 900
+                  }"
+                  bordered
+                  sticky
+                  :row-selection="{
+                    selectedRowKeys: formAddModList.listMovieId,
+                    onChange: onSelectChangeMovie
+                  }"
+                >
+                  <!-- :pagination="{ pageSize: pageSizeTable, onChange: onChangePage }" -->
+                  <!-- @change="onChangeTable" -->
+                  <template #bodyCell="{ column, text, value, record, index }">
+                    <template v-if="column.dataIndex === 'no'">
+                      {{ index + 1 }}
+                    </template>
+                  </template>
+                </a-table>
+              </a-col>
+            </a-row>
+          </a-form>
+          <template #footer>
+            <div class="dialog-footer">
+              <el-button @click="modalAddVisible = false">Đóng</el-button>
+              <el-button
+                v-if="isEdit"
+                type="primary"
+                @click="onSubmitFormEdit"
+                :loading="loadingAdd"
+              >
+                Lưu
+              </el-button>
+              <el-button
+                v-else
+                type="primary"
+                @click="onSubmitFormAdd"
+                :loading="loadingAdd"
+              >
+                Thêm
+              </el-button>
+            </div>
+          </template>
+        </el-dialog>
+      </div>
     </div>
   </div>
 </template>

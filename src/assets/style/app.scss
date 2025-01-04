@@ -1,5 +1,6 @@
 .app-wrapper {
   overflow: visible;
+  padding: var(--padding-body) 0 var(--padding-body) var(--padding-body);
 
   .loading-initial-app {
     overflow: hidden;
@@ -111,10 +112,10 @@
 }
 
 .padding-content {
-  padding: 15px 20px;
+  padding: 15px 15px;
 
   &.horizontal {
-    padding: 0px 20px;
+    padding: 0px 15px;
   }
 }
 
@@ -136,6 +137,11 @@
       }
     }
   }
+}
+
+.page-container {
+  background-color: var(--background-content-color);
+  box-shadow: 0 0 20px 0 rgba(63, 77, 105, 0.1);
 }
 
 .center-page {

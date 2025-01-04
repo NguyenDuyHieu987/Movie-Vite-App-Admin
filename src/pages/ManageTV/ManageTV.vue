@@ -1,734 +1,738 @@
 <template>
-  <div class="manage-movie-container">
-    <div class="header-table">
-      <h2>Danh sách Phim bộ</h2>
+  <div class="page-container padding-content">
+    <div class="manage-movie-container">
+      <div class="header-table">
+        <h2>Danh sách Phim bộ</h2>
 
-      <!-- <RouterLink :to="{ path: '/addmovie' }"> -->
+        <!-- <RouterLink :to="{ path: '/addmovie' }"> -->
 
-      <a-button
-        class="add-btn"
-        type="primary"
-        @click="onClickAddBtn"
-      >
-        <template #icon>
-          <PlusIcon
-            width="1.8rem"
-            height="1.8rem"
-            fill="currentColor"
-          />
-        </template>
-        Thêm phim
-      </a-button>
-
-      <!-- </RouterLink> -->
-    </div>
-
-    <div class="table-tools">
-      <a-input-search
-        class="search-movie"
-        v-model:value="searchValue"
-        placeholder="Nhập têm phim để tìm kiếm..."
-        enter-button="Tìm kiếm"
-        @search="onSearch"
-      />
-
-      <div class="right-actions">
         <a-button
-          class="reset-btn"
+          class="add-btn"
           type="primary"
-          @click="getData"
+          @click="onClickAddBtn"
         >
           <template #icon>
-            <SvgoDirectorySync
+            <PlusIcon
               width="1.8rem"
               height="1.8rem"
               fill="currentColor"
             />
           </template>
-          Làm mới
+          Thêm phim
         </a-button>
 
-        <a-button
-          class="delete-multiple-btn"
-          type="primary"
-          danger
-          @click="onClickDeleteBtn"
-          :disabled="!hasSelected"
-        >
-          <template #icon>
-            <DeleteSweepIcon
-              width="1.8rem"
-              height="1.8rem"
-              fill="currentColor"
-            />
-          </template>
-          Xóa phim
-        </a-button>
+        <!-- </RouterLink> -->
       </div>
-    </div>
 
-    <div class="movie-table">
-      <a-table
-        class="ant-table-striped"
-        :row-class-name="
-          (_record: any, index: number) =>
-            index % 2 === 1 ? 'table-striped' : null
-        "
-        :data-source="dataMovie"
-        :columns="columns"
-        :row-key="(record: any) => record.id"
-        :loading="loading"
-        :scroll="{
-          y: '75vh',
-          x: 900
-        }"
-        bordered
-        sticky
-        :row-selection="{
-          selectedRowKeys: selectedRowKeys,
-          onChange: onSelectChange
-        }"
-      >
-        <!-- :pagination="{ pageSize: pageSizeTable, onChange: onChangePage }" -->
-        <!-- @change="onChangeTable" -->
-        <template #bodyCell="{ column, text, value, record, index }">
-          <template v-if="column.dataIndex === 'no'">
-            {{ index + 1 }}
-          </template>
-          <template v-if="column.dataIndex === 'original_language'">
-            {{ getCountryByOriginalLanguage(value, store.allCountries)?.name }}
-          </template>
-          <template v-if="column.dataIndex === 'genres'">
-            {{ Array?.from(value, (x: genre) => x.name).join(', ') }}
-          </template>
-          <template v-if="column.dataIndex === 'views'">
-            {{ value.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, '.') }}
-          </template>
-          <template v-if="column.dataIndex === 'number_of_episodes'">
-            {{ value + ' tập' }}
-          </template>
-          <template v-if="column.dataIndex === 'episode_run_time'">
-            {{ (value || 0) + ' phút' }}
-          </template>
-          <template v-if="column.dataIndex === 'first_air_date'">
-            {{ dayjs(value).format('DD/MM/YYYY') }}
-          </template>
-          <template v-if="column.dataIndex === 'last_air_date'">
-            {{ dayjs(value).format('DD/MM/YYYY') }}
-          </template>
-          <template v-if="column.dataIndex === 'vip'">
-            <a-tag
-              v-if="value == 3"
-              color="#f50"
-            >
-              {{ value }}
-            </a-tag>
-            <a-tag
-              v-else-if="value == 2"
-              color="#fcd500"
-            >
-              {{ value }}
-            </a-tag>
-            <a-tag
-              v-else-if="value == 1"
-              color="#108ee9"
-            >
-              {{ value }}</a-tag
-            >
-            <a-tag
-              v-else
-              color="#87d068"
-            >
-              Free
-            </a-tag>
-          </template>
-          <template v-if="column.dataIndex === 'action'">
-            <!-- <RouterLink
-              class="underline"
-              :to="`/YourAccount/invoices/${record?.id}`"
-            >
-              Chi tiết
-            </RouterLink>
-            <a-button
-              type="link"
-              @click="modalUploadVideoVisible = true"
-            >
-              Upload video
-            </a-button> -->
+      <div class="table-tools">
+        <a-input-search
+          class="search-movie"
+          v-model:value="searchValue"
+          placeholder="Nhập têm phim để tìm kiếm..."
+          enter-button="Tìm kiếm"
+          @search="onSearch"
+        />
 
-            <el-dropdown>
-              <span class="el-dropdown-link">
-                <el-button type="primary">
-                  Actions
-                  <el-icon class="el-icon--right"><arrow-down /></el-icon>
-                </el-button>
-              </span>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item>
-                    <a
-                      :href="`${APP_URL}/play-tv/${record.id}${utils.convertPath.toPathInfo_Play(record?.name)}`"
-                      target="_blank"
+        <div class="right-actions">
+          <a-button
+            class="reset-btn"
+            type="primary"
+            @click="getData"
+          >
+            <template #icon>
+              <SvgoDirectorySync
+                width="1.8rem"
+                height="1.8rem"
+                fill="currentColor"
+              />
+            </template>
+            Làm mới
+          </a-button>
+
+          <a-button
+            class="delete-multiple-btn"
+            type="primary"
+            danger
+            @click="onClickDeleteBtn"
+            :disabled="!hasSelected"
+          >
+            <template #icon>
+              <DeleteSweepIcon
+                width="1.8rem"
+                height="1.8rem"
+                fill="currentColor"
+              />
+            </template>
+            Xóa phim
+          </a-button>
+        </div>
+      </div>
+
+      <div class="movie-table">
+        <a-table
+          class="ant-table-striped"
+          :row-class-name="
+            (_record: any, index: number) =>
+              index % 2 === 1 ? 'table-striped' : null
+          "
+          :data-source="dataMovie"
+          :columns="columns"
+          :row-key="(record: any) => record.id"
+          :loading="loading"
+          :scroll="{
+            y: '75vh',
+            x: 900
+          }"
+          bordered
+          sticky
+          :row-selection="{
+            selectedRowKeys: selectedRowKeys,
+            onChange: onSelectChange
+          }"
+        >
+          <!-- :pagination="{ pageSize: pageSizeTable, onChange: onChangePage }" -->
+          <!-- @change="onChangeTable" -->
+          <template #bodyCell="{ column, text, value, record, index }">
+            <template v-if="column.dataIndex === 'no'">
+              {{ index + 1 }}
+            </template>
+            <template v-if="column.dataIndex === 'original_language'">
+              {{
+                getCountryByOriginalLanguage(value, store.allCountries)?.name
+              }}
+            </template>
+            <template v-if="column.dataIndex === 'genres'">
+              {{ Array?.from(value, (x: genre) => x.name).join(', ') }}
+            </template>
+            <template v-if="column.dataIndex === 'views'">
+              {{ value.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, '.') }}
+            </template>
+            <template v-if="column.dataIndex === 'number_of_episodes'">
+              {{ value + ' tập' }}
+            </template>
+            <template v-if="column.dataIndex === 'episode_run_time'">
+              {{ (value || 0) + ' phút' }}
+            </template>
+            <template v-if="column.dataIndex === 'first_air_date'">
+              {{ dayjs(value).format('DD/MM/YYYY') }}
+            </template>
+            <template v-if="column.dataIndex === 'last_air_date'">
+              {{ dayjs(value).format('DD/MM/YYYY') }}
+            </template>
+            <template v-if="column.dataIndex === 'vip'">
+              <a-tag
+                v-if="value == 3"
+                color="#f50"
+              >
+                {{ value }}
+              </a-tag>
+              <a-tag
+                v-else-if="value == 2"
+                color="#fcd500"
+              >
+                {{ value }}
+              </a-tag>
+              <a-tag
+                v-else-if="value == 1"
+                color="#108ee9"
+              >
+                {{ value }}</a-tag
+              >
+              <a-tag
+                v-else
+                color="#87d068"
+              >
+                Free
+              </a-tag>
+            </template>
+            <template v-if="column.dataIndex === 'action'">
+              <!-- <RouterLink
+                class="underline"
+                :to="`/YourAccount/invoices/${record?.id}`"
+              >
+                Chi tiết
+              </RouterLink>
+              <a-button
+                type="link"
+                @click="modalUploadVideoVisible = true"
+              >
+                Upload video
+              </a-button> -->
+
+              <el-dropdown>
+                <span class="el-dropdown-link">
+                  <el-button type="primary">
+                    Actions
+                    <el-icon class="el-icon--right"><arrow-down /></el-icon>
+                  </el-button>
+                </span>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item>
+                      <a
+                        :href="`${APP_URL}/play-tv/${record.id}${utils.convertPath.toPathInfo_Play(record?.name)}`"
+                        target="_blank"
+                      >
+                        Đến trang xem phim
+                      </a>
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      @click="
+                        () =>
+                          router.push({
+                            name: 'manage-tv-episodes',
+                            params: { id: record.id }
+                          })
+                      "
                     >
-                      Đến trang xem phim
-                    </a>
-                  </el-dropdown-item>
-                  <el-dropdown-item
-                    @click="
-                      () =>
-                        router.push({
-                          name: 'manage-tv-episodes',
-                          params: { id: record.id }
-                        })
-                    "
-                  >
-                    Danh sách tập
-                  </el-dropdown-item>
-                  <el-dropdown-item @click="onClickEditMovie(record)">
-                    Chỉnh sửa
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item @click="onClickUploadVideo(record)">
-                    Upload video
-                  </el-dropdown-item> -->
-                  <el-dropdown-item
-                    @click="onClickDeleteMovie(record)"
-                    class="menu-delete-movie"
-                  >
-                    <el-text type="danger">Xóa phim</el-text>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
+                      Danh sách tập
+                    </el-dropdown-item>
+                    <el-dropdown-item @click="onClickEditMovie(record)">
+                      Chỉnh sửa
+                    </el-dropdown-item>
+                    <!-- <el-dropdown-item @click="onClickUploadVideo(record)">
+                      Upload video
+                    </el-dropdown-item> -->
+                    <el-dropdown-item
+                      @click="onClickDeleteMovie(record)"
+                      class="menu-delete-movie"
+                    >
+                      <el-text type="danger">Xóa phim</el-text>
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </template>
           </template>
-        </template>
-      </a-table>
+        </a-table>
 
-      <el-dialog
-        class="add-movie-dialog"
-        v-model="modalAddVisible"
-        :title="modalAddTitle"
-        align-center
-        style="min-width: 600px"
-      >
-        <!-- width="500" -->
-        <a-form
-          ref="formRef"
-          name="movie-form"
-          class="movie-form"
-          :model="formAddMovie"
-          hideRequiredMark
+        <el-dialog
+          class="add-movie-dialog"
+          v-model="modalAddVisible"
+          :title="modalAddTitle"
+          align-center
+          style="min-width: 600px"
         >
-          <!-- @finish="handleFinish" -->
+          <!-- width="500" -->
+          <a-form
+            ref="formRef"
+            name="movie-form"
+            class="movie-form"
+            :model="formAddMovie"
+            hideRequiredMark
+          >
+            <!-- @finish="handleFinish" -->
 
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Tên phim"
-                name="name"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập tên phim!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-input
-                  v-model:value="formAddMovie.name"
-                  placeholder="Tên phim..."
-                  allow-clear
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item
+                  label="Tên phim"
+                  name="name"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập tên phim!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
                 >
-                </a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
-              <a-form-item
-                label="Tên phim gốc"
-                name="original_name"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập tên phim gốc!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-input
-                  v-model:value="formAddMovie.original_name"
-                  placeholder="Tên phim gốc..."
-                  allow-clear
+                  <a-input
+                    v-model:value="formAddMovie.name"
+                    placeholder="Tên phim..."
+                    allow-clear
+                  >
+                  </a-input>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item
+                  label="Tên phim gốc"
+                  name="original_name"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập tên phim gốc!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
                 >
-                </a-input>
-              </a-form-item>
-            </a-col>
-          </a-row>
+                  <a-input
+                    v-model:value="formAddMovie.original_name"
+                    placeholder="Tên phim gốc..."
+                    allow-clear
+                  >
+                  </a-input>
+                </a-form-item>
+              </a-col>
+            </a-row>
 
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Thể loại"
-                name="genres"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập thể loaại!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <!-- <el-select
-                  v-model="formAddMovie.genres"
-                  multiple
-                  filterable
-                  clearable
-                  :allow-create="false"
-                  default-first-option
-                  :reserve-keyword="false"
-                  placeholder="Thể loại..."
-                  size="large"
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item
+                  label="Thể loại"
+                  name="genres"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập thể loaại!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
                 >
-                  <el-option
-                    v-for="(item, index) in store.allGenres"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.name"
+                  <!-- <el-select
+                    v-model="formAddMovie.genres"
+                    multiple
+                    filterable
+                    clearable
+                    :allow-create="false"
+                    default-first-option
+                    :reserve-keyword="false"
+                    placeholder="Thể loại..."
+                    size="large"
+                  >
+                    <el-option
+                      v-for="(item, index) in store.allGenres"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.name"
+                    />
+                  </el-select> -->
+                  <a-select
+                    v-model:value="formAddMovie.genres"
+                    mode="multiple"
+                    placeholder="Thể loại..."
+                    :options="
+                      store.allGenres.map((item: any) => ({
+                        value: JSON.stringify({
+                          id: item.id,
+                          name: item.name,
+                          name_vietsub: item.name_vietsub,
+                          short_name: item.short_name
+                        }),
+                        label: item.name
+                      }))
+                    "
+                    allowClear
+                    size="large"
+                  ></a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item
+                  label="Ngày bắt đầu phát hành"
+                  name="first_air_date"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập ngày bắt đầu phát hành!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <a-date-picker
+                    v-model:value="formAddMovie.first_air_date"
+                    placeholder="Ngày bắt đầu phát hành..."
+                    style="width: 100%"
+                    allowClear
+                    size="large"
                   />
-                </el-select> -->
-                <a-select
-                  v-model:value="formAddMovie.genres"
-                  mode="multiple"
-                  placeholder="Thể loại..."
-                  :options="
-                    store.allGenres.map((item: any) => ({
-                      value: JSON.stringify({
-                        id: item.id,
-                        name: item.name,
-                        name_vietsub: item.name_vietsub,
-                        short_name: item.short_name
-                      }),
-                      label: item.name
-                    }))
-                  "
-                  allowClear
-                  size="large"
-                ></a-select>
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
-              <a-form-item
-                label="Ngày bắt đầu phát hành"
-                name="first_air_date"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập ngày bắt đầu phát hành!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-date-picker
-                  v-model:value="formAddMovie.first_air_date"
-                  placeholder="Ngày bắt đầu phát hành..."
-                  style="width: 100%"
-                  allowClear
-                  size="large"
-                />
-              </a-form-item>
-            </a-col>
-          </a-row>
+                </a-form-item>
+              </a-col>
+            </a-row>
 
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Ngày phát hành cuối"
-                name="last_air_date"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập ngày phát hành cuối!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-date-picker
-                  v-model:value="formAddMovie.last_air_date"
-                  placeholder="Ngày phát hành cuối..."
-                  style="width: 100%"
-                  allowClear
-                  size="large"
-                />
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
-              <a-form-item
-                label="Quốc gia"
-                name="original_language"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập quốc gia!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-select
-                  v-model:value="formAddMovie.original_language"
-                  placeholder="Quốc gia.."
-                  :options="
-                    store.allCountries.map((item: any) => ({
-                      value: item.iso_639_1,
-                      label: item.name
-                    }))
-                  "
-                  allowClear
-                  size="large"
-                ></a-select>
-              </a-form-item>
-            </a-col>
-          </a-row>
-
-          <a-row :gutter="16">
-            <a-col :span="8">
-              <a-form-item
-                label="Trạng thái"
-                name="status"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập trạng thái!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <!-- <a-input
-                  v-model:value="formAddMovie.status"
-                  placeholder="Trạng thái..."
-                  allow-clear
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item
+                  label="Ngày phát hành cuối"
+                  name="last_air_date"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập ngày phát hành cuối!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
                 >
-                </a-input> -->
-
-                <a-select v-model:value="formAddMovie.status">
-                  <a-select-option value="Released">Released</a-select-option>
-                  <a-select-option value="Post Production">
-                    Post Production
-                  </a-select-option>
-                  <a-select-option value="In Production">
-                    In Production
-                  </a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-item
-                label="Số tập"
-                name="number_of_episodes"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập số tập',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <el-input-number
-                  v-model="formAddMovie.number_of_episodes"
-                  :min="0"
-                  :step="1"
-                  size="large"
-                  style="width: 100%"
-                />
-              </a-form-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-item
-                label="Thời lượng trên tập"
-                name="episode_run_time"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập thời lượng trên tập!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <el-input-number
-                  v-model="formAddMovie.episode_run_time"
-                  :min="0"
-                  :step="1"
-                  size="large"
-                  style="width: 100%"
+                  <a-date-picker
+                    v-model:value="formAddMovie.last_air_date"
+                    placeholder="Ngày phát hành cuối..."
+                    style="width: 100%"
+                    allowClear
+                    size="large"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item
+                  label="Quốc gia"
+                  name="original_language"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập quốc gia!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
                 >
-                  <template #suffix>
-                    <span>Phút</span>
-                  </template>
-                </el-input-number>
-              </a-form-item>
-            </a-col>
-          </a-row>
+                  <a-select
+                    v-model:value="formAddMovie.original_language"
+                    placeholder="Quốc gia.."
+                    :options="
+                      store.allCountries.map((item: any) => ({
+                        value: item.iso_639_1,
+                        label: item.name
+                      }))
+                    "
+                    allowClear
+                    size="large"
+                  ></a-select>
+                </a-form-item>
+              </a-col>
+            </a-row>
 
-          <a-row>
-            <a-col :span="24">
-              <a-form-item
-                label="Tóm tắt"
-                name="overview"
-                :rules="[
-                  {
-                    required: false,
-                    message: 'Vui lòng nhập tóm tắt!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-textarea
-                  v-model:value="formAddMovie.overview"
-                  placeholder="Tóm tắt..."
-                  allow-clear
-                  :auto-size="{ minRows: 3, maxRows: 6 }"
+            <a-row :gutter="16">
+              <a-col :span="8">
+                <a-form-item
+                  label="Trạng thái"
+                  name="status"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập trạng thái!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
                 >
-                </a-textarea>
-              </a-form-item>
-            </a-col>
-          </a-row>
+                  <!-- <a-input
+                    v-model:value="formAddMovie.status"
+                    placeholder="Trạng thái..."
+                    allow-clear
+                  >
+                  </a-input> -->
 
-          <a-row :gutter="16">
-            <a-col :span="8">
-              <a-form-item
-                label="Kinh phí sản xuất"
-                name="budget"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập Kinh phí sản xuất',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <!-- <a-input-number
-                  v-model:value="formAddMovie.budget"
-                  :min="0"
-                  :step="1000"
-                  style="width: 100%"
-                /> -->
-                <el-input-number
-                  v-model="formAddMovie.budget"
-                  :min="0"
-                  :step="1000"
-                  size="large"
-                  style="width: 100%"
+                  <a-select v-model:value="formAddMovie.status">
+                    <a-select-option value="Released">Released</a-select-option>
+                    <a-select-option value="Post Production">
+                      Post Production
+                    </a-select-option>
+                    <a-select-option value="In Production">
+                      In Production
+                    </a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item
+                  label="Số tập"
+                  name="number_of_episodes"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập số tập',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
                 >
-                  <template #suffix>
-                    <span>$</span>
-                  </template>
-                </el-input-number>
-              </a-form-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-item
-                label="Doanh thu"
-                name="revenue"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập doanh thu!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <el-input-number
-                  v-model="formAddMovie.revenue"
-                  :min="0"
-                  :step="1000"
-                  size="large"
-                  style="width: 100%"
+                  <el-input-number
+                    v-model="formAddMovie.number_of_episodes"
+                    :min="0"
+                    :step="1"
+                    size="large"
+                    style="width: 100%"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item
+                  label="Thời lượng trên tập"
+                  name="episode_run_time"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập thời lượng trên tập!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
                 >
-                  <template #suffix>
-                    <span>$</span>
-                  </template>
-                </el-input-number>
-              </a-form-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-item
-                label="Vip"
-                name="vip"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập vip!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-select v-model:value="formAddMovie.vip">
-                  <a-select-option value="0">Free</a-select-option>
-                  <a-select-option value="1">1</a-select-option>
-                  <a-select-option value="2">2</a-select-option>
-                  <a-select-option value="3">3</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-          </a-row>
+                  <el-input-number
+                    v-model="formAddMovie.episode_run_time"
+                    :min="0"
+                    :step="1"
+                    size="large"
+                    style="width: 100%"
+                  >
+                    <template #suffix>
+                      <span>Phút</span>
+                    </template>
+                  </el-input-number>
+                </a-form-item>
+              </a-col>
+            </a-row>
 
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Poster"
-                name="poster_path"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng chọn ảnh Poster!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <div class="upload-image">
-                  <input
-                    ref="inputPosterFile"
-                    type="file"
-                    accept="image/*"
-                    @change="(e) => handleChangeUploadImage(e, 'poster')"
-                  />
-                  <img
-                    v-if="formAddMovie.poster_path"
-                    :src="formAddMovie.poster_path"
-                    class="poster-image"
-                  />
-                </div>
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
-              <a-form-item
-                label="Backdrop"
-                name="backdrop_path"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng chọn ảnh backdrop!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <div class="upload-image">
-                  <input
-                    ref="inputBackdropFile"
-                    type="file"
-                    accept="image/*"
-                    @change="(e) => handleChangeUploadImage(e, 'backdrop')"
-                  />
-                  <img
-                    v-if="formAddMovie.backdrop_path"
-                    :src="formAddMovie.backdrop_path"
-                    class="backdrop-image"
-                  />
-                </div>
-              </a-form-item>
-            </a-col>
-          </a-row>
-        </a-form>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="modalAddVisible = false">Đóng</el-button>
-            <el-button
-              v-if="isEdit"
-              type="primary"
-              @click="onSubmitFormEdit"
-              :loading="loadingAdd"
-            >
-              Lưu
-            </el-button>
-            <el-button
-              v-else
-              type="primary"
-              @click="onSubmitFormAdd"
-              :loading="loadingAdd"
-            >
-              Thêm
-            </el-button>
-          </div>
-        </template>
-      </el-dialog>
+            <a-row>
+              <a-col :span="24">
+                <a-form-item
+                  label="Tóm tắt"
+                  name="overview"
+                  :rules="[
+                    {
+                      required: false,
+                      message: 'Vui lòng nhập tóm tắt!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <a-textarea
+                    v-model:value="formAddMovie.overview"
+                    placeholder="Tóm tắt..."
+                    allow-clear
+                    :auto-size="{ minRows: 3, maxRows: 6 }"
+                  >
+                  </a-textarea>
+                </a-form-item>
+              </a-col>
+            </a-row>
 
-      <el-dialog
-        class="upload-video-dialog"
-        v-model="modalUploadVideoVisible"
-        :title="`Upload video - ${modalUploadVideoTitle}`"
-        align-center
-        style="min-width: 600px"
-        :before-close="onBeforeCloseModalUploadVideo"
-      >
-        <!-- width="500" -->
-        <a-form
-          ref="formVidRef"
-          name="movie-form"
-          class="movie-form"
-          :model="formUploadVideo"
-          hideRequiredMark
-        >
-          <!-- @finish="handleFinishUploadVideo" -->
-          <a-row>
-            <a-col :span="24">
-              <a-form-item
-                label="Video"
-                name="file_upload"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng chọn video!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <div class="upload-video">
-                  <input
-                    ref="inputVideoFile"
-                    type="file"
-                    accept="video/*"
-                    @change="handleChangeUploadVideo"
-                  />
-                  <!-- <video
-                    v-if="formUploadVideo.file_upload"
-                    :src="formUploadVideo.file_upload"
-                    class="video-upload-preview"
+            <a-row :gutter="16">
+              <a-col :span="8">
+                <a-form-item
+                  label="Kinh phí sản xuất"
+                  name="budget"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập Kinh phí sản xuất',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <!-- <a-input-number
+                    v-model:value="formAddMovie.budget"
+                    :min="0"
+                    :step="1000"
+                    style="width: 100%"
                   /> -->
-                </div>
-                <div class="progress-upload">
-                  <div v-if="formUploadVideo.percent_upload > 0">
-                    <p>Upoading</p>
-                    <a-progress
-                      title="Upload video"
-                      :percent="formUploadVideo.percent_upload"
+                  <el-input-number
+                    v-model="formAddMovie.budget"
+                    :min="0"
+                    :step="1000"
+                    size="large"
+                    style="width: 100%"
+                  >
+                    <template #suffix>
+                      <span>$</span>
+                    </template>
+                  </el-input-number>
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item
+                  label="Doanh thu"
+                  name="revenue"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập doanh thu!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <el-input-number
+                    v-model="formAddMovie.revenue"
+                    :min="0"
+                    :step="1000"
+                    size="large"
+                    style="width: 100%"
+                  >
+                    <template #suffix>
+                      <span>$</span>
+                    </template>
+                  </el-input-number>
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item
+                  label="Vip"
+                  name="vip"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập vip!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <a-select v-model:value="formAddMovie.vip">
+                    <a-select-option value="0">Free</a-select-option>
+                    <a-select-option value="1">1</a-select-option>
+                    <a-select-option value="2">2</a-select-option>
+                    <a-select-option value="3">3</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+            </a-row>
+
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item
+                  label="Poster"
+                  name="poster_path"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng chọn ảnh Poster!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <div class="upload-image">
+                    <input
+                      ref="inputPosterFile"
+                      type="file"
+                      accept="image/*"
+                      @change="(e) => handleChangeUploadImage(e, 'poster')"
+                    />
+                    <img
+                      v-if="formAddMovie.poster_path"
+                      :src="formAddMovie.poster_path"
+                      class="poster-image"
                     />
                   </div>
-                  <div v-if="formUploadVideo.percent_chunking > 0">
-                    <p>Chunking</p>
-                    <a-progress
-                      title="Chia nhỏ video"
-                      :percent="formUploadVideo.percent_chunking"
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item
+                  label="Backdrop"
+                  name="backdrop_path"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng chọn ảnh backdrop!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <div class="upload-image">
+                    <input
+                      ref="inputBackdropFile"
+                      type="file"
+                      accept="image/*"
+                      @change="(e) => handleChangeUploadImage(e, 'backdrop')"
+                    />
+                    <img
+                      v-if="formAddMovie.backdrop_path"
+                      :src="formAddMovie.backdrop_path"
+                      class="backdrop-image"
                     />
                   </div>
-                </div>
-              </a-form-item>
-            </a-col>
-          </a-row>
-        </a-form>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button
-              @click="modalUploadVideoVisible = false"
-              :disabled="loadingUploadVideo || loadingChunkingVideo"
-              >Đóng
-            </el-button>
-            <el-button
-              type="primary"
-              @click="onUploadVideo"
-              :loading="loadingUploadVideo || loadingChunkingVideo"
-            >
-              Upload
-            </el-button>
-          </div>
-        </template>
-      </el-dialog>
+                </a-form-item>
+              </a-col>
+            </a-row>
+          </a-form>
+          <template #footer>
+            <div class="dialog-footer">
+              <el-button @click="modalAddVisible = false">Đóng</el-button>
+              <el-button
+                v-if="isEdit"
+                type="primary"
+                @click="onSubmitFormEdit"
+                :loading="loadingAdd"
+              >
+                Lưu
+              </el-button>
+              <el-button
+                v-else
+                type="primary"
+                @click="onSubmitFormAdd"
+                :loading="loadingAdd"
+              >
+                Thêm
+              </el-button>
+            </div>
+          </template>
+        </el-dialog>
+
+        <el-dialog
+          class="upload-video-dialog"
+          v-model="modalUploadVideoVisible"
+          :title="`Upload video - ${modalUploadVideoTitle}`"
+          align-center
+          style="min-width: 600px"
+          :before-close="onBeforeCloseModalUploadVideo"
+        >
+          <!-- width="500" -->
+          <a-form
+            ref="formVidRef"
+            name="movie-form"
+            class="movie-form"
+            :model="formUploadVideo"
+            hideRequiredMark
+          >
+            <!-- @finish="handleFinishUploadVideo" -->
+            <a-row>
+              <a-col :span="24">
+                <a-form-item
+                  label="Video"
+                  name="file_upload"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng chọn video!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <div class="upload-video">
+                    <input
+                      ref="inputVideoFile"
+                      type="file"
+                      accept="video/*"
+                      @change="handleChangeUploadVideo"
+                    />
+                    <!-- <video
+                      v-if="formUploadVideo.file_upload"
+                      :src="formUploadVideo.file_upload"
+                      class="video-upload-preview"
+                    /> -->
+                  </div>
+                  <div class="progress-upload">
+                    <div v-if="formUploadVideo.percent_upload > 0">
+                      <p>Upoading</p>
+                      <a-progress
+                        title="Upload video"
+                        :percent="formUploadVideo.percent_upload"
+                      />
+                    </div>
+                    <div v-if="formUploadVideo.percent_chunking > 0">
+                      <p>Chunking</p>
+                      <a-progress
+                        title="Chia nhỏ video"
+                        :percent="formUploadVideo.percent_chunking"
+                      />
+                    </div>
+                  </div>
+                </a-form-item>
+              </a-col>
+            </a-row>
+          </a-form>
+          <template #footer>
+            <div class="dialog-footer">
+              <el-button
+                @click="modalUploadVideoVisible = false"
+                :disabled="loadingUploadVideo || loadingChunkingVideo"
+                >Đóng
+              </el-button>
+              <el-button
+                type="primary"
+                @click="onUploadVideo"
+                :loading="loadingUploadVideo || loadingChunkingVideo"
+              >
+                Upload
+              </el-button>
+            </div>
+          </template>
+        </el-dialog>
+      </div>
     </div>
   </div>
 </template>

@@ -1,244 +1,246 @@
 <template>
-  <div class="manage-genre-container">
-    <div class="header-table">
-      <h2>Danh sách Thể loại</h2>
+  <div class="page-container padding-content">
+    <div class="manage-genre-container">
+      <div class="header-table">
+        <h2>Danh sách Thể loại</h2>
 
-      <!-- <RouterLink :to="{ path: '/addgenre' }"> -->
+        <!-- <RouterLink :to="{ path: '/addgenre' }"> -->
 
-      <a-button
-        class="add-btn"
-        type="primary"
-        @click="onClickAddBtn"
-      >
-        <template #icon>
-          <PlusIcon
-            width="1.8rem"
-            height="1.8rem"
-            fill="currentColor"
-          />
-        </template>
-        Thêm thể loại
-      </a-button>
-
-      <!-- </RouterLink> -->
-    </div>
-
-    <div class="table-tools">
-      <a-input-search
-        class="search-genre"
-        v-model:value="searchValue"
-        placeholder="Nhập têm thể loại để tìm kiếm..."
-        enter-button="Tìm kiếm"
-        @search="onSearch"
-      />
-
-      <div class="right-actions">
         <a-button
-          class="reset-btn"
+          class="add-btn"
           type="primary"
-          @click="getData"
+          @click="onClickAddBtn"
         >
           <template #icon>
-            <SvgoDirectorySync
+            <PlusIcon
               width="1.8rem"
               height="1.8rem"
               fill="currentColor"
             />
           </template>
-          Làm mới
+          Thêm thể loại
         </a-button>
 
-        <a-button
-          class="delete-multiple-btn"
-          type="primary"
-          danger
-          @click="onClickDeleteBtn"
-          :disabled="!hasSelected"
-        >
-          <template #icon>
-            <DeleteSweepIcon
-              width="1.8rem"
-              height="1.8rem"
-              fill="currentColor"
-            />
-          </template>
-          Xóa thể loại
-        </a-button>
+        <!-- </RouterLink> -->
       </div>
-    </div>
 
-    <div class="genre-table">
-      <a-table
-        class="ant-table-striped table-app-bg-header"
-        :row-class-name="
-          (_record: any, index: number) =>
-            index % 2 === 1 ? 'table-striped' : null
-        "
-        :data-source="dataGenre"
-        :columns="columns"
-        :row-key="(record: any) => record.id"
-        :loading="loading"
-        :scroll="{
-          y: '75vh',
-          x: 900
-        }"
-        bordered
-        sticky
-        :row-selection="{
-          selectedRowKeys: selectedRowKeys,
-          onChange: onSelectChange
-        }"
-      >
-        <!-- :pagination="{ pageSize: pageSizeTable, onChange: onChangePage }" -->
-        <!-- @change="onChangeTable" -->
-        <template #bodyCell="{ column, text, value, record, index }">
-          <template v-if="column.dataIndex === 'no'">
-            {{ index + 1 }}
-          </template>
-          <template v-if="column.dataIndex === 'action'">
-            <!-- <RouterLink
-              class="underline"
-              :to="`/YourAccount/invoices/${record?.id}`"
-            >
-              Chi tiết
-            </RouterLink>
-            <a-button
-              type="link"
-              @click="modalUploadVideoVisible = true"
-            >
-              Upload video
-            </a-button> -->
+      <div class="table-tools">
+        <a-input-search
+          class="search-genre"
+          v-model:value="searchValue"
+          placeholder="Nhập têm thể loại để tìm kiếm..."
+          enter-button="Tìm kiếm"
+          @search="onSearch"
+        />
 
-            <el-dropdown>
-              <span class="el-dropdown-link">
-                <el-button type="primary">
-                  Actions
-                  <el-icon class="el-icon--right"><arrow-down /></el-icon>
-                </el-button>
-              </span>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item @click="onClickEditGenre(record)">
-                    Chỉnh sửa
-                  </el-dropdown-item>
-                  <el-dropdown-item
-                    @click="onClickDeleteGenre(record)"
-                    class="menu-delete-genre"
-                  >
-                    <el-text type="danger">Xóa thể loại</el-text>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </template>
-        </template>
-      </a-table>
+        <div class="right-actions">
+          <a-button
+            class="reset-btn"
+            type="primary"
+            @click="getData"
+          >
+            <template #icon>
+              <SvgoDirectorySync
+                width="1.8rem"
+                height="1.8rem"
+                fill="currentColor"
+              />
+            </template>
+            Làm mới
+          </a-button>
 
-      <el-dialog
-        class="add-genre-dialog"
-        v-model="modalAddVisible"
-        :title="modalAddTitle"
-        align-center
-        style="min-width: 600px"
-      >
-        <!-- width="500" -->
-        <a-form
-          ref="formRef"
-          name="genre-form"
-          class="genre-form"
-          :model="formAddGenre"
-          hideRequiredMark
+          <a-button
+            class="delete-multiple-btn"
+            type="primary"
+            danger
+            @click="onClickDeleteBtn"
+            :disabled="!hasSelected"
+          >
+            <template #icon>
+              <DeleteSweepIcon
+                width="1.8rem"
+                height="1.8rem"
+                fill="currentColor"
+              />
+            </template>
+            Xóa thể loại
+          </a-button>
+        </div>
+      </div>
+
+      <div class="genre-table">
+        <a-table
+          class="ant-table-striped table-app-bg-header"
+          :row-class-name="
+            (_record: any, index: number) =>
+              index % 2 === 1 ? 'table-striped' : null
+          "
+          :data-source="dataGenre"
+          :columns="columns"
+          :row-key="(record: any) => record.id"
+          :loading="loading"
+          :scroll="{
+            y: '75vh',
+            x: 900
+          }"
+          bordered
+          sticky
+          :row-selection="{
+            selectedRowKeys: selectedRowKeys,
+            onChange: onSelectChange
+          }"
         >
-          <!-- @finish="handleFinish" -->
+          <!-- :pagination="{ pageSize: pageSizeTable, onChange: onChangePage }" -->
+          <!-- @change="onChangeTable" -->
+          <template #bodyCell="{ column, text, value, record, index }">
+            <template v-if="column.dataIndex === 'no'">
+              {{ index + 1 }}
+            </template>
+            <template v-if="column.dataIndex === 'action'">
+              <!-- <RouterLink
+                class="underline"
+                :to="`/YourAccount/invoices/${record?.id}`"
+              >
+                Chi tiết
+              </RouterLink>
+              <a-button
+                type="link"
+                @click="modalUploadVideoVisible = true"
+              >
+                Upload video
+              </a-button> -->
 
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Tên thể loại"
-                name="name"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập tên thể loại!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-input
-                  v-model:value="formAddGenre.name"
-                  placeholder="Tên thể loại..."
-                  allow-clear
-                >
-                </a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
-              <a-form-item
-                label="Tên Tiếng Việt"
-                name="name_vietsub"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập tên Tiếng Việt!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-input
-                  v-model:value="formAddGenre.name_vietsub"
-                  placeholder="Tên Tiếng Việt..."
-                  allow-clear
-                >
-                </a-input>
-              </a-form-item>
-            </a-col>
-          </a-row>
+              <el-dropdown>
+                <span class="el-dropdown-link">
+                  <el-button type="primary">
+                    Actions
+                    <el-icon class="el-icon--right"><arrow-down /></el-icon>
+                  </el-button>
+                </span>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item @click="onClickEditGenre(record)">
+                      Chỉnh sửa
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      @click="onClickDeleteGenre(record)"
+                      class="menu-delete-genre"
+                    >
+                      <el-text type="danger">Xóa thể loại</el-text>
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </template>
+          </template>
+        </a-table>
 
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Tên rút gọn"
-                name="short_name"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập tên rút gọn!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-input
-                  v-model:value="formAddGenre.short_name"
-                  placeholder="Tên rút gọn..."
-                  allow-clear
+        <el-dialog
+          class="add-genre-dialog"
+          v-model="modalAddVisible"
+          :title="modalAddTitle"
+          align-center
+          style="min-width: 600px"
+        >
+          <!-- width="500" -->
+          <a-form
+            ref="formRef"
+            name="genre-form"
+            class="genre-form"
+            :model="formAddGenre"
+            hideRequiredMark
+          >
+            <!-- @finish="handleFinish" -->
+
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item
+                  label="Tên thể loại"
+                  name="name"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập tên thể loại!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
                 >
-                </a-input>
-              </a-form-item>
-            </a-col>
-          </a-row>
-        </a-form>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="modalAddVisible = false">Đóng</el-button>
-            <el-button
-              v-if="isEdit"
-              type="primary"
-              @click="onSubmitFormEdit"
-              :loading="loadingAdd"
-            >
-              Lưu
-            </el-button>
-            <el-button
-              v-else
-              type="primary"
-              @click="onSubmitFormAdd"
-              :loading="loadingAdd"
-            >
-              Thêm
-            </el-button>
-          </div>
-        </template>
-      </el-dialog>
+                  <a-input
+                    v-model:value="formAddGenre.name"
+                    placeholder="Tên thể loại..."
+                    allow-clear
+                  >
+                  </a-input>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item
+                  label="Tên Tiếng Việt"
+                  name="name_vietsub"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập tên Tiếng Việt!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <a-input
+                    v-model:value="formAddGenre.name_vietsub"
+                    placeholder="Tên Tiếng Việt..."
+                    allow-clear
+                  >
+                  </a-input>
+                </a-form-item>
+              </a-col>
+            </a-row>
+
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item
+                  label="Tên rút gọn"
+                  name="short_name"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập tên rút gọn!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <a-input
+                    v-model:value="formAddGenre.short_name"
+                    placeholder="Tên rút gọn..."
+                    allow-clear
+                  >
+                  </a-input>
+                </a-form-item>
+              </a-col>
+            </a-row>
+          </a-form>
+          <template #footer>
+            <div class="dialog-footer">
+              <el-button @click="modalAddVisible = false">Đóng</el-button>
+              <el-button
+                v-if="isEdit"
+                type="primary"
+                @click="onSubmitFormEdit"
+                :loading="loadingAdd"
+              >
+                Lưu
+              </el-button>
+              <el-button
+                v-else
+                type="primary"
+                @click="onSubmitFormAdd"
+                :loading="loadingAdd"
+              >
+                Thêm
+              </el-button>
+            </div>
+          </template>
+        </el-dialog>
+      </div>
     </div>
   </div>
 </template>

@@ -1,3 +1,6 @@
+.dashboard-container {
+}
+
 .welcome {
   background: #e1eaf9;
   border-radius: 6px;
@@ -95,13 +98,13 @@
   border-radius: 6px;
 }
 .small-panel-box {
-  margin-top: 20px;
+  margin-top: 15px;
 }
 .small-panel {
   background-color: #e9edf2;
   border-radius: var(--el-border-radius-base);
   padding: 25px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   .small-panel-title {
     color: #92969a;
     font-size: 15px;
@@ -138,7 +141,7 @@
   }
 }
 .growth-chart {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 .user-growth-chart,
 .file-growth-chart {

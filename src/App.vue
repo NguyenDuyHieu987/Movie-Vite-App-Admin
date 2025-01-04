@@ -72,7 +72,12 @@
             :max="10"
             :exclude="notCacheList"
           >
-            <component :is="Component" />
+            <Transition
+              name="slide-left"
+              mode="out-in"
+            >
+              <component :is="Component" />
+            </Transition>
           </KeepAlive>
 
           <el-backtop

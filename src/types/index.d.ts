@@ -7,6 +7,11 @@ export declare type AppLayout =
   | 'oauth'
   | 'service';
 
+export declare interface TabView {
+  name: string;
+  path: string;
+}
+
 export declare interface mod {
   id: string;
   media_type: string;

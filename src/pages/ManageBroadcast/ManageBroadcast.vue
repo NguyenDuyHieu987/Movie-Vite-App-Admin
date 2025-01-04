@@ -1,409 +1,411 @@
 <template>
-  <div class="manage-broadcast-container">
-    <div class="header-table">
-      <h2>Danh sách Buổi phát sóng</h2>
+  <div class="page-container padding-content">
+    <div class="manage-broadcast-container">
+      <div class="header-table">
+        <h2>Danh sách Buổi phát sóng</h2>
 
-      <!-- <RouterLink :to="{ path: '/addbroadcast' }"> -->
+        <!-- <RouterLink :to="{ path: '/addbroadcast' }"> -->
 
-      <a-button
-        class="add-btn"
-        type="primary"
-        @click="onClickAddBtn"
-      >
-        <template #icon>
-          <PlusIcon
-            width="1.8rem"
-            height="1.8rem"
-            fill="currentColor"
-          />
-        </template>
-        Tạo buổi phát sóng
-      </a-button>
-
-      <!-- </RouterLink> -->
-    </div>
-
-    <div class="table-tools">
-      <a-input-search
-        class="search-broadcast"
-        v-model:value="searchValue"
-        placeholder="Nhập têm buổi phát sóng để tìm kiếm..."
-        enter-button="Tìm kiếm"
-        @search="onSearch"
-      />
-
-      <div class="right-actions">
         <a-button
-          class="reset-btn"
+          class="add-btn"
           type="primary"
-          @click="getData"
+          @click="onClickAddBtn"
         >
           <template #icon>
-            <SvgoDirectorySync
+            <PlusIcon
               width="1.8rem"
               height="1.8rem"
               fill="currentColor"
             />
           </template>
-          Làm mới
+          Tạo buổi phát sóng
         </a-button>
 
-        <a-button
-          class="delete-multiple-btn"
-          type="primary"
-          danger
-          @click="onClickDeleteBtn"
-          :disabled="!hasSelected"
-        >
-          <template #icon>
-            <DeleteSweepIcon
-              width="1.8rem"
-              height="1.8rem"
-              fill="currentColor"
-            />
-          </template>
-          Xóa buổi phát sóng
-        </a-button>
+        <!-- </RouterLink> -->
       </div>
-    </div>
 
-    <div class="broadcast-table">
-      <a-table
-        class="ant-table-striped table-app-bg-header"
-        :row-class-name="
-          (_record: any, index: number) =>
-            index % 2 === 1 ? 'table-striped' : null
-        "
-        :data-source="dataBroadcast"
-        :columns="columns"
-        :row-key="(record: any) => record.id"
-        :loading="loading"
-        :scroll="{
-          y: '75vh',
-          x: 900
-        }"
-        bordered
-        sticky
-        :row-selection="{
-          selectedRowKeys: selectedRowKeys,
-          onChange: onSelectChange
-        }"
-      >
-        <!-- :pagination="{ pageSize: pageSizeTable, onChange: onChangePage }" -->
-        <!-- @change="onChangeTable" -->
-        <template #bodyCell="{ column, text, value, record, index }">
-          <template v-if="column.dataIndex === 'no'">
-            {{ index + 1 }}
-          </template>
-          <template v-if="column.dataIndex === 'movieData.name'">
-            {{ record.movieData.name }}
-          </template>
-          <template v-if="column.dataIndex === 'movieData.media_type'">
-            {{ record.movieData.media_type == 'movie' ? 'Phim lẻ' : null }}
-            {{ record.movieData.media_type == 'tv' ? 'Phim bộ' : null }}
-          </template>
-          <template v-if="column.dataIndex === 'episodeData.name'">
-            {{ record?.episodeData?.name || null }}
-          </template>
-          <template v-if="column.dataIndex === 'status'">
-            <a-tag
-              v-if="
-                utils.dateTimeFormater.toNow(
-                  record.release_time,
-                  record?.episodeData?.runtime || record?.movieData?.runtime
-                ).status == 'not-yet'
-              "
-              color="blue"
-            >
-              {{
-                utils.dateTimeFormater.toNow(
-                  record.release_time,
-                  record?.episodeData?.runtime || record?.movieData?.runtime
-                ).message
-              }}
-            </a-tag>
-            <a-tag
-              v-else-if="
-                utils.dateTimeFormater.toNow(
-                  record.release_time,
-                  record?.episodeData?.runtime || record?.movieData?.runtime
-                ).status == 'playing'
-              "
-              color="green"
-            >
-              {{
-                utils.dateTimeFormater.toNow(
-                  record.release_time,
-                  record?.episodeData?.runtime || record?.movieData?.runtime
-                ).message
-              }}
-            </a-tag>
-            <a-tag
-              v-else
-              color="red"
-            >
-              <!-- color="#f50" -->
-              {{
-                utils.dateTimeFormater.toNow(
-                  record.release_time,
-                  record?.episodeData?.runtime || record?.movieData?.runtime
-                ).message
-              }}
-            </a-tag>
-          </template>
-          <template v-if="column.dataIndex === 'release_time'">
-            {{
-              dayjs(value)
-                // .local()
-                // .utc()
-                .format('DD/MM/YYYY hh:mm A')
-            }}
-          </template>
-          <template v-if="column.dataIndex === 'number_of_interactions'">
-            {{ value.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, '.') }}
-          </template>
-          <template v-if="column.dataIndex === 'action'">
-            <!-- <RouterLink
-              class="underline"
-              :to="`/YourAccount/invoices/${record?.id}`"
-            >
-              Chi tiết
-            </RouterLink>
-            <a-button
-              type="link"
-              @click="modalUploadVideoVisible = true"
-            >
-              Upload video
-            </a-button> -->
+      <div class="table-tools">
+        <a-input-search
+          class="search-broadcast"
+          v-model:value="searchValue"
+          placeholder="Nhập têm buổi phát sóng để tìm kiếm..."
+          enter-button="Tìm kiếm"
+          @search="onSearch"
+        />
 
-            <el-dropdown>
-              <span class="el-dropdown-link">
-                <el-button type="primary">
-                  Actions
-                  <el-icon class="el-icon--right"><arrow-down /></el-icon>
-                </el-button>
-              </span>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item>
-                    <a
-                      :href="`${APP_URL}/broadcast/${record.id}`"
-                      target="_blank"
-                    >
-                      Đến buổi phát sóng
-                    </a>
-                  </el-dropdown-item>
-                  <el-dropdown-item @click="onClickEditBroadcast(record)">
-                    Chỉnh sửa
-                  </el-dropdown-item>
-                  <el-dropdown-item
-                    @click="onClickDeleteBroadcast(record)"
-                    class="menu-delete-broadcast"
-                  >
-                    <el-text type="danger">Xóa buổi phát sóng</el-text>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </template>
-        </template>
-      </a-table>
+        <div class="right-actions">
+          <a-button
+            class="reset-btn"
+            type="primary"
+            @click="getData"
+          >
+            <template #icon>
+              <SvgoDirectorySync
+                width="1.8rem"
+                height="1.8rem"
+                fill="currentColor"
+              />
+            </template>
+            Làm mới
+          </a-button>
 
-      <el-dialog
-        class="add-broadcast-dialog"
-        v-model="modalAddVisible"
-        :title="modalAddTitle"
-        align-center
-        style="min-width: 600px"
-      >
-        <!-- width="500" -->
-        <a-form
-          ref="formRef"
-          name="broadcast-form"
-          class="broadcast-form"
-          :model="formAddBroadcast"
-          hideRequiredMark
+          <a-button
+            class="delete-multiple-btn"
+            type="primary"
+            danger
+            @click="onClickDeleteBtn"
+            :disabled="!hasSelected"
+          >
+            <template #icon>
+              <DeleteSweepIcon
+                width="1.8rem"
+                height="1.8rem"
+                fill="currentColor"
+              />
+            </template>
+            Xóa buổi phát sóng
+          </a-button>
+        </div>
+      </div>
+
+      <div class="broadcast-table">
+        <a-table
+          class="ant-table-striped table-app-bg-header"
+          :row-class-name="
+            (_record: any, index: number) =>
+              index % 2 === 1 ? 'table-striped' : null
+          "
+          :data-source="dataBroadcast"
+          :columns="columns"
+          :row-key="(record: any) => record.id"
+          :loading="loading"
+          :scroll="{
+            y: '75vh',
+            x: 900
+          }"
+          bordered
+          sticky
+          :row-selection="{
+            selectedRowKeys: selectedRowKeys,
+            onChange: onSelectChange
+          }"
         >
-          <!-- @finish="handleFinish" -->
-
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Tên buổi phát sóng"
-                name="name"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập tên buổi phát sóng!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
+          <!-- :pagination="{ pageSize: pageSizeTable, onChange: onChangePage }" -->
+          <!-- @change="onChangeTable" -->
+          <template #bodyCell="{ column, text, value, record, index }">
+            <template v-if="column.dataIndex === 'no'">
+              {{ index + 1 }}
+            </template>
+            <template v-if="column.dataIndex === 'movieData.name'">
+              {{ record.movieData.name }}
+            </template>
+            <template v-if="column.dataIndex === 'movieData.media_type'">
+              {{ record.movieData.media_type == 'movie' ? 'Phim lẻ' : null }}
+              {{ record.movieData.media_type == 'tv' ? 'Phim bộ' : null }}
+            </template>
+            <template v-if="column.dataIndex === 'episodeData.name'">
+              {{ record?.episodeData?.name || null }}
+            </template>
+            <template v-if="column.dataIndex === 'status'">
+              <a-tag
+                v-if="
+                  utils.dateTimeFormater.toNow(
+                    record.release_time,
+                    record?.episodeData?.runtime || record?.movieData?.runtime
+                  ).status == 'not-yet'
+                "
+                color="blue"
               >
-                <a-input
-                  v-model:value="formAddBroadcast.name"
-                  placeholder="Tên buổi phát sóng..."
-                  allow-clear
+                {{
+                  utils.dateTimeFormater.toNow(
+                    record.release_time,
+                    record?.episodeData?.runtime || record?.movieData?.runtime
+                  ).message
+                }}
+              </a-tag>
+              <a-tag
+                v-else-if="
+                  utils.dateTimeFormater.toNow(
+                    record.release_time,
+                    record?.episodeData?.runtime || record?.movieData?.runtime
+                  ).status == 'playing'
+                "
+                color="green"
+              >
+                {{
+                  utils.dateTimeFormater.toNow(
+                    record.release_time,
+                    record?.episodeData?.runtime || record?.movieData?.runtime
+                  ).message
+                }}
+              </a-tag>
+              <a-tag
+                v-else
+                color="red"
+              >
+                <!-- color="#f50" -->
+                {{
+                  utils.dateTimeFormater.toNow(
+                    record.release_time,
+                    record?.episodeData?.runtime || record?.movieData?.runtime
+                  ).message
+                }}
+              </a-tag>
+            </template>
+            <template v-if="column.dataIndex === 'release_time'">
+              {{
+                dayjs(value)
+                  // .local()
+                  // .utc()
+                  .format('DD/MM/YYYY hh:mm A')
+              }}
+            </template>
+            <template v-if="column.dataIndex === 'number_of_interactions'">
+              {{ value.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, '.') }}
+            </template>
+            <template v-if="column.dataIndex === 'action'">
+              <!-- <RouterLink
+                class="underline"
+                :to="`/YourAccount/invoices/${record?.id}`"
+              >
+                Chi tiết
+              </RouterLink>
+              <a-button
+                type="link"
+                @click="modalUploadVideoVisible = true"
+              >
+                Upload video
+              </a-button> -->
+
+              <el-dropdown>
+                <span class="el-dropdown-link">
+                  <el-button type="primary">
+                    Actions
+                    <el-icon class="el-icon--right"><arrow-down /></el-icon>
+                  </el-button>
+                </span>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item>
+                      <a
+                        :href="`${APP_URL}/broadcast/${record.id}`"
+                        target="_blank"
+                      >
+                        Đến buổi phát sóng
+                      </a>
+                    </el-dropdown-item>
+                    <el-dropdown-item @click="onClickEditBroadcast(record)">
+                      Chỉnh sửa
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      @click="onClickDeleteBroadcast(record)"
+                      class="menu-delete-broadcast"
+                    >
+                      <el-text type="danger">Xóa buổi phát sóng</el-text>
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </template>
+          </template>
+        </a-table>
+
+        <el-dialog
+          class="add-broadcast-dialog"
+          v-model="modalAddVisible"
+          :title="modalAddTitle"
+          align-center
+          style="min-width: 600px"
+        >
+          <!-- width="500" -->
+          <a-form
+            ref="formRef"
+            name="broadcast-form"
+            class="broadcast-form"
+            :model="formAddBroadcast"
+            hideRequiredMark
+          >
+            <!-- @finish="handleFinish" -->
+
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item
+                  label="Tên buổi phát sóng"
+                  name="name"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập tên buổi phát sóng!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
                 >
-                </a-input>
-              </a-form-item>
-            </a-col>
-
-            <a-col :span="12">
-              <a-form-item
-                label="Ngày phát sóng"
-                name="release_time"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập ngày phát sóng!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <!-- <a-time-picker
-                  v-model:value="formAddBroadcast.release_time"
-                  placeholder="Ngày phát sóng..."
-                  use12-hours
-                  format="h:mm:ss A"
-                  style="width: 100%"
-                  allowClear
-                  size="large"
-                /> -->
-                <el-date-picker
-                  v-model="formAddBroadcast.release_time"
-                  type="datetime"
-                  placeholder="Ngày phát sóng..."
-                  :shortcuts="shortcutsReleaseTime"
-                  style="width: 100%"
-                  size="large"
-                  format="YYYY/MM/DD hh:mm:ss A"
-                  date-format="YYYY-MM-DD"
-                  time-format="hh:mm:ss A"
-                />
-                <!-- value-format="YYYY-MM-DD hh:mm:ss A" -->
-              </a-form-item>
-            </a-col>
-          </a-row>
-
-          <a-row>
-            <a-col :span="24">
-              <a-form-item
-                label="Mô tả"
-                name="description"
-                :rules="[
-                  {
-                    required: false,
-                    message: 'Vui lòng nhập mô tả!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-textarea
-                  v-model:value="formAddBroadcast.description"
-                  placeholder="Mô tả..."
-                  allow-clear
-                  :auto-size="{ minRows: 3, maxRows: 6 }"
-                >
-                </a-textarea>
-              </a-form-item>
-            </a-col>
-          </a-row>
-
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Mô tả"
-                name="movie_id"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng chọn phim!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-select
-                  v-model:value="formAddBroadcast.movie_id"
-                  show-search
-                  placeholder="Chọn phim..."
-                  size="large"
-                  :filter-option="false"
-                  style="width: 100%"
-                  :options="optionsMovie"
-                  @search="searchMovie"
-                  @select="selectMovie"
-                  @blur="getDataMovie"
-                >
-                  <template
-                    v-if="loadingMovie"
-                    #notFoundContent
+                  <a-input
+                    v-model:value="formAddBroadcast.name"
+                    placeholder="Tên buổi phát sóng..."
+                    allow-clear
                   >
-                    <a-spin size="small" />
-                  </template>
-                </a-select>
-              </a-form-item>
-            </a-col>
-            <a-col
-              v-if="isEpisodes"
-              :span="12"
-            >
-              <a-form-item
-                label="Mô tả"
-                name="episode_id"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng chọn tập!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-select
-                  v-model:value="formAddBroadcast.episode_id"
-                  show-search
-                  placeholder="Chọn tập..."
-                  size="large"
-                  style="width: 100%"
-                  :filter-option="false"
-                  :default-active-first-option="false"
-                  :options="optionsEpisode"
-                  @search="searchEpisode"
-                  @blur="getDataEpisde"
-                >
-                  <template
-                    v-if="loadingEpisode"
-                    #notFoundContent
-                  >
-                    <a-spin size="small" />
-                  </template>
-                </a-select>
-              </a-form-item>
-            </a-col>
-          </a-row>
-        </a-form>
+                  </a-input>
+                </a-form-item>
+              </a-col>
 
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="modalAddVisible = false">Đóng</el-button>
-            <el-button
-              v-if="isEdit"
-              type="primary"
-              @click="onSubmitFormEdit"
-              :loading="loadingAdd"
-            >
-              Lưu
-            </el-button>
-            <el-button
-              v-else
-              type="primary"
-              @click="onSubmitFormAdd"
-              :loading="loadingAdd"
-            >
-              Thêm
-            </el-button>
-          </div>
-        </template>
-      </el-dialog>
+              <a-col :span="12">
+                <a-form-item
+                  label="Ngày phát sóng"
+                  name="release_time"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập ngày phát sóng!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <!-- <a-time-picker
+                    v-model:value="formAddBroadcast.release_time"
+                    placeholder="Ngày phát sóng..."
+                    use12-hours
+                    format="h:mm:ss A"
+                    style="width: 100%"
+                    allowClear
+                    size="large"
+                  /> -->
+                  <el-date-picker
+                    v-model="formAddBroadcast.release_time"
+                    type="datetime"
+                    placeholder="Ngày phát sóng..."
+                    :shortcuts="shortcutsReleaseTime"
+                    style="width: 100%"
+                    size="large"
+                    format="YYYY/MM/DD hh:mm:ss A"
+                    date-format="YYYY-MM-DD"
+                    time-format="hh:mm:ss A"
+                  />
+                  <!-- value-format="YYYY-MM-DD hh:mm:ss A" -->
+                </a-form-item>
+              </a-col>
+            </a-row>
+
+            <a-row>
+              <a-col :span="24">
+                <a-form-item
+                  label="Mô tả"
+                  name="description"
+                  :rules="[
+                    {
+                      required: false,
+                      message: 'Vui lòng nhập mô tả!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <a-textarea
+                    v-model:value="formAddBroadcast.description"
+                    placeholder="Mô tả..."
+                    allow-clear
+                    :auto-size="{ minRows: 3, maxRows: 6 }"
+                  >
+                  </a-textarea>
+                </a-form-item>
+              </a-col>
+            </a-row>
+
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item
+                  label="Mô tả"
+                  name="movie_id"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng chọn phim!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <a-select
+                    v-model:value="formAddBroadcast.movie_id"
+                    show-search
+                    placeholder="Chọn phim..."
+                    size="large"
+                    :filter-option="false"
+                    style="width: 100%"
+                    :options="optionsMovie"
+                    @search="searchMovie"
+                    @select="selectMovie"
+                    @blur="getDataMovie"
+                  >
+                    <template
+                      v-if="loadingMovie"
+                      #notFoundContent
+                    >
+                      <a-spin size="small" />
+                    </template>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col
+                v-if="isEpisodes"
+                :span="12"
+              >
+                <a-form-item
+                  label="Mô tả"
+                  name="episode_id"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng chọn tập!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <a-select
+                    v-model:value="formAddBroadcast.episode_id"
+                    show-search
+                    placeholder="Chọn tập..."
+                    size="large"
+                    style="width: 100%"
+                    :filter-option="false"
+                    :default-active-first-option="false"
+                    :options="optionsEpisode"
+                    @search="searchEpisode"
+                    @blur="getDataEpisde"
+                  >
+                    <template
+                      v-if="loadingEpisode"
+                      #notFoundContent
+                    >
+                      <a-spin size="small" />
+                    </template>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+            </a-row>
+          </a-form>
+
+          <template #footer>
+            <div class="dialog-footer">
+              <el-button @click="modalAddVisible = false">Đóng</el-button>
+              <el-button
+                v-if="isEdit"
+                type="primary"
+                @click="onSubmitFormEdit"
+                :loading="loadingAdd"
+              >
+                Lưu
+              </el-button>
+              <el-button
+                v-else
+                type="primary"
+                @click="onSubmitFormAdd"
+                :loading="loadingAdd"
+              >
+                Thêm
+              </el-button>
+            </div>
+          </template>
+        </el-dialog>
+      </div>
     </div>
   </div>
 </template>

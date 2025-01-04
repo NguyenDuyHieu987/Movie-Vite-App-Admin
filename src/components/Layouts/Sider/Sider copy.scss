@@ -1,10 +1,10 @@
 .ant-layout-sider.sider-bar {
   position: fixed;
   left: 0;
-  top: 0;
+  top: var(--header-height);
   bottom: 0;
   background: var(--sidebar-background);
-  margin: var(--padding-body) 0 var(--padding-body) var(--padding-body);
+  margin: 16px 0 16px 16px;
   z-index: var(--sider-z-index);
   // border-right: 1px solid var(--border-regular-light);
   box-shadow: 4px 0 4px -2px rgba(0, 0, 0, 0.5);
@@ -66,10 +66,9 @@
   header.sider-header {
     position: sticky;
     top: 0;
-    // height: var(--header-height);
+    height: var(--header-height);
     display: flex;
     flex: 0 0 auto;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     line-height: inherit;
@@ -78,89 +77,11 @@
     padding: 0px;
     z-index: 1;
 
-    .logo-header {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      height: var(--header-height);
-      border-bottom: 1px solid #7e7e7e77;
-
-      .menu-btn {
-        display: none;
-        height: auto;
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        color: inherit;
-        transition: opacity 0.25s;
-
-        &.show {
-          display: flex;
-        }
-
-        svg {
-          fill: var(--app-background-color) !important;
-        }
-
-        &:active {
-          opacity: 0.8;
-        }
-      }
-
-      .logo {
-        display: inline-block;
-        margin-right: 15px;
-
-        a {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          font-size: 2.25rem;
-        }
-      }
-
-      /* .menu-header {
-        display: flex;
-        flex-direction: row;
-        list-style-type: none;
-        margin-left: 25px;
-  
-        .menu-header-item {
-          cursor: pointer;
-          user-select: none;
-          white-space: nowrap;
-          transition: all 0.3s;
-  
-          a {
-            color: #d9d9d9 !important;
-          }
-  
-          & + .menu-header-item {
-            margin-left: 20px;
-          }
-  
-          &.active {
-            a {
-              color: #fff !important;
-            }
-          }
-  
-          &:hover {
-            a {
-              color: var(--text-color-gray) !important;
-            }
-          }
-        }
-      } */
-    }
-
     .user-header {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      padding: 15px 0;
-      width: 100%;
 
       .avatar-box {
         display: flex;
@@ -227,7 +148,6 @@
     background: transparent;
     line-height: inherit;
     height: calc(var(--header-height) - 15px);
-    margin-bottom: var(--padding-body);
     overflow: hidden;
     color: inherit;
     transition: all 0s;

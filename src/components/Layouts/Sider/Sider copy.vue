@@ -10,43 +10,6 @@
     @collapse="handleCollapse"
   >
     <header class="sider-header">
-      <div class="logo-header">
-        <div
-          v-if="!collapsed"
-          class="logo"
-        >
-          <RouterLink to="/">
-            <img
-              :src="getImage('logo.png', 'logo', { w: 45 })"
-              alt=""
-              :height="30"
-              :width="30"
-              preload
-            />
-            <span> PhimHay247</span>
-          </RouterLink>
-        </div>
-
-        <button
-          class="menu-btn click-active"
-          :class="{
-            show: true
-          }"
-          @click="store.toogleSidebar()"
-        >
-          <MenuUnfoldLeft
-            v-if="!collapsed"
-            width="2rem"
-            height="2rem"
-          />
-          <MenuUnfoldRight
-            v-else
-            width="2rem"
-            height="2rem"
-          />
-        </button>
-      </div>
-
       <div
         v-if="isLogin"
         class="user-header"
@@ -127,9 +90,6 @@
 </template>
 
 <script setup lang="ts">
-import { MenuOutlined } from '@ant-design/icons-vue';
-import MenuUnfoldLeft from '@/assets/svgs/icons/menu-unfold-left-fill.svg?component';
-import MenuUnfoldRight from '@/assets/svgs/icons/menu-unfold-right-fill.svg?component';
 import ChevronLeftDouble from '@/assets/svgs/icons/chevron-left-double.svg?component';
 import ChevronRightDouble from '@/assets/svgs/icons/chevron-right-double.svg?component';
 

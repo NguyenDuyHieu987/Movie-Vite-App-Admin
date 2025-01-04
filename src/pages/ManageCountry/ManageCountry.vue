@@ -1,244 +1,246 @@
 <template>
-  <div class="manage-country-container">
-    <div class="header-table">
-      <h2>Danh sách Quốc gia</h2>
+  <div class="page-container padding-content">
+    <div class="manage-country-container">
+      <div class="header-table">
+        <h2>Danh sách Quốc gia</h2>
 
-      <!-- <RouterLink :to="{ path: '/addcountry' }"> -->
+        <!-- <RouterLink :to="{ path: '/addcountry' }"> -->
 
-      <a-button
-        class="add-btn"
-        type="primary"
-        @click="onClickAddBtn"
-      >
-        <template #icon>
-          <PlusIcon
-            width="1.8rem"
-            height="1.8rem"
-            fill="currentColor"
-          />
-        </template>
-        Thêm quốc gia
-      </a-button>
-
-      <!-- </RouterLink> -->
-    </div>
-
-    <div class="table-tools">
-      <a-input-search
-        class="search-country"
-        v-model:value="searchValue"
-        placeholder="Nhập têm quốc gia để tìm kiếm..."
-        enter-button="Tìm kiếm"
-        @search="onSearch"
-      />
-
-      <div class="right-actions">
         <a-button
-          class="reset-btn"
+          class="add-btn"
           type="primary"
-          @click="getData"
+          @click="onClickAddBtn"
         >
           <template #icon>
-            <SvgoDirectorySync
+            <PlusIcon
               width="1.8rem"
               height="1.8rem"
               fill="currentColor"
             />
           </template>
-          Làm mới
+          Thêm quốc gia
         </a-button>
 
-        <a-button
-          class="delete-multiple-btn"
-          type="primary"
-          danger
-          @click="onClickDeleteBtn"
-          :disabled="!hasSelected"
-        >
-          <template #icon>
-            <DeleteSweepIcon
-              width="1.8rem"
-              height="1.8rem"
-              fill="currentColor"
-            />
-          </template>
-          Xóa quốc gia
-        </a-button>
+        <!-- </RouterLink> -->
       </div>
-    </div>
 
-    <div class="country-table">
-      <a-table
-        class="ant-table-striped table-app-bg-header"
-        :row-class-name="
-          (_record: any, index: number) =>
-            index % 2 === 1 ? 'table-striped' : null
-        "
-        :data-source="dataCountry"
-        :columns="columns"
-        :row-key="(record: any) => record.iso_639_1"
-        :loading="loading"
-        :scroll="{
-          y: '75vh',
-          x: 900
-        }"
-        bordered
-        sticky
-        :row-selection="{
-          selectedRowKeys: selectedRowKeys,
-          onChange: onSelectChange
-        }"
-      >
-        <!-- :pagination="{ pageSize: pageSizeTable, onChange: onChangePage }" -->
-        <!-- @change="onChangeTable" -->
-        <template #bodyCell="{ column, text, value, record, index }">
-          <template v-if="column.dataIndex === 'no'">
-            {{ index + 1 }}
-          </template>
-          <template v-if="column.dataIndex === 'action'">
-            <!-- <RouterLink
-              class="underline"
-              :to="`/YourAccount/invoices/${record?.iso_639_1}`"
-            >
-              Chi tiết
-            </RouterLink>
-            <a-button
-              type="link"
-              @click="modalUploadVideoVisible = true"
-            >
-              Upload video
-            </a-button> -->
+      <div class="table-tools">
+        <a-input-search
+          class="search-country"
+          v-model:value="searchValue"
+          placeholder="Nhập têm quốc gia để tìm kiếm..."
+          enter-button="Tìm kiếm"
+          @search="onSearch"
+        />
 
-            <el-dropdown>
-              <span class="el-dropdown-link">
-                <el-button type="primary">
-                  Actions
-                  <el-icon class="el-icon--right"><arrow-down /></el-icon>
-                </el-button>
-              </span>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item @click="onClickEditCountry(record)">
-                    Chỉnh sửa
-                  </el-dropdown-item>
-                  <el-dropdown-item
-                    @click="onClickDeleteCountry(record)"
-                    class="menu-delete-country"
-                  >
-                    <el-text type="danger">Xóa quốc gia</el-text>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </template>
-        </template>
-      </a-table>
+        <div class="right-actions">
+          <a-button
+            class="reset-btn"
+            type="primary"
+            @click="getData"
+          >
+            <template #icon>
+              <SvgoDirectorySync
+                width="1.8rem"
+                height="1.8rem"
+                fill="currentColor"
+              />
+            </template>
+            Làm mới
+          </a-button>
 
-      <el-dialog
-        class="add-country-dialog"
-        v-model="modalAddVisible"
-        :title="modalAddTitle"
-        align-center
-        style="min-width: 600px"
-      >
-        <!-- width="500" -->
-        <a-form
-          ref="formRef"
-          name="country-form"
-          class="country-form"
-          :model="formAddCountry"
-          hideRequiredMark
+          <a-button
+            class="delete-multiple-btn"
+            type="primary"
+            danger
+            @click="onClickDeleteBtn"
+            :disabled="!hasSelected"
+          >
+            <template #icon>
+              <DeleteSweepIcon
+                width="1.8rem"
+                height="1.8rem"
+                fill="currentColor"
+              />
+            </template>
+            Xóa quốc gia
+          </a-button>
+        </div>
+      </div>
+
+      <div class="country-table">
+        <a-table
+          class="ant-table-striped table-app-bg-header"
+          :row-class-name="
+            (_record: any, index: number) =>
+              index % 2 === 1 ? 'table-striped' : null
+          "
+          :data-source="dataCountry"
+          :columns="columns"
+          :row-key="(record: any) => record.iso_639_1"
+          :loading="loading"
+          :scroll="{
+            y: '75vh',
+            x: 900
+          }"
+          bordered
+          sticky
+          :row-selection="{
+            selectedRowKeys: selectedRowKeys,
+            onChange: onSelectChange
+          }"
         >
-          <!-- @finish="handleFinish" -->
+          <!-- :pagination="{ pageSize: pageSizeTable, onChange: onChangePage }" -->
+          <!-- @change="onChangeTable" -->
+          <template #bodyCell="{ column, text, value, record, index }">
+            <template v-if="column.dataIndex === 'no'">
+              {{ index + 1 }}
+            </template>
+            <template v-if="column.dataIndex === 'action'">
+              <!-- <RouterLink
+                class="underline"
+                :to="`/YourAccount/invoices/${record?.iso_639_1}`"
+              >
+                Chi tiết
+              </RouterLink>
+              <a-button
+                type="link"
+                @click="modalUploadVideoVisible = true"
+              >
+                Upload video
+              </a-button> -->
 
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Tên quốc gia"
-                name="english_name"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập tên quốc gia!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-input
-                  v-model:value="formAddCountry.english_name"
-                  placeholder="Tên quốc gia..."
-                  allow-clear
-                >
-                </a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
-              <a-form-item
-                label="Tên Tiếng Việt"
-                name="name"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập tên Tiếng Việt!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-input
-                  v-model:value="formAddCountry.name"
-                  placeholder="Tên Tiếng Việt..."
-                  allow-clear
-                >
-                </a-input>
-              </a-form-item>
-            </a-col>
-          </a-row>
+              <el-dropdown>
+                <span class="el-dropdown-link">
+                  <el-button type="primary">
+                    Actions
+                    <el-icon class="el-icon--right"><arrow-down /></el-icon>
+                  </el-button>
+                </span>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item @click="onClickEditCountry(record)">
+                      Chỉnh sửa
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      @click="onClickDeleteCountry(record)"
+                      class="menu-delete-country"
+                    >
+                      <el-text type="danger">Xóa quốc gia</el-text>
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </template>
+          </template>
+        </a-table>
 
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Tên rút gọn"
-                name="short_name"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập tên rút gọn!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-input
-                  v-model:value="formAddCountry.short_name"
-                  placeholder="Tên rút gọn..."
-                  allow-clear
+        <el-dialog
+          class="add-country-dialog"
+          v-model="modalAddVisible"
+          :title="modalAddTitle"
+          align-center
+          style="min-width: 600px"
+        >
+          <!-- width="500" -->
+          <a-form
+            ref="formRef"
+            name="country-form"
+            class="country-form"
+            :model="formAddCountry"
+            hideRequiredMark
+          >
+            <!-- @finish="handleFinish" -->
+
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item
+                  label="Tên quốc gia"
+                  name="english_name"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập tên quốc gia!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
                 >
-                </a-input>
-              </a-form-item>
-            </a-col>
-          </a-row>
-        </a-form>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="modalAddVisible = false">Đóng</el-button>
-            <el-button
-              v-if="isEdit"
-              type="primary"
-              @click="onSubmitFormEdit"
-              :loading="loadingAdd"
-            >
-              Lưu
-            </el-button>
-            <el-button
-              v-else
-              type="primary"
-              @click="onSubmitFormAdd"
-              :loading="loadingAdd"
-            >
-              Thêm
-            </el-button>
-          </div>
-        </template>
-      </el-dialog>
+                  <a-input
+                    v-model:value="formAddCountry.english_name"
+                    placeholder="Tên quốc gia..."
+                    allow-clear
+                  >
+                  </a-input>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item
+                  label="Tên Tiếng Việt"
+                  name="name"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập tên Tiếng Việt!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <a-input
+                    v-model:value="formAddCountry.name"
+                    placeholder="Tên Tiếng Việt..."
+                    allow-clear
+                  >
+                  </a-input>
+                </a-form-item>
+              </a-col>
+            </a-row>
+
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item
+                  label="Tên rút gọn"
+                  name="short_name"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập tên rút gọn!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <a-input
+                    v-model:value="formAddCountry.short_name"
+                    placeholder="Tên rút gọn..."
+                    allow-clear
+                  >
+                  </a-input>
+                </a-form-item>
+              </a-col>
+            </a-row>
+          </a-form>
+          <template #footer>
+            <div class="dialog-footer">
+              <el-button @click="modalAddVisible = false">Đóng</el-button>
+              <el-button
+                v-if="isEdit"
+                type="primary"
+                @click="onSubmitFormEdit"
+                :loading="loadingAdd"
+              >
+                Lưu
+              </el-button>
+              <el-button
+                v-else
+                type="primary"
+                @click="onSubmitFormAdd"
+                :loading="loadingAdd"
+              >
+                Thêm
+              </el-button>
+            </div>
+          </template>
+        </el-dialog>
+      </div>
     </div>
   </div>
 </template>

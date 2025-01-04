@@ -7,7 +7,7 @@ import {
 } from '@vueuse/core';
 import { defineStore } from 'pinia';
 
-import type { country, genre, user, year } from '@/types';
+import type { country, genre, TabView, user, year } from '@/types';
 import { APP, STORAGE } from '@/common';
 import { useRoute } from 'vue-router';
 
@@ -46,6 +46,7 @@ export const useStore = defineStore('store', () => {
   const breadCrumbValue = ref<string>('');
   const loadingApp = ref<boolean>(false);
   const loadingUser = ref<boolean>(true);
+  const tabsView = ref<TabView[]>([]);
   const dataSearchHistory = ref<any[]>([]);
   const allGenres = ref<genre[]>([]);
   const allCountries = ref<country[]>([]);
@@ -102,6 +103,7 @@ export const useStore = defineStore('store', () => {
     isDark,
     breadCrumbValue,
     collapsed,
+    tabsView,
     openSiderBarFixed,
     headerScrolled,
     openDrawer,

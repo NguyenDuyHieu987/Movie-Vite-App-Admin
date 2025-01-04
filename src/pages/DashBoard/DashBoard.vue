@@ -2,7 +2,7 @@
   <div class="dashboard-container">
     <div class="default-main">
       <div class="banner">
-        <el-row :gutter="20">
+        <el-row :gutter="15">
           <el-col
             :md="24"
             :lg="18"
@@ -49,7 +49,7 @@
         </el-row>
       </div>
       <div class="small-panel-box">
-        <el-row :gutter="20">
+        <el-row :gutter="15">
           <el-col
             :sm="12"
             :lg="6"
@@ -143,7 +143,7 @@
         </el-row>
       </div>
       <div class="growth-chart">
-        <el-row :gutter="20">
+        <el-row :gutter="15">
           <el-col
             class="lg-mb-20"
             :xs="24"
@@ -263,7 +263,7 @@
       </div>
 
       <div class="growth-chart">
-        <el-row :gutter="20">
+        <el-row :gutter="15">
           <el-col
             class="lg-mb-20"
             :xs="24"

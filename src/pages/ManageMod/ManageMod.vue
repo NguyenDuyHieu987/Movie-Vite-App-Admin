@@ -1,288 +1,290 @@
 <template>
-  <div class="manage-mod-container">
-    <div class="header-table">
-      <h2>Danh sách Danh mục</h2>
+  <div class="page-container padding-content">
+    <div class="manage-mod-container">
+      <div class="header-table">
+        <h2>Danh sách Danh mục</h2>
 
-      <!-- <RouterLink :to="{ path: '/addmod' }"> -->
+        <!-- <RouterLink :to="{ path: '/addmod' }"> -->
 
-      <a-button
-        class="add-btn"
-        type="primary"
-        @click="onClickAddBtn"
-      >
-        <template #icon>
-          <PlusIcon
-            width="1.8rem"
-            height="1.8rem"
-            fill="currentColor"
-          />
-        </template>
-        Thêm danh mục
-      </a-button>
-
-      <!-- </RouterLink> -->
-    </div>
-
-    <div class="table-tools">
-      <a-input-search
-        class="search-mod"
-        v-model:value="searchValue"
-        placeholder="Nhập têm danh mục để tìm kiếm..."
-        enter-button="Tìm kiếm"
-        @search="onSearch"
-      />
-
-      <div class="right-actions">
         <a-button
-          class="reset-btn"
+          class="add-btn"
           type="primary"
-          @click="getData"
+          @click="onClickAddBtn"
         >
           <template #icon>
-            <SvgoDirectorySync
+            <PlusIcon
               width="1.8rem"
               height="1.8rem"
               fill="currentColor"
             />
           </template>
-          Làm mới
+          Thêm danh mục
         </a-button>
 
-        <a-button
-          class="delete-multiple-btn"
-          type="primary"
-          danger
-          @click="onClickDeleteBtn"
-          :disabled="!hasSelected"
-        >
-          <template #icon>
-            <DeleteSweepIcon
-              width="1.8rem"
-              height="1.8rem"
-              fill="currentColor"
-            />
-          </template>
-          Xóa danh mục
-        </a-button>
+        <!-- </RouterLink> -->
       </div>
-    </div>
 
-    <div class="mod-table">
-      <a-table
-        class="ant-table-striped table-app-bg-header"
-        :row-class-name="
-          (_record: any, index: number) =>
-            index % 2 === 1 ? 'table-striped' : null
-        "
-        :data-source="dataMod"
-        :columns="columns"
-        :row-key="(record: any) => record.id"
-        :loading="loading"
-        :scroll="{
-          y: '75vh',
-          x: 900
-        }"
-        bordered
-        sticky
-        :row-selection="{
-          selectedRowKeys: selectedRowKeys,
-          onChange: onSelectChange
-        }"
-      >
-        <!-- :pagination="{ pageSize: pageSizeTable, onChange: onChangePage }" -->
-        <!-- @change="onChangeTable" -->
-        <template #bodyCell="{ column, text, value, record, index }">
-          <template v-if="column.dataIndex === 'no'">
-            {{ index + 1 }}
-          </template>
-          <template v-if="column.dataIndex === 'action'">
-            <!-- <RouterLink
-              class="underline"
-              :to="`/YourMod/invoices/${record?.id}`"
-            >
-              Chi tiết
-            </RouterLink>
-            <a-button
-              type="link"
-              @click="modalUploadVideoVisible = true"
-            >
-              Upload video
-            </a-button> -->
+      <div class="table-tools">
+        <a-input-search
+          class="search-mod"
+          v-model:value="searchValue"
+          placeholder="Nhập têm danh mục để tìm kiếm..."
+          enter-button="Tìm kiếm"
+          @search="onSearch"
+        />
 
-            <el-dropdown>
-              <span class="el-dropdown-link">
-                <el-button type="primary">
-                  Actions
-                  <el-icon class="el-icon--right"><arrow-down /></el-icon>
-                </el-button>
-              </span>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item @click="onClickEditMod(record)">
-                    Chỉnh sửa
-                  </el-dropdown-item>
-                  <el-dropdown-item
-                    @click="onClickDeleteMod(record)"
-                    class="menu-delete-mod"
-                  >
-                    <el-text type="danger">Xóa danh mục</el-text>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </template>
-        </template>
-      </a-table>
+        <div class="right-actions">
+          <a-button
+            class="reset-btn"
+            type="primary"
+            @click="getData"
+          >
+            <template #icon>
+              <SvgoDirectorySync
+                width="1.8rem"
+                height="1.8rem"
+                fill="currentColor"
+              />
+            </template>
+            Làm mới
+          </a-button>
 
-      <el-dialog
-        class="add-mod-dialog"
-        v-model="modalAddVisible"
-        :title="modalAddTitle"
-        align-center
-        style="min-width: 600px"
-      >
-        <!-- width="500" -->
-        <a-form
-          ref="formRef"
-          name="mod-form"
-          class="mod-form"
-          :model="formAddMod"
-          hideRequiredMark
+          <a-button
+            class="delete-multiple-btn"
+            type="primary"
+            danger
+            @click="onClickDeleteBtn"
+            :disabled="!hasSelected"
+          >
+            <template #icon>
+              <DeleteSweepIcon
+                width="1.8rem"
+                height="1.8rem"
+                fill="currentColor"
+              />
+            </template>
+            Xóa danh mục
+          </a-button>
+        </div>
+      </div>
+
+      <div class="mod-table">
+        <a-table
+          class="ant-table-striped table-app-bg-header"
+          :row-class-name="
+            (_record: any, index: number) =>
+              index % 2 === 1 ? 'table-striped' : null
+          "
+          :data-source="dataMod"
+          :columns="columns"
+          :row-key="(record: any) => record.id"
+          :loading="loading"
+          :scroll="{
+            y: '75vh',
+            x: 900
+          }"
+          bordered
+          sticky
+          :row-selection="{
+            selectedRowKeys: selectedRowKeys,
+            onChange: onSelectChange
+          }"
         >
-          <!-- @finish="handleFinish" -->
-
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Tên danh mục"
-                name="name"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập tên danh mục!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
+          <!-- :pagination="{ pageSize: pageSizeTable, onChange: onChangePage }" -->
+          <!-- @change="onChangeTable" -->
+          <template #bodyCell="{ column, text, value, record, index }">
+            <template v-if="column.dataIndex === 'no'">
+              {{ index + 1 }}
+            </template>
+            <template v-if="column.dataIndex === 'action'">
+              <!-- <RouterLink
+                class="underline"
+                :to="`/YourMod/invoices/${record?.id}`"
               >
-                <a-input
-                  v-model:value="formAddMod.name"
-                  placeholder="Tên danh mục..."
-                  allow-clear
+                Chi tiết
+              </RouterLink>
+              <a-button
+                type="link"
+                @click="modalUploadVideoVisible = true"
+              >
+                Upload video
+              </a-button> -->
+
+              <el-dropdown>
+                <span class="el-dropdown-link">
+                  <el-button type="primary">
+                    Actions
+                    <el-icon class="el-icon--right"><arrow-down /></el-icon>
+                  </el-button>
+                </span>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item @click="onClickEditMod(record)">
+                      Chỉnh sửa
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      @click="onClickDeleteMod(record)"
+                      class="menu-delete-mod"
+                    >
+                      <el-text type="danger">Xóa danh mục</el-text>
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </template>
+          </template>
+        </a-table>
+
+        <el-dialog
+          class="add-mod-dialog"
+          v-model="modalAddVisible"
+          :title="modalAddTitle"
+          align-center
+          style="min-width: 600px"
+        >
+          <!-- width="500" -->
+          <a-form
+            ref="formRef"
+            name="mod-form"
+            class="mod-form"
+            :model="formAddMod"
+            hideRequiredMark
+          >
+            <!-- @finish="handleFinish" -->
+
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item
+                  label="Tên danh mục"
+                  name="name"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập tên danh mục!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
                 >
-                </a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
-              <a-form-item
-                label="Loại danh mục"
-                name="type"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập loại danh mục',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-input
-                  v-model:value="formAddMod.type"
-                  placeholder="Loại danh mục..."
-                  allow-clear
+                  <a-input
+                    v-model:value="formAddMod.name"
+                    placeholder="Tên danh mục..."
+                    allow-clear
+                  >
+                  </a-input>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item
+                  label="Loại danh mục"
+                  name="type"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập loại danh mục',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
                 >
-                </a-input>
-              </a-form-item>
-            </a-col>
-          </a-row>
+                  <a-input
+                    v-model:value="formAddMod.type"
+                    placeholder="Loại danh mục..."
+                    allow-clear
+                  >
+                  </a-input>
+                </a-form-item>
+              </a-col>
+            </a-row>
 
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Loại phim"
-                name="media_type"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng chọn loại phim!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-select v-model:value="formAddMod.media_type">
-                  <a-select-option value="all">Tất cả</a-select-option>
-                  <a-select-option value="movie">Phim lẻ</a-select-option>
-                  <a-select-option value="tv">Phim bộ</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-
-            <a-col :span="12">
-              <a-form-item
-                label="Thứ tự"
-                name="order"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập thứ tự!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <el-input-number
-                  v-model="formAddMod.order"
-                  :min="1"
-                  :step="1"
-                  size="large"
-                  style="width: 100%"
-                />
-              </a-form-item>
-            </a-col>
-          </a-row>
-
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Đường dẫn"
-                name="path"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập đường dẫn',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-input
-                  v-model:value="formAddMod.path"
-                  placeholder="Đường dẫn..."
-                  allow-clear
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item
+                  label="Loại phim"
+                  name="media_type"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng chọn loại phim!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
                 >
-                </a-input>
-              </a-form-item>
-            </a-col>
-          </a-row>
-        </a-form>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="modalAddVisible = false">Đóng</el-button>
-            <el-button
-              v-if="isEdit"
-              type="primary"
-              @click="onSubmitFormEdit"
-              :loading="loadingAdd"
-            >
-              Lưu
-            </el-button>
-            <el-button
-              v-else
-              type="primary"
-              @click="onSubmitFormAdd"
-              :loading="loadingAdd"
-            >
-              Thêm
-            </el-button>
-          </div>
-        </template>
-      </el-dialog>
+                  <a-select v-model:value="formAddMod.media_type">
+                    <a-select-option value="all">Tất cả</a-select-option>
+                    <a-select-option value="movie">Phim lẻ</a-select-option>
+                    <a-select-option value="tv">Phim bộ</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+
+              <a-col :span="12">
+                <a-form-item
+                  label="Thứ tự"
+                  name="order"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập thứ tự!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <el-input-number
+                    v-model="formAddMod.order"
+                    :min="1"
+                    :step="1"
+                    size="large"
+                    style="width: 100%"
+                  />
+                </a-form-item>
+              </a-col>
+            </a-row>
+
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item
+                  label="Đường dẫn"
+                  name="path"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập đường dẫn',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <a-input
+                    v-model:value="formAddMod.path"
+                    placeholder="Đường dẫn..."
+                    allow-clear
+                  >
+                  </a-input>
+                </a-form-item>
+              </a-col>
+            </a-row>
+          </a-form>
+          <template #footer>
+            <div class="dialog-footer">
+              <el-button @click="modalAddVisible = false">Đóng</el-button>
+              <el-button
+                v-if="isEdit"
+                type="primary"
+                @click="onSubmitFormEdit"
+                :loading="loadingAdd"
+              >
+                Lưu
+              </el-button>
+              <el-button
+                v-else
+                type="primary"
+                @click="onSubmitFormAdd"
+                :loading="loadingAdd"
+              >
+                Thêm
+              </el-button>
+            </div>
+          </template>
+        </el-dialog>
+      </div>
     </div>
   </div>
 </template>

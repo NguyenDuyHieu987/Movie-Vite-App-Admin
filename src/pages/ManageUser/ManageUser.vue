@@ -1,385 +1,387 @@
 <template>
-  <div class="manage-user-container">
-    <div class="header-table">
-      <h2>Danh sách Người dùng</h2>
+  <div class="page-container padding-content">
+    <div class="manage-user-container">
+      <div class="header-table">
+        <h2>Danh sách Người dùng</h2>
 
-      <!-- <RouterLink :to="{ path: '/adduser' }"> -->
+        <!-- <RouterLink :to="{ path: '/adduser' }"> -->
 
-      <a-button
-        class="add-btn"
-        type="primary"
-        @click="onClickAddBtn"
-      >
-        <template #icon>
-          <PlusIcon
-            width="1.8rem"
-            height="1.8rem"
-            fill="currentColor"
-          />
-        </template>
-        Thêm người dùng
-      </a-button>
-
-      <!-- </RouterLink> -->
-    </div>
-
-    <div class="table-tools">
-      <a-input-search
-        class="search-user"
-        v-model:value="searchValue"
-        placeholder="Nhập têm người dùng để tìm kiếm..."
-        enter-button="Tìm kiếm"
-        @search="onSearch"
-      />
-
-      <div class="right-actions">
         <a-button
-          class="reset-btn"
+          class="add-btn"
           type="primary"
-          @click="getData"
+          @click="onClickAddBtn"
         >
           <template #icon>
-            <SvgoDirectorySync
+            <PlusIcon
               width="1.8rem"
               height="1.8rem"
               fill="currentColor"
             />
           </template>
-          Làm mới
+          Thêm người dùng
         </a-button>
 
-        <a-button
-          class="delete-multiple-btn"
-          type="primary"
-          danger
-          @click="onClickDeleteBtn"
-          :disabled="!hasSelected"
-        >
-          <template #icon>
-            <DeleteSweepIcon
-              width="1.8rem"
-              height="1.8rem"
-              fill="currentColor"
-            />
-          </template>
-          Xóa người dùng
-        </a-button>
+        <!-- </RouterLink> -->
       </div>
-    </div>
 
-    <div class="user-table">
-      <a-table
-        class="ant-table-striped table-app-bg-header"
-        :row-class-name="
-          (_record: any, index: number) =>
-            index % 2 === 1 ? 'table-striped' : null
-        "
-        :data-source="dataAccount"
-        :columns="columns"
-        :row-key="(record: any) => record.id"
-        :loading="loading"
-        :scroll="{
-          y: '75vh',
-          x: 900
-        }"
-        bordered
-        sticky
-        :row-selection="{
-          selectedRowKeys: selectedRowKeys,
-          onChange: onSelectChange
-        }"
-      >
-        <!-- :pagination="{ pageSize: pageSizeTable, onChange: onChangePage }" -->
-        <!-- @change="onChangeTable" -->
-        <template #bodyCell="{ column, text, value, record, index }">
-          <template v-if="column.dataIndex === 'no'">
-            {{ index + 1 }}
-          </template>
-          <template v-if="column.dataIndex === 'role'">
-            {{ _.capitalize(value) }}
-          </template>
-          <template v-if="column.dataIndex === 'auth_type'">
-            {{ _.capitalize(value) }}
-          </template>
-          <template v-if="column.dataIndex === 'avatar'">
-            <div class="avatar-box">
-              <img
-                :width="100"
-                :height="100"
-                :src="getUserAvatar(value)"
+      <div class="table-tools">
+        <a-input-search
+          class="search-user"
+          v-model:value="searchValue"
+          placeholder="Nhập têm người dùng để tìm kiếm..."
+          enter-button="Tìm kiếm"
+          @search="onSearch"
+        />
+
+        <div class="right-actions">
+          <a-button
+            class="reset-btn"
+            type="primary"
+            @click="getData"
+          >
+            <template #icon>
+              <SvgoDirectorySync
+                width="1.8rem"
+                height="1.8rem"
+                fill="currentColor"
               />
+            </template>
+            Làm mới
+          </a-button>
+
+          <a-button
+            class="delete-multiple-btn"
+            type="primary"
+            danger
+            @click="onClickDeleteBtn"
+            :disabled="!hasSelected"
+          >
+            <template #icon>
+              <DeleteSweepIcon
+                width="1.8rem"
+                height="1.8rem"
+                fill="currentColor"
+              />
+            </template>
+            Xóa người dùng
+          </a-button>
+        </div>
+      </div>
+
+      <div class="user-table">
+        <a-table
+          class="ant-table-striped table-app-bg-header"
+          :row-class-name="
+            (_record: any, index: number) =>
+              index % 2 === 1 ? 'table-striped' : null
+          "
+          :data-source="dataAccount"
+          :columns="columns"
+          :row-key="(record: any) => record.id"
+          :loading="loading"
+          :scroll="{
+            y: '75vh',
+            x: 900
+          }"
+          bordered
+          sticky
+          :row-selection="{
+            selectedRowKeys: selectedRowKeys,
+            onChange: onSelectChange
+          }"
+        >
+          <!-- :pagination="{ pageSize: pageSizeTable, onChange: onChangePage }" -->
+          <!-- @change="onChangeTable" -->
+          <template #bodyCell="{ column, text, value, record, index }">
+            <template v-if="column.dataIndex === 'no'">
+              {{ index + 1 }}
+            </template>
+            <template v-if="column.dataIndex === 'role'">
+              {{ _.capitalize(value) }}
+            </template>
+            <template v-if="column.dataIndex === 'auth_type'">
+              {{ _.capitalize(value) }}
+            </template>
+            <template v-if="column.dataIndex === 'avatar'">
+              <div class="avatar-box">
+                <img
+                  :width="100"
+                  :height="100"
+                  :src="getUserAvatar(value)"
+                />
+              </div>
+            </template>
+            <template v-if="column.dataIndex === 'status'">
+              <a-tag
+                v-if="value == 'active'"
+                color="green"
+              >
+                Hoạt động
+              </a-tag>
+              <a-tag
+                v-else-if="value == 'banned'"
+                color="magenta"
+              >
+                Bị cấm
+              </a-tag>
+              <a-tag
+                v-else-if="value == 'deleted'"
+                color="red"
+              >
+                Đã xóa
+              </a-tag>
+            </template>
+            <template v-if="column.dataIndex === 'created_at'">
+              {{
+                dayjs(value)
+                  // .local()
+                  // .utc()
+                  .format('DD/MM/YYYY hh:mm A')
+              }}
+            </template>
+            <template v-if="column.dataIndex === 'action'">
+              <!-- <RouterLink
+                class="underline"
+                :to="`/YourAccount/invoices/${record?.id}`"
+              >
+                Chi tiết
+              </RouterLink>
+              <a-button
+                type="link"
+                @click="modalUploadVideoVisible = true"
+              >
+                Upload video
+              </a-button> -->
+
+              <el-dropdown>
+                <span class="el-dropdown-link">
+                  <el-button type="primary">
+                    Actions
+                    <el-icon class="el-icon--right"><arrow-down /></el-icon>
+                  </el-button>
+                </span>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item @click="onClickEditAccount(record)">
+                      Chỉnh sửa
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      @click="onClickDeleteAccount(record)"
+                      class="menu-delete-user"
+                    >
+                      <el-text type="danger">Xóa người dùng</el-text>
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      @click="onClickDeletePermanentAccount(record)"
+                      class="menu-delete-user"
+                    >
+                      <el-text type="danger">Xóa vĩnh viễn</el-text>
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </template>
+          </template>
+        </a-table>
+
+        <el-dialog
+          class="add-user-dialog"
+          v-model="modalAddVisible"
+          :title="modalAddTitle"
+          align-center
+          style="min-width: 600px"
+        >
+          <!-- width="500" -->
+          <a-form
+            ref="formRef"
+            name="user-form"
+            class="user-form"
+            :model="formAddAccount"
+            hideRequiredMark
+          >
+            <!-- @finish="handleFinish" -->
+
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item
+                  label="Tên tài khoản"
+                  name="username"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập tên tài khoản!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <a-input
+                    v-model:value="formAddAccount.username"
+                    placeholder="Tên tài khoản..."
+                    allow-clear
+                  >
+                  </a-input>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item
+                  label="Họ và tên"
+                  name="full_name"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập họ và tên',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <a-input
+                    v-model:value="formAddAccount.full_name"
+                    placeholder="Họ và tên..."
+                    allow-clear
+                  >
+                  </a-input>
+                </a-form-item>
+              </a-col>
+            </a-row>
+
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item
+                  label="Email"
+                  name="email"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập email!',
+                      trigger: ['change', 'blur']
+                    },
+                    {
+                      message:
+                        'Vui lòng nhập đúng định dạng email (vd: ...@gmail.com)!',
+                      pattern: new RegExp(
+                        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
+                      ),
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <a-input
+                    v-model:value="formAddAccount.email"
+                    placeholder="Email..."
+                    allow-clear
+                  >
+                  </a-input>
+                </a-form-item>
+              </a-col>
+
+              <a-col :span="12">
+                <a-form-item
+                  label="Xác thực băng"
+                  name="auth_type"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng chọn phương thức xác thực!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <a-select v-model:value="formAddAccount.auth_type">
+                    <a-select-option value="email">Email</a-select-option>
+                    <a-select-option value="google">Google</a-select-option>
+                    <a-select-option value="facebook">Facebook</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+            </a-row>
+
+            <a-row :gutter="16">
+              <a-col :span="8">
+                <a-form-item
+                  label="Quyền"
+                  name="role"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập quyền!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <a-select v-model:value="formAddAccount.role">
+                    <a-select-option value="normal">Normal</a-select-option>
+                    <a-select-option value="admin">Admin</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+
+              <a-col :span="8">
+                <a-form-item
+                  label="Ảnh đại diện"
+                  name="avatar"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập ảnh đại diện!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <el-input-number
+                    v-model="formAddAccount.avatar"
+                    :min="1"
+                    :max="10"
+                    :step="1"
+                    size="large"
+                    style="width: 100%"
+                  />
+                </a-form-item>
+              </a-col>
+
+              <a-col :span="8">
+                <a-form-item
+                  label="Trạng thái"
+                  name="status"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập trạng thái!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <a-select v-model:value="formAddAccount.status">
+                    <a-select-option value="active">Hoạt động</a-select-option>
+                    <a-select-option value="banned">Bị ban</a-select-option>
+                    <a-select-option value="deleted">Đã xóa</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+            </a-row>
+          </a-form>
+          <template #footer>
+            <div class="dialog-footer">
+              <el-button @click="modalAddVisible = false">Đóng</el-button>
+              <el-button
+                v-if="isEdit"
+                type="primary"
+                @click="onSubmitFormEdit"
+                :loading="loadingAdd"
+              >
+                Lưu
+              </el-button>
+              <el-button
+                v-else
+                type="primary"
+                @click="onSubmitFormAdd"
+                :loading="loadingAdd"
+              >
+                Thêm
+              </el-button>
             </div>
           </template>
-          <template v-if="column.dataIndex === 'status'">
-            <a-tag
-              v-if="value == 'active'"
-              color="green"
-            >
-              Hoạt động
-            </a-tag>
-            <a-tag
-              v-else-if="value == 'banned'"
-              color="magenta"
-            >
-              Bị cấm
-            </a-tag>
-            <a-tag
-              v-else-if="value == 'deleted'"
-              color="red"
-            >
-              Đã xóa
-            </a-tag>
-          </template>
-          <template v-if="column.dataIndex === 'created_at'">
-            {{
-              dayjs(value)
-                // .local()
-                // .utc()
-                .format('DD/MM/YYYY hh:mm A')
-            }}
-          </template>
-          <template v-if="column.dataIndex === 'action'">
-            <!-- <RouterLink
-              class="underline"
-              :to="`/YourAccount/invoices/${record?.id}`"
-            >
-              Chi tiết
-            </RouterLink>
-            <a-button
-              type="link"
-              @click="modalUploadVideoVisible = true"
-            >
-              Upload video
-            </a-button> -->
-
-            <el-dropdown>
-              <span class="el-dropdown-link">
-                <el-button type="primary">
-                  Actions
-                  <el-icon class="el-icon--right"><arrow-down /></el-icon>
-                </el-button>
-              </span>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item @click="onClickEditAccount(record)">
-                    Chỉnh sửa
-                  </el-dropdown-item>
-                  <el-dropdown-item
-                    @click="onClickDeleteAccount(record)"
-                    class="menu-delete-user"
-                  >
-                    <el-text type="danger">Xóa người dùng</el-text>
-                  </el-dropdown-item>
-                  <el-dropdown-item
-                    @click="onClickDeletePermanentAccount(record)"
-                    class="menu-delete-user"
-                  >
-                    <el-text type="danger">Xóa vĩnh viễn</el-text>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </template>
-        </template>
-      </a-table>
-
-      <el-dialog
-        class="add-user-dialog"
-        v-model="modalAddVisible"
-        :title="modalAddTitle"
-        align-center
-        style="min-width: 600px"
-      >
-        <!-- width="500" -->
-        <a-form
-          ref="formRef"
-          name="user-form"
-          class="user-form"
-          :model="formAddAccount"
-          hideRequiredMark
-        >
-          <!-- @finish="handleFinish" -->
-
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Tên tài khoản"
-                name="username"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập tên tài khoản!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-input
-                  v-model:value="formAddAccount.username"
-                  placeholder="Tên tài khoản..."
-                  allow-clear
-                >
-                </a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
-              <a-form-item
-                label="Họ và tên"
-                name="full_name"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập họ và tên',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-input
-                  v-model:value="formAddAccount.full_name"
-                  placeholder="Họ và tên..."
-                  allow-clear
-                >
-                </a-input>
-              </a-form-item>
-            </a-col>
-          </a-row>
-
-          <a-row :gutter="16">
-            <a-col :span="12">
-              <a-form-item
-                label="Email"
-                name="email"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập email!',
-                    trigger: ['change', 'blur']
-                  },
-                  {
-                    message:
-                      'Vui lòng nhập đúng định dạng email (vd: ...@gmail.com)!',
-                    pattern: new RegExp(
-                      /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
-                    ),
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-input
-                  v-model:value="formAddAccount.email"
-                  placeholder="Email..."
-                  allow-clear
-                >
-                </a-input>
-              </a-form-item>
-            </a-col>
-
-            <a-col :span="12">
-              <a-form-item
-                label="Xác thực băng"
-                name="auth_type"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng chọn phương thức xác thực!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-select v-model:value="formAddAccount.auth_type">
-                  <a-select-option value="email">Email</a-select-option>
-                  <a-select-option value="google">Google</a-select-option>
-                  <a-select-option value="facebook">Facebook</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-          </a-row>
-
-          <a-row :gutter="16">
-            <a-col :span="8">
-              <a-form-item
-                label="Quyền"
-                name="role"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập quyền!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-select v-model:value="formAddAccount.role">
-                  <a-select-option value="normal">Normal</a-select-option>
-                  <a-select-option value="admin">Admin</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-
-            <a-col :span="8">
-              <a-form-item
-                label="Ảnh đại diện"
-                name="avatar"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập ảnh đại diện!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <el-input-number
-                  v-model="formAddAccount.avatar"
-                  :min="1"
-                  :max="10"
-                  :step="1"
-                  size="large"
-                  style="width: 100%"
-                />
-              </a-form-item>
-            </a-col>
-
-            <a-col :span="8">
-              <a-form-item
-                label="Trạng thái"
-                name="status"
-                :rules="[
-                  {
-                    required: true,
-                    message: 'Vui lòng nhập trạng thái!',
-                    trigger: ['change', 'blur']
-                  }
-                ]"
-              >
-                <a-select v-model:value="formAddAccount.status">
-                  <a-select-option value="active">Hoạt động</a-select-option>
-                  <a-select-option value="banned">Bị ban</a-select-option>
-                  <a-select-option value="deleted">Đã xóa</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-          </a-row>
-        </a-form>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="modalAddVisible = false">Đóng</el-button>
-            <el-button
-              v-if="isEdit"
-              type="primary"
-              @click="onSubmitFormEdit"
-              :loading="loadingAdd"
-            >
-              Lưu
-            </el-button>
-            <el-button
-              v-else
-              type="primary"
-              @click="onSubmitFormAdd"
-              :loading="loadingAdd"
-            >
-              Thêm
-            </el-button>
-          </div>
-        </template>
-      </el-dialog>
+        </el-dialog>
+      </div>
     </div>
   </div>
 </template>
