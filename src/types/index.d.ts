@@ -1,3 +1,5 @@
+import { type RouteLocationNormalized } from 'vue-router';
+
 export declare type AppLayout =
   | 'default'
   | 'center-page'
@@ -9,7 +11,7 @@ export declare type AppLayout =
 
 export declare interface TabView {
   name: string;
-  path: string;
+  route: RouteLocationNormalized;
 }
 
 export declare interface mod {

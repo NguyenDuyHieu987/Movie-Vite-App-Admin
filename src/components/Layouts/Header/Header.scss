@@ -30,12 +30,37 @@ header.header-bar {
   .left-header {
     display: flex;
     align-items: center;
-    gap: 20px;
     height: 100%;
     padding-right: 24px;
 
     .nav-tabs-view {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+
       .nav-tabs-view-item {
+        display: flex;
+        align-items: center;
+        padding: 11px 15px;
+        line-height: normal;
+        border-radius: 5px;
+        box-shadow: var(--el-box-shadow-light);
+        background-color: transparent;
+        cursor: pointer;
+        color: inherit;
+
+        &.active {
+          background-color: var(--header-background);
+        }
+
+        .remove-icon {
+          margin-left: 5px;
+          color: var(--text-color-gray);
+
+          &:hover {
+            color: inherit;
+          }
+        }
       }
     }
   }

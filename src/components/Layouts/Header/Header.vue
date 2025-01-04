@@ -6,27 +6,27 @@
     <div class="header-bar-container">
       <div class="left-header">
         <div class="nav-tabs-view">
-          <div
+          <RouterLink
             v-for="(item, index) in store.tabsView"
             :key="index"
             :index="index"
             class="nav-tabs-view-item"
-            :title="item?.name"
+            :title="item.name"
+            :class="{ active: item.route.path == route.fullPath }"
+            :to="item.route.fullPath"
           >
-            <RouterView
-              :to="item.path"
-              class="search-query"
-            >
+            <span class="search-query">
               {{ item.name }}
-            </RouterView>
+            </span>
             <XCircle
+              v-if="store.tabsView.length > 1"
               class="remove-icon"
-              width="1.4rem"
-              height="1.4rem"
+              width="1.2rem"
+              height="1.2rem"
               fill="currentColor"
+              @click.prevent="store.removeTabview(item.route)"
             />
-            <!-- @click="handleRemoveSearchHistory(item)" -->
-          </div>
+          </RouterLink>
         </div>
       </div>
 

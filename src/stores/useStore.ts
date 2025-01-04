@@ -9,7 +9,7 @@ import { defineStore } from 'pinia';
 
 import type { country, genre, TabView, user, year } from '@/types';
 import { APP, STORAGE } from '@/common';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter, type RouteLocationNormalized } from 'vue-router';
 
 const breakpoints = useBreakpoints({
   desktop: APP.COLLAPSED_SIDEBAR_WIDTH
@@ -34,6 +34,7 @@ export const useStore = defineStore('store', () => {
     valueLight: 'light'
   });
 
+  const router = useRouter();
   const route = useRoute();
 
   const collapsedDevice = breakpoints.smaller('desktop');
@@ -76,9 +77,55 @@ export const useStore = defineStore('store', () => {
       ) {
         collapsed.value = true;
       }
+
+      if (
+        (!tabsView.value.some(
+          (item) => item.route.fullPath == route.fullPath
+        ) ||
+          tabsView.value.length == 0) &&
+        route.meta.name
+      ) {
+        const tabView = { ...route, matched: [], meta: { ...route.meta } };
+        tabsView.value.push({
+          name: route.meta.name_vietsub as string,
+          route: tabView
+        });
+      }
     },
     { immediate: true, deep: true }
   );
+
+  const removeTabview = (route: RouteLocationNormalized) => {
+    if (tabsView.value.length == 1) return;
+
+    tabsView.value.map((item, index) => {
+      if (item.route.fullPath == route.fullPath) {
+        const oldIndex = index;
+        const oldCount = tabsView.value.length;
+        tabsView.value.splice(index, 1);
+        if (oldIndex == oldCount - 1) {
+          router.push({
+            path: tabsView.value[index - 1].route.fullPath
+          });
+        } else {
+          router.push({
+            path: tabsView.value[index].route.fullPath
+          });
+        }
+
+        return;
+      }
+    });
+  };
+
+  const updateTabview = (fullPath: string, name: string) => {
+    for (const item of tabsView.value) {
+      if (item.route.fullPath == fullPath) {
+        item.name = name;
+        break;
+      }
+    }
+  };
 
   const toogleSidebar = () => {
     collapsed.value = !collapsed.value;
@@ -116,6 +163,8 @@ export const useStore = defineStore('store', () => {
     allCountries,
     allYears,
     urlLoginBack,
+    updateTabview,
+    removeTabview,
     toogleSidebar,
     toogleDrawer
   };
