@@ -33,6 +33,13 @@
       />
 
       <div class="right-actions">
+        <a-select
+          v-model:value="filterType"
+          :options="optionsModType"
+          @select="selectTypeMod"
+          style="width: 100px"
+        >
+        </a-select>
         <a-button
           class="reset-btn"
           type="primary"
@@ -267,7 +274,7 @@ import { ArrowDown } from '@element-plus/icons-vue';
 import { MESSAGE } from '@/common';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import _ from 'lodash';
+import _, { last } from 'lodash';
 import { getAllMod } from '@/services/mods';
 import { GetAllMovie } from '@/services/movie';
 
@@ -375,6 +382,9 @@ const currentEditModList = ref<modList>();
 const loadingAdd = ref<boolean>(false);
 const disabledAdd = ref<boolean>(true);
 const searchValue = ref<string>('');
+const optionsModType = ref<
+  { label: string; value: string; disabled: boolean }[]
+>([]);
 const optionsMod = ref<{ label: string; value: string; disabled: boolean }[]>(
   []
 );
@@ -384,18 +394,6 @@ const hasSelected = computed(() => selectedRowKeys.value.length > 0);
 
 const getData = () => {
   loading.value = true;
-
-  getAllMod()
-    .then((response) => {
-      dataMod.value = response?.results;
-      optionsMod.value = dataMod.value.map((item) => ({
-        label: `${item.name}`,
-        value: item.id,
-        disabled: false
-      }));
-    })
-    .catch((e) => {})
-    .finally(() => {});
 
   getAllModList(filterType.value, page.value, pageSize.value)
     .then((response) => {
@@ -420,6 +418,30 @@ const getDataMovie = (media_type: string = 'all') => {
     });
 };
 
+getAllMod()
+  .then((response) => {
+    dataMod.value = response?.results;
+    optionsMod.value = dataMod.value.map((item) => ({
+      label: `${item.name}`,
+      value: item.id,
+      disabled: false
+    }));
+
+    optionsModType.value = dataMod.value.map((item) => ({
+      label: `${item.name}`,
+      value: item.type,
+      disabled: false
+    }));
+
+    optionsModType.value.unshift({
+      label: 'Tất cả',
+      value: 'all',
+      disabled: false
+    });
+  })
+  .catch((e) => {})
+  .finally(() => {});
+
 getData();
 getDataMovie();
 
@@ -432,6 +454,10 @@ getDataMovie();
 
 const selectMod = (value: string) => {
   getDataMovie(dataMod.value.find((item) => item.id == value).media_type);
+};
+
+const selectTypeMod = (value: string) => {
+  getData();
 };
 
 const onChangePage = (page: number, pageSize: number) => {
