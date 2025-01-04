@@ -198,6 +198,15 @@
 
           <a-row>
             <a-col :span="24">
+              <a-input-search
+                class="search-movie"
+                v-model:value="searchMovieValue"
+                placeholder="Nhập têm phim để tìm kiếm..."
+                enter-button="Tìm kiếm"
+                @search="onSearchMovie"
+                style="width: 350px; margin-bottom: 15px"
+              />
+
               <a-table
                 class="ant-table-striped table-app-bg-header"
                 :row-class-name="
@@ -281,7 +290,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import _, { last } from 'lodash';
 import { getAllMod } from '@/services/mods';
-import { GetAllMovie } from '@/services/movie';
+import { GetAllMovie, SearchMovie } from '@/services/movie';
 
 dayjs.extend(utc);
 
@@ -387,6 +396,7 @@ const currentEditModList = ref<modList>();
 const loadingAdd = ref<boolean>(false);
 const disabledAdd = ref<boolean>(true);
 const searchValue = ref<string>('');
+const searchMovieValue = ref<string>('');
 const optionsModType = ref<
   { label: string; value: string; disabled: boolean }[]
 >([]);
@@ -394,6 +404,7 @@ const optionsMod = ref<{ label: string; value: string; disabled: boolean }[]>(
   []
 );
 const filterType = ref<string>('all');
+const selectedMediaType = ref<string>('all');
 const selectedRowKeys = ref<string[] | number[]>([]);
 const hasSelected = computed(() => selectedRowKeys.value.length > 0);
 
@@ -410,10 +421,10 @@ const getData = () => {
     });
 };
 
-const getDataMovie = (media_type: string = 'all') => {
+const getDataMovie = () => {
   loadingMovie.value = true;
 
-  GetAllMovie(media_type, page.value, pageSize.value)
+  GetAllMovie(selectedMediaType.value, 1, -1)
     .then((response) => {
       dataMovie.value = response?.results;
     })
@@ -458,7 +469,10 @@ getDataMovie();
 // ) => {};
 
 const selectMod = (value: string) => {
-  getDataMovie(dataMod.value.find((item) => item.id == value).media_type);
+  selectedMediaType.value = dataMod.value.find(
+    (item) => item.id == value
+  ).media_type;
+  getDataMovie();
 };
 
 const selectTypeMod = (value: string) => {
@@ -652,6 +666,21 @@ const onSearch = (searchQuery: string) => {
     .catch((e) => {})
     .finally(() => {
       loading.value = false;
+    });
+};
+
+const onSearchMovie = (searchQuery: string) => {
+  if (!searchQuery) return;
+
+  loadingMovie.value = true;
+
+  SearchMovie(selectedMediaType.value, searchQuery.trim(), 1, -1)
+    .then((response) => {
+      dataMovie.value = response?.results;
+    })
+    .catch((e) => {})
+    .finally(() => {
+      loadingMovie.value = false;
     });
 };
 
