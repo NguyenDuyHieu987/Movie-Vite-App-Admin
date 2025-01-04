@@ -95,22 +95,24 @@ export const useStore = defineStore('store', () => {
     { immediate: true, deep: true }
   );
 
-  const removeTabview = (route: RouteLocationNormalized) => {
+  const removeTabview = (r: RouteLocationNormalized) => {
     if (tabsView.value.length == 1) return;
 
     tabsView.value.map((item, index) => {
-      if (item.route.fullPath == route.fullPath) {
+      if (item.route.fullPath == r.fullPath) {
         const oldIndex = index;
         const oldCount = tabsView.value.length;
         tabsView.value.splice(index, 1);
-        if (oldIndex == oldCount - 1) {
-          router.push({
-            path: tabsView.value[index - 1].route.fullPath
-          });
-        } else {
-          router.push({
-            path: tabsView.value[index].route.fullPath
-          });
+        if (r.fullPath == route.fullPath) {
+          if (oldIndex == oldCount - 1) {
+            router.push({
+              path: tabsView.value[index - 1].route.fullPath
+            });
+          } else {
+            router.push({
+              path: tabsView.value[index].route.fullPath
+            });
+          }
         }
 
         return;
