@@ -153,6 +153,29 @@ export function serialize(obj: object | any): string | null {
   return new URLSearchParams(obj).toString();
 }
 
+export const getGreet = () => {
+  const now = new Date();
+  const hour = now.getHours();
+  let greet = '';
+
+  if (hour < 5) {
+    greet = 'Late at night, pay attention to your body!';
+  } else if (hour < 9) {
+    greet = 'good morning!' + 'welcome back';
+  } else if (hour < 12) {
+    greet = 'Good morning!' + 'welcome back';
+  } else if (hour < 14) {
+    greet = 'Good noon!' + 'welcome back';
+  } else if (hour < 18) {
+    greet = 'good afternoon' + 'welcome back';
+  } else if (hour < 24) {
+    greet = 'Good evening' + 'welcome back';
+  } else {
+    greet = 'Hello!' + 'welcome back';
+  }
+  return greet;
+};
+
 export * from './convertPath';
 export * from './convertViews';
 export * from './customCookie';

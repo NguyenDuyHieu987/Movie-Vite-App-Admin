@@ -4,8 +4,8 @@
 :root {
   color-scheme: normal !important;
 
-  --sidebar-background: #f8f8f8;
-  --header-background: #f8f8f8;
+  --sidebar-background: #ffffff;
+  --header-background: #ffffff;
   --header-background-scrolled: #080808e6;
 
   --breadcrumb-background-color: var(--background-content-color);
@@ -61,7 +61,7 @@ body {
 }
 
 body {
-  background-color: var(--background-content-color);
+  background-color: var(--background-app-color);
   color: var(--text-color);
   /* font-size: clamp(1.4rem, 1vw, 10rem); */
   font-size: 1.4rem;

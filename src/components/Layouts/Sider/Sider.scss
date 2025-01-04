@@ -6,6 +6,7 @@
   background: var(--sidebar-background);
   z-index: var(--sider-z-index);
   // border-right: 1px solid var(--border-regular-light);
+  box-shadow: 4px 0 4px -2px rgba(0, 0, 0, 0.5);
   transition: all 0s;
 
   ::-webkit-scrollbar {

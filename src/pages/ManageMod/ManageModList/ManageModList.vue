@@ -1,7 +1,7 @@
 <template>
   <div class="manage-modlist-container">
     <div class="header-table">
-      <h2>Danh sách Danh mục</h2>
+      <h2>Danh sách Dữ liệu danh mục</h2>
 
       <!-- <RouterLink :to="{ path: '/addmodlist' }"> -->
 
