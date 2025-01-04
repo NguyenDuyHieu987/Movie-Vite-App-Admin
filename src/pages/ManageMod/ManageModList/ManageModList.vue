@@ -592,14 +592,14 @@ const onSubmitFormEdit = () => {
     .finally(() => {});
 };
 
-const onClickDeleteModList = (genre: any) => {
+const onClickDeleteModList = (modList: any) => {
   ElMessageBox.confirm('Bạn có chắc muốn xóa danh mục này không?', {
     title: 'Thông báo!',
     confirmButtonText: 'Có',
     cancelButtonText: 'Không'
   })
     .then(() => {
-      DeleteModList(genre.id)
+      DeleteModList(modList._id)
         .then((response) => {
           if (response?.success) {
             ElNotification.success({
