@@ -27,7 +27,7 @@
             :lg="6"
             class="hidden-md-and-down"
           >
-            <div class="working">
+            <div class="working el-card is-hover-shadow">
               <img
                 class="working-coffee"
                 :src="coffeeSvg"

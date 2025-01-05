@@ -40,7 +40,7 @@
           <a-input-search
             v-model:value="valueInput"
             class="search-header"
-            placeholder="Nhập nội dung muốn tìm kiếm..."
+            placeholder="Nhập nội dung bạn muốn tìm kiếm..."
             size="large"
             allow-clear
             bordered

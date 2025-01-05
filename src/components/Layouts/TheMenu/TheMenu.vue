@@ -71,7 +71,7 @@
     >
       <template #title>
         <el-icon>
-          <VideoCamera
+          <MovieOpenEdit
             width="1.5rem"
             height="1.5rem"
             fill="currentColor"
@@ -171,6 +171,7 @@
 import { HomeOutlined } from '@ant-design/icons-vue';
 import ViewCarousel from '@/assets/svgs/icons/view-carousel.svg?component';
 import BroadcastOnHome from '@/assets/svgs/icons/broadcast-on-home.svg?component';
+import MovieOpenEdit from '@/assets/svgs/icons/movie-open-edit.svg?component';
 import VideoCamera from '@/assets/svgs/icons/video-camera.svg?component';
 import UsersIcon from '@/assets/svgs/icons/users.svg?component';
 import MovieReel from '@/assets/svgs/icons/movie-reel.svg?component';
