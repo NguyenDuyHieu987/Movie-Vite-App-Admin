@@ -28,6 +28,12 @@
           width: calc(100vw - var(--sider-collapsed-width) - 30px);
         }
       }
+
+      header.header-bar {
+        width: calc(
+          100% - var(--sider-collapsed-width) - (3 * var(--padding-body))
+        ) !important;
+      }
     }
 
     &.play {

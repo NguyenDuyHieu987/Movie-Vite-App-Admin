@@ -1,5 +1,7 @@
 import type { user } from '@/types';
 import { makeRequest } from './makeRequest';
+import dayjs from 'dayjs';
+import axios from 'axios';
 
 const PREFIX_ROUTE = 'account';
 
@@ -19,6 +21,30 @@ export function SearchAccount(
     query,
     page,
     limit
+  });
+}
+
+export function GetStatisticsUsers(
+  startOfDay: string = dayjs().format('YYYY-MM-DD'),
+  endOfDay: string = dayjs().format('YYYY-MM-DD')
+) {
+  return makeRequest(`/${PREFIX_ROUTE}/get-statistics`, {
+    startOfDay,
+    endOfDay
+  });
+}
+
+export function getTrafficDataCloudflare() {
+  const ZONE_ID = 'cd6053fef7ddad92250a7e945cf89765';
+  const API_TOKEN = '_eZImi8Mhn2hMK3wOz-2UpR22y0IQA146fXX__lg';
+
+  const apiUrl = `https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/analytics/dashboard`;
+
+  return axios.get(apiUrl, {
+    headers: {
+      Authorization: `Bearer ${API_TOKEN}`,
+      'Content-Type': 'application/json'
+    }
   });
 }
 

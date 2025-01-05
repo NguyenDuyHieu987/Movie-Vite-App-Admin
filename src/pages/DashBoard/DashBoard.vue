@@ -55,7 +55,7 @@
             :lg="6"
           >
             <div class="small-panel user-reg suspension">
-              <div class="small-panel-title">Member registration</div>
+              <div class="small-panel-title">Người dùng mới</div>
               <div class="small-panel-content">
                 <div class="content-left">
                   <Icon
@@ -68,31 +68,13 @@
                     :value-style="statisticValueStyle"
                   />
                 </div>
-                <div class="content-right">+14%</div>
-              </div>
-            </div>
-          </el-col>
-          <el-col
-            :sm="12"
-            :lg="6"
-          >
-            <div class="small-panel file suspension">
-              <div class="small-panel-title">
-                Number of attachments Uploaded
-              </div>
-              <div class="small-panel-content">
-                <div class="content-left">
-                  <Icon
-                    color="#AD85F4"
-                    size="20"
-                    name="fa fa-file-text"
-                  />
-                  <el-statistic
-                    :value="fileNumberOutput"
-                    :value-style="statisticValueStyle"
-                  />
+                <div class="content-right">
+                  +{{
+                    (countUpRefs.userRegNumber.value /
+                      countUpRefs.userRegLastPeriodNumber.value) *
+                    100
+                  }}%
                 </div>
-                <div class="content-right">+50%</div>
               </div>
             </div>
           </el-col>
@@ -101,7 +83,7 @@
             :lg="6"
           >
             <div class="small-panel users suspension">
-              <div class="small-panel-title">Total number of members</div>
+              <div class="small-panel-title">Tổng số lượng người dùng</div>
               <div class="small-panel-content">
                 <div class="content-left">
                   <Icon
@@ -110,11 +92,17 @@
                     name="fa fa-users"
                   />
                   <el-statistic
-                    :value="usersNumberOutput"
+                    :value="totalUsersNumberOutput"
                     :value-style="statisticValueStyle"
                   />
                 </div>
-                <div class="content-right">+28%</div>
+                <div class="content-right">
+                  +{{
+                    (countUpRefs.userRegNumber.value /
+                      countUpRefs.totalUsersNumber.value) *
+                    100
+                  }}%
+                </div>
               </div>
             </div>
           </el-col>
@@ -122,8 +110,37 @@
             :sm="12"
             :lg="6"
           >
-            <div class="small-panel addons suspension">
-              <div class="small-panel-title">Number of installed plug-ins</div>
+            <div class="small-panel play suspension">
+              <div class="small-panel-title">Lượt xem mới</div>
+              <div class="small-panel-content">
+                <div class="content-left">
+                  <Icon
+                    color="#AD85F4"
+                    size="20"
+                    name="fa fa-file-text"
+                  />
+                  <el-statistic
+                    :value="playNumberOutput"
+                    :value-style="statisticValueStyle"
+                  />
+                </div>
+                <div class="content-right">
+                  +{{
+                    (countUpRefs.playNumber.value /
+                      countUpRefs.playLastPeriodNumber.value) *
+                    100
+                  }}%
+                </div>
+              </div>
+            </div>
+          </el-col>
+
+          <el-col
+            :sm="12"
+            :lg="6"
+          >
+            <div class="small-panel total-play suspension">
+              <div class="small-panel-title">Tổng só lượt xem</div>
               <div class="small-panel-content">
                 <div class="content-left">
                   <Icon
@@ -132,11 +149,17 @@
                     name="fa fa-object-group"
                   />
                   <el-statistic
-                    :value="addonsNumberOutput"
+                    :value="totalPlayNumberOutput"
                     :value-style="statisticValueStyle"
                   />
                 </div>
-                <div class="content-right">+88%</div>
+                <div class="content-right">
+                  +{{
+                    (countUpRefs.playNumber.value /
+                      countUpRefs.totalPlayNumber.value) *
+                    100
+                  }}%
+                </div>
               </div>
             </div>
           </el-col>
@@ -329,6 +352,11 @@ import { WORKING_TIME } from '@/constants/cachedKey';
 import { useAuthStore } from '@/stores';
 import coffeeSvg from '@/assets/svgs/icons/coffee.svg?url';
 import headerSvg from '@/assets/svgs/icons/header-1.svg?url';
+import {
+  GetStatisticsUsers,
+  getTrafficDataCloudflare
+} from '@/services/account';
+import { GetStatisticsRanks } from '@/services/ranks';
 
 defineOptions({
   name: 'dashboard'
@@ -352,21 +380,23 @@ const chartRefs = useTemplateRefsList<HTMLDivElement>();
 const authStore = useAuthStore();
 const countUp = reactive({
   userRegNumber: 0,
-  fileNumber: 0,
-  usersNumber: 0,
-  addonsNumber: 0
+  userRegLastPeriodNumber: 0,
+  totalUsersNumber: 0,
+  playNumber: 0,
+  playLastPeriodNumber: 0,
+  totalPlayNumber: 0
 });
 const countUpRefs = toRefs(countUp);
 const userRegNumberOutput = useTransition(countUpRefs.userRegNumber, {
   duration: 1500
 });
-const fileNumberOutput = useTransition(countUpRefs.fileNumber, {
+const playNumberOutput = useTransition(countUpRefs.playNumber, {
   duration: 1500
 });
-const usersNumberOutput = useTransition(countUpRefs.usersNumber, {
+const totalUsersNumberOutput = useTransition(countUpRefs.totalUsersNumber, {
   duration: 1500
 });
-const addonsNumberOutput = useTransition(countUpRefs.addonsNumber, {
+const totalPlayNumberOutput = useTransition(countUpRefs.totalPlayNumber, {
   duration: 1500
 });
 const statisticValueStyle: CSSProperties = {
@@ -374,10 +404,10 @@ const statisticValueStyle: CSSProperties = {
 };
 
 const initCountUp = () => {
-  countUpRefs.userRegNumber.value = 5456;
-  countUpRefs.fileNumber.value = 1234;
-  countUpRefs.usersNumber.value = 9486;
-  countUpRefs.addonsNumber.value = 875;
+  // countUpRefs.userRegNumber.value = 5456;
+  // countUpRefs.playNumber.value = 1234;
+  // countUpRefs.totalUsersNumber.value = 9486;
+  // countUpRefs.totalPlayNumber.value = 875;
 };
 
 const initUserGrowthChart = () => {
@@ -761,6 +791,35 @@ const formatSeconds = (seconds: number) => {
   }
   return result;
 };
+
+const getData = () => {
+  GetStatisticsUsers()
+    .then((response) => {
+      countUpRefs.userRegNumber.value = response.numberUser;
+      countUpRefs.userRegLastPeriodNumber.value = response.numberUserLastPeriod;
+      countUpRefs.totalUsersNumber.value = response.totalUser;
+    })
+    .catch((e) => {})
+    .finally(() => {});
+
+  GetStatisticsRanks('play')
+    .then((response) => {
+      countUpRefs.playNumber.value = response.number;
+      countUpRefs.playLastPeriodNumber.value = response.numberLastPeriod;
+      countUpRefs.totalPlayNumber.value = response.total;
+    })
+    .catch((e) => {})
+    .finally(() => {});
+
+  getTrafficDataCloudflare()
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((e) => {})
+    .finally(() => {});
+};
+
+getData();
 
 onActivated(() => {
   echartsResize();

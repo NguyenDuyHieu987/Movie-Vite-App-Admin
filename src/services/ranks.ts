@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { makeRequest } from './makeRequest';
 
 import type { formfilterRank, rankSort } from '@/types';
@@ -6,6 +7,18 @@ const PREFIX_ROUTE = 'ranks';
 
 export function getRanking(page: number = 1, limit: number = 10) {
   return makeRequest(`/discover/all`, { sort_by: 'views_desc', page, limit });
+}
+
+export function GetStatisticsRanks(
+  type: string = 'play',
+  startOfDay: string = dayjs().format('YYYY-MM-DD'),
+  endOfDay: string = dayjs().format('YYYY-MM-DD')
+) {
+  return makeRequest(`/${PREFIX_ROUTE}/get-statistics`, {
+    type,
+    startOfDay,
+    endOfDay
+  });
 }
 
 export function filterRanks(formfilterRank: formfilterRank) {

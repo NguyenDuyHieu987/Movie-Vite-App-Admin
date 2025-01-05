@@ -159,19 +159,19 @@ export const getGreet = () => {
   let greet = '';
 
   if (hour < 5) {
-    greet = 'Late at night, pay attention to your body!';
+    greet = 'Đã khuya, hãy chú ý đến cơ thể của bạn!';
   } else if (hour < 9) {
-    greet = 'good morning!' + 'welcome back';
+    greet = 'Chào buổi sáng.' + ' Chào mừng trở lại!';
   } else if (hour < 12) {
-    greet = 'Good morning!' + 'welcome back';
+    greet = 'Chào buổi sáng.' + ' Chào mừng trở lại!';
   } else if (hour < 14) {
-    greet = 'Good noon!' + 'welcome back';
+    greet = 'Chào buổi trưa.' + ' Chào mừng trở lại!';
   } else if (hour < 18) {
-    greet = 'good afternoon' + 'welcome back';
+    greet = 'Chào buổi chiều.' + ' Chào mừng trở lại!';
   } else if (hour < 24) {
-    greet = 'Good evening' + 'welcome back';
+    greet = 'Chào buổi tối.' + ' Chào mừng trở lại!';
   } else {
-    greet = 'Hello!' + 'welcome back';
+    greet = 'Xin chào.' + ' Chào mừng trở lại!';
   }
   return greet;
 };
