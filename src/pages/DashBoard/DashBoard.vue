@@ -70,9 +70,13 @@
                 </div>
                 <div class="content-right">
                   +{{
-                    (countUpRefs.userRegNumber.value /
-                      countUpRefs.userRegLastPeriodNumber.value) *
-                    100
+                    countUpRefs.userRegNumber.value != 0
+                      ? (countUpRefs.userRegLastPeriodNumber.value /
+                          countUpRefs.userRegNumber.value) *
+                        100
+                      : countUpRefs.userRegLastPeriodNumber.value == 0
+                        ? 0
+                        : 100
                   }}%
                 </div>
               </div>
@@ -126,9 +130,13 @@
                 </div>
                 <div class="content-right">
                   +{{
-                    (countUpRefs.playNumber.value /
-                      countUpRefs.playLastPeriodNumber.value) *
-                    100
+                    countUpRefs.playLastPeriodNumber.value != 0
+                      ? (countUpRefs.playNumber.value /
+                          countUpRefs.playLastPeriodNumber.value) *
+                        100
+                      : countUpRefs.playNumber.value == 0
+                        ? 0
+                        : 100
                   }}%
                 </div>
               </div>
