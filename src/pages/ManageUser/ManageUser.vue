@@ -276,6 +276,29 @@
 
               <a-col :span="12">
                 <a-form-item
+                  label="Mật khẩu"
+                  name="password"
+                  :rules="[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập mật khẩu!',
+                      trigger: ['change', 'blur']
+                    }
+                  ]"
+                >
+                  <a-input
+                    v-model:value="formAddAccount.password"
+                    placeholder="Mật khẩu..."
+                    allow-clear
+                  >
+                  </a-input>
+                </a-form-item>
+              </a-col>
+            </a-row>
+
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item
                   label="Xác thực băng"
                   name="auth_type"
                   :rules="[
@@ -293,10 +316,7 @@
                   </a-select>
                 </a-form-item>
               </a-col>
-            </a-row>
-
-            <a-row :gutter="16">
-              <a-col :span="8">
+              <a-col :span="12">
                 <a-form-item
                   label="Quyền"
                   name="role"
@@ -314,8 +334,10 @@
                   </a-select>
                 </a-form-item>
               </a-col>
+            </a-row>
 
-              <a-col :span="8">
+            <a-row :gutter="16">
+              <a-col :span="12">
                 <a-form-item
                   label="Ảnh đại diện"
                   name="avatar"
@@ -338,7 +360,7 @@
                 </a-form-item>
               </a-col>
 
-              <a-col :span="8">
+              <a-col :span="12">
                 <a-form-item
                   label="Trạng thái"
                   name="status"
@@ -504,6 +526,7 @@ const formAddAccount = reactive({
   username: '',
   full_name: '',
   email: '',
+  password: '',
   role: 'normal',
   auth_type: 'email',
   status: 'active',
@@ -602,6 +625,7 @@ const resetFeild = () => {
   formAddAccount.username = '';
   formAddAccount.full_name = '';
   formAddAccount.email = '';
+  formAddAccount.password = '';
   formAddAccount.auth_type = 'email';
   formAddAccount.role = 'normal';
   formAddAccount.status = 'active';
