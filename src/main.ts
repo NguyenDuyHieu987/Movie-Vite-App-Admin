@@ -5,6 +5,7 @@ import App from './App.vue';
 import 'ant-design-vue/dist/reset.css';
 import Antd from 'ant-design-vue';
 import ElementPlus from 'element-plus';
+import 'virtual:uno.css';
 import 'element-plus/dist/index.css';
 import 'swiper/css';
 import '@/assets/style/fonts/GoogleFonts.css';
