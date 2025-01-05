@@ -33,6 +33,17 @@ header.header-bar {
     height: 100%;
     padding-right: 24px;
 
+    .el-scrollbar {
+      .el-scrollbar__wrap {
+        display: flex;
+        align-items: center;
+        padding-bottom: 10px;
+      }
+
+      .el-scrollbar__bar {
+      }
+    }
+
     .nav-tabs-view {
       display: flex;
       align-items: center;
@@ -46,8 +57,9 @@ header.header-bar {
         border-radius: 4px;
         box-shadow: var(--el-box-shadow-light);
         background-color: transparent;
-        cursor: pointer;
         color: inherit;
+        flex-shrink: 0;
+        cursor: pointer;
 
         &.active {
           background-color: var(--header-background);
@@ -195,6 +207,8 @@ header.header-bar {
     padding: 0px 24px;
     box-shadow: var(--box-shadow-micro);
     border-radius: 4px;
+    margin-left: auto;
+    flex-shrink: 0;
 
     .el-skeleton.is-animated {
       display: flex;
