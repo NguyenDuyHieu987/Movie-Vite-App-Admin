@@ -350,7 +350,7 @@
   }
 
   &.ant-input-affix-wrapper-disabled {
-    background-color: var(--input-background-color-disabled) !important;
+    // background-color: var(--input-background-color-disabled) !important;
   }
 
   &:focus,
@@ -385,7 +385,7 @@
   }
 
   &.ant-input-disabled {
-    background-color: var(--input-background-color-disabled) !important;
+    // background-color: var(--input-background-color-disabled) !important;
   }
 }
 

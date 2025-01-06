@@ -286,12 +286,13 @@
                     }
                   ]"
                 >
-                  <a-input
+                  <a-input-password
                     v-model:value="formAddAccount.password"
                     placeholder="Mật khẩu..."
                     allow-clear
+                    :disabled="isEdit"
                   >
-                  </a-input>
+                  </a-input-password>
                 </a-form-item>
               </a-col>
             </a-row>
