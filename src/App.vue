@@ -40,7 +40,7 @@
     /> -->
 
       <div
-        v-show="route.meta.layout?.name != 'auth' && authStore.loadingUser"
+        v-if="route.meta.layout?.name != 'auth' && authStore.loadingUser"
         class="loading-initial-app"
       >
         <div class="loading-initial-app-container">

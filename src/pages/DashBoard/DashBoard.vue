@@ -58,10 +58,11 @@
               <div class="small-panel-title">Người dùng mới</div>
               <div class="small-panel-content">
                 <div class="content-left">
-                  <Icon
+                  <ChartLineUp
+                    class="mr-10px"
                     color="#8595F4"
-                    size="20"
-                    name="fa fa-line-chart"
+                    width="2.4rem"
+                    height="2.4rem"
                   />
                   <el-statistic
                     :value="userRegNumberOutput"
@@ -70,13 +71,14 @@
                 </div>
                 <div class="content-right">
                   +{{
-                    countUpRefs.userRegNumber.value != 0
+                    (countUpRefs.userRegNumber.value != 0
                       ? (countUpRefs.userRegLastPeriodNumber.value /
                           countUpRefs.userRegNumber.value) *
                         100
                       : countUpRefs.userRegLastPeriodNumber.value == 0
                         ? 0
                         : 100
+                    ).toFixed(2)
                   }}%
                 </div>
               </div>
@@ -90,10 +92,11 @@
               <div class="small-panel-title">Tổng số lượng người dùng</div>
               <div class="small-panel-content">
                 <div class="content-left">
-                  <Icon
+                  <UsersSolid
+                    class="mr-10px"
                     color="#74A8B5"
-                    size="20"
-                    name="fa fa-users"
+                    width="2.4rem"
+                    height="2.4rem"
                   />
                   <el-statistic
                     :value="totalUsersNumberOutput"
@@ -102,9 +105,11 @@
                 </div>
                 <div class="content-right">
                   +{{
-                    (countUpRefs.userRegNumber.value /
-                      countUpRefs.totalUsersNumber.value) *
-                    100
+                    (
+                      (countUpRefs.userRegNumber.value /
+                        countUpRefs.totalUsersNumber.value) *
+                      100
+                    ).toFixed(2)
                   }}%
                 </div>
               </div>
@@ -118,10 +123,11 @@
               <div class="small-panel-title">Lượt xem mới</div>
               <div class="small-panel-content">
                 <div class="content-left">
-                  <Icon
-                    color="#AD85F4"
-                    size="20"
-                    name="fa fa-file-text"
+                  <EyeShare
+                    class="mr-10px"
+                    stroke="#AD85F4"
+                    width="2.4rem"
+                    height="2.4rem"
                   />
                   <el-statistic
                     :value="playNumberOutput"
@@ -130,13 +136,14 @@
                 </div>
                 <div class="content-right">
                   +{{
-                    countUpRefs.playLastPeriodNumber.value != 0
+                    (countUpRefs.playLastPeriodNumber.value != 0
                       ? (countUpRefs.playNumber.value /
                           countUpRefs.playLastPeriodNumber.value) *
                         100
                       : countUpRefs.playNumber.value == 0
                         ? 0
                         : 100
+                    ).toFixed(2)
                   }}%
                 </div>
               </div>
@@ -151,10 +158,11 @@
               <div class="small-panel-title">Tổng só lượt xem</div>
               <div class="small-panel-content">
                 <div class="content-left">
-                  <Icon
+                  <EyeTrackingSharp
+                    class="mr-10px"
                     color="#F48595"
-                    size="20"
-                    name="fa fa-object-group"
+                    width="2.4rem"
+                    height="2.4rem"
                   />
                   <el-statistic
                     :value="totalPlayNumberOutput"
@@ -163,9 +171,11 @@
                 </div>
                 <div class="content-right">
                   +{{
-                    (countUpRefs.playNumber.value /
-                      countUpRefs.totalPlayNumber.value) *
-                    100
+                    (
+                      (countUpRefs.playNumber.value /
+                        countUpRefs.totalPlayNumber.value) *
+                      100
+                    ).toFixed(2)
                   }}%
                 </div>
               </div>
@@ -336,6 +346,11 @@
 </template>
 
 <script setup lang="ts">
+import ChartLineUp from '@/assets/svgs/icons/chart-line-up.svg?component';
+import UsersSolid from '@/assets/svgs/icons/users-solid.svg?component';
+import EyeShare from '@/assets/svgs/icons/eye-share.svg?component';
+import EyeTrackingSharp from '@/assets/svgs/icons/eye-tracking-sharp.svg?component';
+
 import { getGreet } from '@/utils';
 import {
   useEventListener,
