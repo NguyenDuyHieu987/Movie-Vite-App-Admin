@@ -10,7 +10,7 @@ export const loadUser = (to, from, next) => {
     } else {
       if (!authStore.isLogin) next({ path: '/login' });
     }
+  } else {
+    next();
   }
-
-  next();
 };

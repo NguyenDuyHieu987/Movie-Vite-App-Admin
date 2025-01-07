@@ -46,7 +46,6 @@ export const useStore = defineStore('store', () => {
   const modalVisible = ref<boolean>(false);
   const breadCrumbValue = ref<string>('');
   const loadingApp = ref<boolean>(false);
-  const loadingUser = ref<boolean>(true);
   const tabsView = ref<TabView[]>([]);
   const dataSearchHistory = ref<any[]>([]);
   const allGenres = ref<genre[]>([]);
@@ -158,7 +157,6 @@ export const useStore = defineStore('store', () => {
     openDrawer,
     modalVisible,
     loadingApp,
-    loadingUser,
     loadingAppInstance,
     dataSearchHistory,
     allGenres,
