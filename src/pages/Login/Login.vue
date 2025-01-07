@@ -154,7 +154,7 @@ const reset = () => {
   formLogin.rememberMe = false;
 };
 
-onMounted(() => {
+onBeforeMount(() => {
   appStorageStates.value[STORAGE.APP_STATES.URL_LOGIN_BACK] = router.options
     .history.state?.back
     ? ['/signup'].some((item) =>
