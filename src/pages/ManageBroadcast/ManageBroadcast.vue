@@ -313,7 +313,7 @@
             <a-row :gutter="16">
               <a-col :span="12">
                 <a-form-item
-                  label="Mô tả"
+                  label="Chọn phim"
                   name="movie_id"
                   :rules="[
                     {
@@ -349,7 +349,7 @@
                 :span="12"
               >
                 <a-form-item
-                  label="Mô tả"
+                  label="Chọn tập"
                   name="episode_id"
                   :rules="[
                     {
