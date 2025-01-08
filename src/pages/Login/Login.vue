@@ -157,7 +157,7 @@ const reset = () => {
 onBeforeMount(() => {
   appStorageStates.value[STORAGE.APP_STATES.URL_LOGIN_BACK] = router.options
     .history.state?.back
-    ? ['/signup'].some((item) =>
+    ? ['/signup', '/login'].some((item) =>
         router.options.history.state?.back.toLowerCase().startsWith(item)
       )
       ? '/'
@@ -202,7 +202,8 @@ const handleLogin = () => {
 
         // navigateTo({ path: '/' });
 
-        router.push({ path: store.urlLoginBack });
+        console.log(store.urlLoginBack);
+        router.push(store.urlLoginBack);
 
         reset();
       } else if (response?.isNotExist == true) {

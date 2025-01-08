@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 import { ElNotification } from 'element-plus';
 import { defineStore } from 'pinia';
 import { useRouter } from 'vue-router';
@@ -20,7 +20,7 @@ export const useAuthStore = defineStore('auth', () => {
   );
   const vipNumber = computed<number>(() => subscription.value?.plan?.vip || 0);
   const isOpenRequireAuthDialog = ref<boolean>(false);
-  const loadingUser = ref<boolean>(true);
+  const loadingUser = ref<boolean>(false);
   const loadingSubscription = ref<boolean>(true);
 
   const utils = useUtils();

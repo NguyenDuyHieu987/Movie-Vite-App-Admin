@@ -833,13 +833,6 @@ const getData = () => {
     })
     .catch((e) => {})
     .finally(() => {});
-
-  getTrafficDataCloudflare()
-    .then((response) => {
-      console.log(response);
-    })
-    .catch((e) => {})
-    .finally(() => {});
 };
 
 getData();
