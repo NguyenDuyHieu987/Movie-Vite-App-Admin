@@ -836,7 +836,7 @@ const onSubmitFormAdd = () => {
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: 'Thêm mới tập thất bại!',
+              message: response?.message || 'Thêm mới tập thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
@@ -1142,7 +1142,7 @@ const onSubmitFormEdit = () => {
           } else {
             ElNotification.error({
               title: MESSAGE.STATUS.FAILED,
-              message: 'Chỉnh sửa tập thất bại!',
+              message: response?.message || 'Chỉnh sửa tập thất bại!',
               duration: MESSAGE.DURATION.DEFAULT
             });
           }
