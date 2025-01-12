@@ -1038,6 +1038,13 @@ const onSubmitFormAdd = () => {
       values.dominant_backdrop_color =
         fileBackdrop.file.dominant_backdrop_color;
       values.genres = values.genres.map((genre: string) => JSON.parse(genre));
+      values.first_air_date = dayjs(formAddMovie.first_air_date).format(
+        'YYYY-MM-DD'
+      );
+      values.last_air_date = dayjs(formAddMovie.last_air_date).format(
+        'YYYY-MM-DD'
+      );
+
       CreateMovie(values as MovieForm)
         .then((response) => {
           if (response?.success) {
