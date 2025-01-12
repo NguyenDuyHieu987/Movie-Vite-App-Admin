@@ -102,7 +102,7 @@
                     }
                   }"
                 >
-                  {{ item?.name_vietsub }}
+                  {{ item?.name }}
                 </RouterLink>
               </SwiperSlide>
               <div class="swiper-button-prev">

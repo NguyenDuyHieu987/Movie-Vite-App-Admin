@@ -33,8 +33,8 @@ export declare interface modList {
 export declare interface genre {
   _id: string;
   id: number;
-  name_vietsub: string;
   name: string;
+  english_name: string;
   short_name: string;
 }
 

@@ -175,19 +175,19 @@
               </a-col>
               <a-col :span="12">
                 <a-form-item
-                  label="Tên Tiếng Việt"
-                  name="name_vietsub"
+                  label="Tên Tiếng Anh"
+                  name="english_name"
                   :rules="[
                     {
                       required: true,
-                      message: 'Vui lòng nhập tên Tiếng Việt!',
+                      message: 'Vui lòng nhập tên Tiếng Anh!',
                       trigger: ['change', 'blur']
                     }
                   ]"
                 >
                   <a-input
-                    v-model:value="formAddGenre.name_vietsub"
-                    placeholder="Tên Tiếng Việt..."
+                    v-model:value="formAddGenre.english_name"
+                    placeholder="Tên Tiếng Anh..."
                     allow-clear
                   >
                   </a-input>
@@ -302,7 +302,7 @@ const columns: TableColumnType[] = [
   },
   {
     title: 'Tên Tiếng Việt',
-    dataIndex: 'name_vietsub',
+    dataIndex: 'english_name',
     width: 200,
     sorter: true
   },
@@ -324,7 +324,7 @@ const modalUploadVideoVisible = ref<boolean>(false);
 const formAddGenre = reactive({
   id: '',
   name: '',
-  name_vietsub: '',
+  english_name: '',
   short_name: ''
 });
 const modalAddTitle = ref<string>('Thêm mới thể loại');
@@ -418,7 +418,7 @@ onBeforeMount(() => {});
 const resetFeild = () => {
   formAddGenre.id = '';
   formAddGenre.name = '';
-  formAddGenre.name_vietsub = '';
+  formAddGenre.english_name = '';
   formAddGenre.short_name = '';
 };
 
@@ -429,7 +429,7 @@ const onClickEditGenre = (genre: any) => {
 
   formAddGenre.id = genre.id;
   formAddGenre.name = genre.name;
-  formAddGenre.name_vietsub = genre.name_vietsub;
+  formAddGenre.english_name = genre.english_name;
   formAddGenre.short_name = genre.short_name;
 
   modalAddVisible.value = true;

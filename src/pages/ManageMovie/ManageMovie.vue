@@ -289,7 +289,7 @@
                         value: JSON.stringify({
                           id: item.id,
                           name: item.name,
-                          name_vietsub: item.name_vietsub,
+                          english_name: item.english_name,
                           short_name: item.short_name
                         }),
                         label: item.name
@@ -1282,7 +1282,7 @@ const onClickEditMovie = (movie: any) => {
     return JSON.stringify({
       id: genre.id,
       name: genre.name,
-      name_vietsub: genre.name_vietsub,
+      english_name: genre.english_name,
       short_name: genre.short_name
     });
   });

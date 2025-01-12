@@ -103,7 +103,7 @@ const getParamsRoute = () => {
         name: getGenreByShortName(
           route.params?.slug2 as string,
           store?.allGenres
-        )?.name_vietsub
+        )?.name
       });
       break;
     case 'year':

@@ -101,7 +101,7 @@ export default {
             name: getGenresNameByShortName(
               route.params?.slug2,
               store.state?.allGenres
-            )?.name_vietsub,
+            )?.name
           });
           break;
         case 'years':
@@ -113,7 +113,7 @@ export default {
             // name: store.state.breadCrumbValue,
             name: store.state.allCountries.find(
               (country) => country.short_name === route.params?.slug2
-            )?.name,
+            )?.name
           });
           break;
         default:
@@ -136,7 +136,7 @@ export default {
     // });
 
     return { path };
-  },
+  }
 };
 </script>
 
