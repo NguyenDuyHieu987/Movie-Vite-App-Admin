@@ -278,13 +278,17 @@
                 <a-form-item
                   label="Mật khẩu"
                   name="password"
-                  :rules="[
-                    {
-                      required: true,
-                      message: 'Vui lòng nhập mật khẩu!',
-                      trigger: ['change', 'blur']
-                    }
-                  ]"
+                  :rules="
+                    !isEdit
+                      ? [
+                          {
+                            required: true,
+                            message: 'Vui lòng nhập mật khẩu!',
+                            trigger: ['change', 'blur']
+                          }
+                        ]
+                      : []
+                  "
                 >
                   <a-input-password
                     v-model:value="formAddAccount.password"
@@ -631,6 +635,8 @@ const resetFeild = () => {
   formAddAccount.role = 'normal';
   formAddAccount.status = 'active';
   formAddAccount.avatar = 1;
+
+  if (formRef.value) formRef.value.clearValidate();
 };
 
 const onClickEditAccount = (account: any) => {
@@ -646,6 +652,8 @@ const onClickEditAccount = (account: any) => {
   formAddAccount.role = account.role;
   formAddAccount.status = account.status;
   formAddAccount.avatar = isNaN(account.avatar) ? 1 : account.avatar;
+
+  if (formRef.value) formRef.value.clearValidate();
 
   modalAddVisible.value = true;
 };

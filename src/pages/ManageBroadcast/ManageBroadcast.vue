@@ -799,6 +799,8 @@ const resetFeild = () => {
   formAddBroadcast.name = '';
   formAddBroadcast.description = '';
   formAddBroadcast.release_time = '';
+
+  if (formRef.value) formRef.value.clearValidate();
 };
 
 const onClickEditBroadcast = (broadcast: any) => {
@@ -818,6 +820,8 @@ const onClickEditBroadcast = (broadcast: any) => {
   // .format('YYYY-MM-DD hh:mm:ss A');
 
   getDataMovie();
+
+  if (formRef.value) formRef.value.clearValidate();
 
   modalAddVisible.value = true;
 };

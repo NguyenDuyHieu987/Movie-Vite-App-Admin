@@ -364,6 +364,8 @@ const resetFeild = () => {
   formAddYear.english_name = '';
   formAddYear.name = '';
   formAddYear.short_name = '';
+
+  if (formRef.value) formRef.value.clearValidate();
 };
 
 const onClickEditYear = (year: any) => {
@@ -375,6 +377,8 @@ const onClickEditYear = (year: any) => {
   formAddYear.english_name = year.english_name;
   formAddYear.name = year.name;
   formAddYear.short_name = year.short_name;
+
+  if (formRef.value) formRef.value.clearValidate();
 
   modalAddVisible.value = true;
 };

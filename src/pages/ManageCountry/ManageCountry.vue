@@ -420,6 +420,8 @@ const resetFeild = () => {
   formAddCountry.english_name = '';
   formAddCountry.name = '';
   formAddCountry.short_name = '';
+
+  if (formRef.value) formRef.value.clearValidate();
 };
 
 const onClickEditCountry = (country: any) => {
@@ -431,6 +433,8 @@ const onClickEditCountry = (country: any) => {
   formAddCountry.english_name = country.english_name;
   formAddCountry.name = country.name;
   formAddCountry.short_name = country.short_name;
+
+  if (formRef.value) formRef.value.clearValidate();
 
   modalAddVisible.value = true;
 };

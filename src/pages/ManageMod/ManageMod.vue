@@ -486,6 +486,8 @@ const resetFeild = () => {
   formAddMod.media_type = 'all';
   formAddMod.order = 1;
   formAddMod.path = '';
+
+  if (formRef.value) formRef.value.clearValidate();
 };
 
 const onClickEditMod = (mod: any) => {
@@ -499,6 +501,8 @@ const onClickEditMod = (mod: any) => {
   formAddMod.media_type = mod.media_type;
   formAddMod.order = mod.order;
   formAddMod.path = mod.path;
+
+  if (formRef.value) formRef.value.clearValidate();
 
   modalAddVisible.value = true;
 };

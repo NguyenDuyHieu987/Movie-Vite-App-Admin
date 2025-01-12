@@ -420,6 +420,8 @@ const resetFeild = () => {
   formAddGenre.name = '';
   formAddGenre.english_name = '';
   formAddGenre.short_name = '';
+
+  if (formRef.value) formRef.value.clearValidate();
 };
 
 const onClickEditGenre = (genre: any) => {
@@ -431,6 +433,8 @@ const onClickEditGenre = (genre: any) => {
   formAddGenre.name = genre.name;
   formAddGenre.english_name = genre.english_name;
   formAddGenre.short_name = genre.short_name;
+
+  if (formRef.value) formRef.value.clearValidate();
 
   modalAddVisible.value = true;
 };

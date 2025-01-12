@@ -1267,6 +1267,8 @@ const resetFeild = () => {
   if (inputBackdropFile.value) {
     inputBackdropFile.value!.value = '';
   }
+
+  if (formRef.value) formRef.value.clearValidate();
 };
 
 const onClickEditMovie = (movie: any) => {
@@ -1299,6 +1301,8 @@ const onClickEditMovie = (movie: any) => {
   formAddMovie.backdrop_path = getImage(movie.backdrop_path, 'backdrop', {
     h: 250
   });
+
+  if (formRef.value) formRef.value.clearValidate();
 
   modalAddVisible.value = true;
 };

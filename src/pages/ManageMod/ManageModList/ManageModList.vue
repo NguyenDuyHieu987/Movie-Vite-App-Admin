@@ -545,6 +545,8 @@ const resetFeild = () => {
   formAddModList.id = '';
   formAddModList.listMovieId = [];
   formAddModList.modId = '';
+
+  if (formRef.value) formRef.value.clearValidate();
 };
 
 const onClickEditModList = (modList: any) => {
@@ -556,6 +558,8 @@ const onClickEditModList = (modList: any) => {
   formAddModList.id = modList.movieData.id;
   formAddModList.listMovieId = [modList.movieData.id];
   formAddModList.modId = modList.modId;
+
+  if (formRef.value) formRef.value.clearValidate();
 
   modalAddVisible.value = true;
 };

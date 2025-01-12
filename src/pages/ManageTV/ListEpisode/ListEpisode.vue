@@ -1076,6 +1076,8 @@ const resetFeild = () => {
   if (inputStillFile.value) {
     inputStillFile.value!.value = '';
   }
+
+  if (formRef.value) formRef.value.clearValidate();
 };
 
 const onClickEditEpisode = (episode: any) => {
@@ -1094,6 +1096,8 @@ const onClickEditEpisode = (episode: any) => {
   formAddEpisode.still_path = getImage(episode.still_path, 'still', {
     w: 250
   });
+
+  if (formRef.value) formRef.value.clearValidate();
 
   modalAddVisible.value = true;
 };
