@@ -53,7 +53,7 @@ export const useAuthStore = defineStore('auth', () => {
       userToken: userToken.value
     })
       .then((response) => {
-        if (response?.isLogin == true && response?.result.role != 'admin') {
+        if (response?.isLogin == true && response?.result.role == 'admin') {
           userAccount.value = response?.result;
 
           if (response?.subscription) {
