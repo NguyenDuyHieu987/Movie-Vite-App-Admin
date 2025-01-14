@@ -194,7 +194,7 @@
           >
             <el-card
               shadow="hover"
-              :header="'Membership growth'"
+              :header="'Tăng trưởng người dùng'"
             >
               <div
                 class="user-growth-chart"
@@ -365,6 +365,7 @@ import {
   onMounted,
   onUnmounted,
   reactive,
+  ref,
   toRefs,
   watch,
   type CSSProperties
@@ -376,6 +377,7 @@ import { useAuthStore } from '@/stores';
 import coffeeSvg from '@/assets/svgs/icons/coffee.svg?url';
 import headerSvg from '@/assets/svgs/icons/header-1.svg?url';
 import {
+  GetReportsUsers,
   GetStatisticsUsers,
   getTrafficDataCloudflare
 } from '@/services/account';
@@ -425,6 +427,7 @@ const totalPlayNumberOutput = useTransition(countUpRefs.totalPlayNumber, {
 const statisticValueStyle: CSSProperties = {
   fontSize: '28px'
 };
+const dataUsersGrowth = ref<any[]>([]);
 
 const initCountUp = () => {
   // countUpRefs.userRegNumber.value = 5456;
@@ -433,7 +436,12 @@ const initCountUp = () => {
   // countUpRefs.totalPlayNumber.value = 875;
 };
 
-const initUserGrowthChart = () => {
+const initUserGrowthChart = async () => {
+  if (dataUsersGrowth.value.length == 0) return;
+
+  const dataXAxis = dataUsersGrowth.value.map((item: any) => item._id);
+  const dataSeries = dataUsersGrowth.value.map((item: any) => item.count);
+
   const userGrowthChart = echarts.init(chartRefs.value[0] as HTMLElement);
   const option = {
     grid: {
@@ -443,43 +451,45 @@ const initUserGrowthChart = () => {
       left: 0
     },
     xAxis: {
-      data: [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-        'Sunday'
-      ]
+      data: [...dataXAxis]
     },
     yAxis: {},
     legend: {
-      data: ['Visits', 'Registration volume'],
+      // data: ['Visits', 'Registration volume'],
+      data: ['Số người dùng', 'Registration volume'],
       textStyle: {
         color: '#73767a'
       }
     },
     series: [
       {
-        name: 'Visits',
-        data: [100, 160, 280, 230, 190, 200, 480],
+        name: 'Số người dùng',
+        data: [...dataSeries],
         type: 'line',
         smooth: true,
         areaStyle: {
           color: '#8595F4'
         }
-      },
-      {
-        name: 'Registration volume',
-        data: [45, 180, 146, 99, 210, 127, 288],
-        type: 'line',
-        smooth: true,
-        areaStyle: {
-          color: '#F48595',
-          opacity: 0.5
-        }
       }
+      // {
+      //   name: 'Visits',
+      //   data: [100, 160, 280, 230, 190, 200, 480],
+      //   type: 'line',
+      //   smooth: true,
+      //   areaStyle: {
+      //     color: '#8595F4'
+      //   }
+      // }
+      // {
+      //   name: 'Registration volume',
+      //   data: [45, 180, 146, 99, 210, 127, 288],
+      //   type: 'line',
+      //   smooth: true,
+      //   areaStyle: {
+      //     color: '#F48595',
+      //     opacity: 0.5
+      //   }
+      // }
     ]
   };
   userGrowthChart.setOption(option);
@@ -842,16 +852,33 @@ onActivated(() => {
 });
 
 onMounted(() => {
+  GetReportsUsers()
+    .then((response) => {
+      dataUsersGrowth.value = response.results;
+    })
+    .catch((e) => {})
+    .finally(() => {});
+
   startWork();
   initCountUp();
-  initUserGrowthChart();
+  // initUserGrowthChart();
   initFileGrowthChart();
   initUserSourceChart();
   initUserSurnameChart();
   useEventListener(window, 'resize', echartsResize);
 });
 
-onBeforeMount(() => {
+watch(
+  () => dataUsersGrowth.value,
+  () => {
+    initUserGrowthChart();
+  },
+  {
+    immediate: true
+  }
+);
+
+onBeforeMount(async () => {
   for (const key in state.charts) {
     state.charts[key].dispose();
   }

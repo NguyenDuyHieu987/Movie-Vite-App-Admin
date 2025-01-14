@@ -34,6 +34,10 @@ export function GetStatisticsUsers(
   });
 }
 
+export function GetReportsUsers() {
+  return makeRequest(`/${PREFIX_ROUTE}/get-reports`, {});
+}
+
 export function getTrafficDataCloudflare() {
   const ZONE_ID = 'cd6053fef7ddad92250a7e945cf89765';
   const API_TOKEN = '_eZImi8Mhn2hMK3wOz-2UpR22y0IQA146fXX__lg';
